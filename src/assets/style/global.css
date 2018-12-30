@@ -1,0 +1,74 @@
+html,
+body {
+  position: relative;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-size: 14px;
+  color: #6f6f6f;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.icon-edit-poem,
+.icon-delete-poem,
+.icon-left-arrow,
+.icon-right-arrow {
+  display: inline-block;
+  vertical-align: middle;
+  font-style: normal;
+}
+
+.icon-edit-poem {
+  height: 16px;
+  width: 16px;
+  background: url('../imgs/icon/edit-icon.png') no-repeat center center / cover;
+}
+
+.icon-delete-poem {
+  height: 16px;
+  width: 16px;
+  background: url('../imgs/icon/delete-icon.png') no-repeat center center / cover;
+}
+
+.icon-left-arrow,
+.icon-right-arrow {
+  height: 24px;
+  width: 24px;
+}
+
+.icon-left-arrow {
+  background: url('../imgs/icon/left-arrow-icon.png') no-repeat center center / cover;
+}
+
+.icon-right-arrow {
+  background: url('../imgs/icon/right-arrow-icon.png') no-repeat center center / cover;
+}
+
+
+div::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 6px;
+}
+
+div::-webkit-scrollbar-button,
+body::-webkit-scrollbar-button {
+  display: none;
+}
+
+div::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  display: none;
+}
+
+div::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: #999999;
+  border-radius: 4px;
+}
