@@ -101,23 +101,27 @@
         <el-upload
           class="upload-demo"
           action="http://localhost:8081/api/fileUpload"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :on-error="onError"
           :file-list="fileList"
+          :before-upload="onBeforeUpload"
+          :on-success="onSuccess"
+          :on-remove="onRemove"
+          :on-error="onError"
+          :limit="5"
           list-type="picture"
+          accept="image/*"
           name="poem-image"
         >
-          <label>意境图</label>
+          <p>意境配图</p>
           <el-button
             class="upload-btn"
             size="small"
             type="primary"
+            :disabled="fileList.length >= 5"
           >点击上传</el-button>
           <span
             slot="tip"
             class="el-upload__tip"
-          >（只能上传jpg/png文件，且不超过500kb）</span>
+          >（只能上传jpg / jpeg / png文件，且不超过5M）</span>
         </el-upload>
       </el-col>
     </el-row>
@@ -174,6 +178,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch("getThemeList");
+    // 初始化数据
     if (this.$route.params.title) {
       const poemInfo = {
         ...this.$route.params.poem,
@@ -181,6 +186,7 @@ export default {
       };
       this.form = Object.assign({}, this.form, poemInfo);
     }
+    this.fileList = this.$route.params.poem ? this.$route.params.poem.imgs : [];
   },
   computed: {
     themeList() {
@@ -197,14 +203,37 @@ export default {
     onDelRow(index) {
       this.form.content.splice(index, 1);
     },
+    onBeforeUpload(file) {
+      const isLimit = file.size <= 5242880; // 不超过5M
+      if (!isLimit) {
+        this.$message({
+          type: "warning",
+          message: "图片不能大于5M"
+        });
+      }
+      const isJpgOrPng = ["png", "jpg", "jpeg"].includes(
+        file.type.split("/")[1]
+      );
+      if (!isJpgOrPng) {
+        this.$message({
+          type: "warning",
+          message: "请上传jpg / jpeg / png格式的图片"
+        });
+      }
+      return isLimit && isJpgOrPng;
+    },
+    onSuccess(res, file, fileList) {
+      if (Number(res.code) === 0 && res.data) {
+        this.fileList.push({ ...file, url: res.data.path });
+      } else {
+        this.$message.error(res.message);
+      }
+    },
+    onRemove(file, fileList) {
+      this.fileList = fileList;
+    },
     onError(err) {
       this.$message.error(err);
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
     },
     async onSubmit() {
       const { title, content, theme, type, date } = this.form;
@@ -226,6 +255,11 @@ export default {
         this.$message(messageObj);
         return;
       }
+      console.log(this.fileList);
+      this.form.imgs = this.fileList.map(item => ({
+        name: item.name,
+        url: item.url
+      }));
       if (this.form._id) {
         await api.editPoem(this.form);
       } else {
@@ -270,6 +304,26 @@ export default {
   }
   .el-input {
     width: 240px;
+  }
+  .imgList {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    .img-item {
+      width: 80px;
+      height: 80px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+      margin-left: 8px;
+      margin-bottom: 8px;
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
   }
   .upload-demo {
     .upload-btn {

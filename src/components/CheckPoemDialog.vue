@@ -1,25 +1,37 @@
 <template>
   <el-dialog
     class="check-poem-dialog"
-    width="450px"
+    width="500px"
     :title="poem.title"
     :visible="visible"
     :show-close="false"
     @close="onClose"
   >
     <div class="content">
-      <div class="author">{{poem.author}}</div>
+      <div class="author">
+        <span>{{poem.author}}</span>
+        <span class="date">{{date}}</span>
+      </div>
       <div class="word">
         <p
           v-for="(item,index) in poem.content"
           :key="index"
         >{{item}}</p>
       </div>
+      <div class="imgs">
+        <div
+          class="img-wrap"
+          v-for="(img,index) in poem.imgs"
+          :key="index"
+        >
+          <img :src="img.url" />
+        </div>
+      </div>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <div class="date">{{date}}</div>
+
       </span>
     </div>
   </el-dialog>
@@ -52,6 +64,7 @@ export default {
 <style lang="less">
 .check-poem-dialog {
   .el-dialog {
+    margin-top: 12vh !important;
     border-radius: 5px;
     background: -webkit-gradient(
       linear,
@@ -70,6 +83,9 @@ export default {
 
     .author {
       margin-bottom: 12px;
+      span {
+        margin: 0 6px;
+      }
     }
 
     .content {
@@ -81,10 +97,10 @@ export default {
       }
       .word {
         font-size: 16px;
-        min-height: 200px;
-        max-height: 420px;
+        max-height: 350px;
         overflow-x: hidden;
         overflow-y: auto;
+        margin-bottom: 20px;
         p {
           margin-bottom: 12px;
           margin-top: 0;
@@ -92,9 +108,23 @@ export default {
       }
     }
 
-    .date {
-      text-align: right;
-      margin-top: 12px;
+    .imgs {
+      display: flex;
+      justify-content: center;
+      .img-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.15);
+        margin: 0 6px;
+        width: 80px;
+        height: 80px;
+        overflow: hidden;
+        img {
+          width: auto;
+          height: 100%;
+        }
+      }
     }
   }
 }
