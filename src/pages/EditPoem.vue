@@ -1,99 +1,126 @@
 <template>
   <div id="edit-poem">
-    <el-form
-      ref="form"
-      :model="form"
-      label-width="80px"
-      :rules="rules"
-    >
-      <el-form-item
-        label="标题"
-        prop="title"
-      >
-        <el-input
-          v-model="form.title"
-          size="small"
-        ></el-input>
-      </el-form-item>
-      <div class="row">
-        <el-form-item label="作者">
-          <el-input
-            v-model="form.author"
-            size="small"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
-          label="创作时间"
-          prop="date"
+    <el-row :gutter="20">
+      <el-col :span="15">
+        <el-form
+          ref="form"
+          :model="form"
+          label-width="80px"
+          :rules="rules"
         >
-          <el-col :span="11">
-            <el-date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="form.date"
+          <el-form-item
+            label="标题"
+            prop="title"
+          >
+            <el-input
+              v-model="form.title"
               size="small"
-              :picker-options="pickerOptions"
-            ></el-date-picker>
-          </el-col>
-        </el-form-item>
-      </div>
-      <el-form-item label="类型">
-        <el-radio-group v-model="form.type">
-          <el-radio
-            v-for="item in typeList"
-            :label="item.value"
-            :key="item.value"
-          >{{item.name}}</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item
-        label="主题"
-        prop="theme"
-      >
-        <el-checkbox-group v-model="form.theme">
-          <el-checkbox
-            v-for="item in themeList"
-            :key="item._id"
-            :label="item.value"
-          >{{item.name}}</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="内容">
-        <el-button
-          size="small"
-          type="primary"
-          @click="onAddRow"
-        >添加</el-button>
-        <span class="tips">（不少于3句）</span>
-      </el-form-item>
-      <el-form-item
-        v-for="(item,index) in form.content"
-        :label="`第${index + 1}句`"
-        :key="index"
-      >
-        <el-input
-          class="content-input"
-          v-model="form.content[index]"
-          size="small"
-        ></el-input>
-        <i
-          v-if="index > 2"
-          class="el-icon-delete"
-          @click="onDelRow(index)"
-        ></i>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          @click="onSubmit"
-          size="small"
-        >提交</el-button>
-        <el-button
-          size="small"
-          @click="goBack"
-        >返回</el-button>
-      </el-form-item>
-    </el-form>
+            ></el-input>
+          </el-form-item>
+          <div class="row">
+            <el-form-item label="作者">
+              <el-input
+                v-model="form.author"
+                size="small"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="创作时间"
+              prop="date"
+            >
+              <el-col :span="11">
+                <el-date-picker
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="form.date"
+                  size="small"
+                  :picker-options="pickerOptions"
+                ></el-date-picker>
+              </el-col>
+            </el-form-item>
+          </div>
+          <el-form-item label="类型">
+            <el-radio-group v-model="form.type">
+              <el-radio
+                v-for="item in typeList"
+                :label="item.value"
+                :key="item.value"
+              >{{item.name}}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item
+            label="主题"
+            prop="theme"
+          >
+            <el-checkbox-group v-model="form.theme">
+              <el-checkbox
+                v-for="item in themeList"
+                :key="item._id"
+                :label="item.value"
+              >{{item.name}}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="内容">
+            <el-button
+              size="small"
+              type="primary"
+              @click="onAddRow"
+            >添加</el-button>
+            <span class="tips">（不少于3句）</span>
+          </el-form-item>
+          <el-form-item
+            v-for="(item,index) in form.content"
+            :label="`第${index + 1}句`"
+            :key="index"
+          >
+            <el-input
+              class="content-input"
+              v-model="form.content[index]"
+              size="small"
+            ></el-input>
+            <i
+              v-if="index > 2"
+              class="el-icon-delete"
+              @click="onDelRow(index)"
+            ></i>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              @click="onSubmit"
+              size="small"
+            >提交</el-button>
+            <el-button
+              size="small"
+              @click="goBack"
+            >返回</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :span="9">
+        <el-upload
+          class="upload-demo"
+          action="http://localhost:8081/api/fileUpload"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :on-error="onError"
+          :file-list="fileList"
+          list-type="picture"
+          name="poem-image"
+        >
+          <label>意境图</label>
+          <el-button
+            class="upload-btn"
+            size="small"
+            type="primary"
+          >点击上传</el-button>
+          <span
+            slot="tip"
+            class="el-upload__tip"
+          >（只能上传jpg/png文件，且不超过500kb）</span>
+        </el-upload>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -104,6 +131,7 @@ export default {
   name: "edit-poem",
   data() {
     return {
+      fileList: [],
       pickerOptions: {
         // 日期选择器禁用日期
         disabledDate(time) {
@@ -116,6 +144,8 @@ export default {
         theme: [],
         type: 1,
         content: ["", "", "", ""],
+        imgs: [],
+        desc: "",
         date: new Date()
       },
       rules: {
@@ -167,6 +197,15 @@ export default {
     onDelRow(index) {
       this.form.content.splice(index, 1);
     },
+    onError(err) {
+      this.$message.error(err);
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
     async onSubmit() {
       const { title, content, theme, type, date } = this.form;
       const messageObj = {
@@ -210,6 +249,9 @@ export default {
   display: flex;
   justify-content: center;
   padding: 16px;
+  .el-row {
+    width: 90%;
+  }
   .el-form {
     width: auto;
     .row {
@@ -228,6 +270,15 @@ export default {
   }
   .el-input {
     width: 240px;
+  }
+  .upload-demo {
+    .upload-btn {
+      margin-left: 12px;
+    }
+    .el-upload__tip {
+      margin-left: 12px;
+      color: red;
+    }
   }
 }
 </style>
