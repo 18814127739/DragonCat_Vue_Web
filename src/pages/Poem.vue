@@ -1,5 +1,5 @@
 <template>
-  <div id="poem-page">
+  <PageContainer class="poem-page">
     <div class="query-bar">
       <div class="input-group">
         <label>标题：</label>
@@ -108,7 +108,7 @@
       :visible="visible"
       @onClose="onClose"
     />
-  </div>
+  </PageContainer>
 </template>
 
 <script>
@@ -200,7 +200,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-#poem-page {
+.poem-page {
   .query-bar {
     padding: 0 32px;
     margin-top: 16px;

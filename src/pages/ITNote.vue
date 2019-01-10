@@ -1,7 +1,7 @@
 <template>
-  <div id="IT-note">
+  <PageContainer class="IT-note">
     技术笔记
-  </div>
+  </PageContainer>
 </template>
 
 <script>

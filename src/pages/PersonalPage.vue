@@ -1,7 +1,7 @@
 <template>
-  <div id="personal-page">
+  <PageContainer class="personal-page">
     个人主页
-  </div>
+  </PageContainer>
 </template>
 
 <script>

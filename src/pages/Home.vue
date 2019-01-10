@@ -1,9 +1,9 @@
 <template>
-  <div id="home-page">
+  <PageContainer class="home-page">
     <Periodictable v-if="index === 0" />
     <SkyBox v-if="index === 1" />
     <ThreeEarth v-if="index === 2" />
-  </div>
+  </PageContainer>
 </template>
 <script>
 import Periodictable from "@components/Periodictable";

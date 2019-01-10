@@ -1,9 +1,5 @@
 <template>
-  <div class="page-wrap">
-    <PageBar />
-    <router-view></router-view>
-    <PageFooter />
-  </div>
+  <router-view></router-view>
 </template>
 <script>
 export default {
@@ -13,11 +9,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.page-wrap {
-  position: relative;
-  min-height: 100%;
-  background: white;
-}
 </style>
 
 

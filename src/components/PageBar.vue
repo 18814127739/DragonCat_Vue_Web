@@ -45,10 +45,8 @@ export default {
       ]
     };
   },
-  watch: {
-    $route(val) {
-      this.curMenu = menuRouteMap[val.name];
-    }
+  mounted() {
+    this.curMenu = menuRouteMap[this.$router.currentRoute.name];
   },
   methods: {
     jump(pathname) {

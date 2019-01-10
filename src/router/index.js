@@ -7,11 +7,16 @@ const EditPoem = () => import('@pages/EditPoem')
 const PersonalPage = () => import('@pages/PersonalPage')
 const PhotoWall = () => import('@pages/PhotoWall')
 const ITNote = () => import('@pages/ITNote')
+const Login = () => import('@pages/Login')
 
 Vue.use(VueRouter);
 
 const routes = [
   {
+    name: 'login',
+    path: '/login',
+    component: Login,
+  }, {
     name: 'home',
     path: '/',
     component: Home,
@@ -39,7 +44,7 @@ const routes = [
     name: 'photo-wall',
     path: '/photo-wall',
     component: PhotoWall,
-  }
+  },
 ]
 
 const router = new VueRouter({

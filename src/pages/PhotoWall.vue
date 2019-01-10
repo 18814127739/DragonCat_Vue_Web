@@ -1,5 +1,5 @@
 <template>
-  <div id="photo-wall">
+  <PageContainer class="photo-wall">
     <div class="wrapper">
       <div id="container"></div>
       <div id="menu">
@@ -19,7 +19,7 @@
       @onClose="onClose"
     />
     <VerifyDialog />
-  </div>
+  </PageContainer>
 </template>
 
 <script>
@@ -283,7 +283,7 @@ export default {
 </script>
 
 <style lang="less">
-#photo-wall {
+.photo-wall {
   .wrapper {
     width: 100%;
     height: 100%;
