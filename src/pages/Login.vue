@@ -59,12 +59,32 @@
             label-position="top"
           >
             <el-form-item
-              label="账号："
+              label="用户名："
               prop="account"
             >
               <el-input
                 type="account"
                 v-model="form2.account"
+                size="medium"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="手机号："
+              prop="phone"
+            >
+              <el-input
+                type="account"
+                v-model="form2.phone"
+                size="medium"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="邮箱："
+              prop="eMail"
+            >
+              <el-input
+                type="account"
+                v-model="form2.eMail"
                 size="medium"
               ></el-input>
             </el-form-item>
@@ -75,17 +95,6 @@
               <el-input
                 type="password"
                 v-model="form2.password"
-                autocomplete="off"
-                size="medium"
-              ></el-input>
-            </el-form-item>
-            <el-form-item
-              label="确认密码："
-              prop="confirmPwd"
-            >
-              <el-input
-                type="password"
-                v-model="form2.confirmPwd"
                 autocomplete="off"
                 size="medium"
               ></el-input>
@@ -128,21 +137,28 @@ export default {
   height: 100vh;
   display: flex;
   align-items: center;
+  background: -webkit-gradient(
+    linear,
+    left 0,
+    right 0,
+    from(#fffafa),
+    to(#f0ffff)
+  );
   .left-pane {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 500px;
-    height: 500px;
+    width: 480px;
+    height: 480px;
     position: fixed;
     left: 10vw;
     .content {
-      width: 340px;
-      height: 340px;
+      width: 300px;
+      height: 300px;
       background: url("../assets/imgs/QR_code1.jpg") no-repeat center;
       background-size: cover;
-      border-radius: 170px;
+      border-radius: 150px;
       position: relative;
       z-index: 3;
     }
@@ -152,9 +168,9 @@ export default {
     background: url("../assets/imgs/pics/pic-line1.png") no-repeat;
     background-size: cover;
     display: block;
-    width: 440px;
-    height: 440px;
-    margin: -220px 0 0 -220px;
+    width: 400px;
+    height: 400px;
+    margin: -200px 0 0 -200px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -166,9 +182,9 @@ export default {
     background: url("../assets/imgs/pics/pic-line2.png") no-repeat;
     background-size: cover;
     display: block;
-    width: 500px;
-    height: 500px;
-    margin: -250px 0 0 -250px;
+    width: 480px;
+    height: 480px;
+    margin: -240px 0 0 -240px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -178,7 +194,7 @@ export default {
   .right-pane {
     position: fixed;
     width: 400px;
-    top: 24vh;
+    top: 20vh;
     right: 10vw;
     .el-form {
       width: 100%;
@@ -186,6 +202,7 @@ export default {
         margin-bottom: 12px;
         .el-form-item__label {
           padding: 0;
+          line-height: 32px;
         }
       }
       .el-input {

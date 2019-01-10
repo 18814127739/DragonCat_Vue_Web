@@ -215,13 +215,6 @@ export default {
     }
     .btn {
       float: right;
-      // background: #fff0f5;
-      // color: #9b30ff;
-      // border: 1px solid #9b30ff;
-      // &:hover {
-      //   background: #9b30ff;
-      //   color: white;
-      // }
     }
   }
   .content {
