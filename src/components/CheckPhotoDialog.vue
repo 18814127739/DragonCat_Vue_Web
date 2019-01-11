@@ -104,11 +104,14 @@ export default {
         position: absolute;
         height: 40px;
         width: 40px;
-        background: rgba(66, 66, 66, 0.4);
+        background: rgba(255, 255, 255, 0.4);
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 20px;
+        &:hover {
+          background: rgba(255, 255, 255, 0.6);
+        }
       }
       .left-arrow {
         left: 10px;

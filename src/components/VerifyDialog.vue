@@ -42,7 +42,7 @@ import api from "@services";
 export default {
   data() {
     return {
-      visible: true,
+      visible: false,
       password: ""
     };
   },

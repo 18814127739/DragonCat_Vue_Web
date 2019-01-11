@@ -117,8 +117,8 @@ export default {
   data() {
     return {
       activeTab: "login",
-      form: {},
-      form2: {},
+      form: {}, // 登录信息
+      form2: {}, // 注册信息
       rules1: {
         account: [{ required: true, message: "请填写账号", trigger: "blur" }],
         password: [{ required: true, message: "请填写密码", trigger: "blur" }]
@@ -134,8 +134,13 @@ export default {
     };
   },
   methods: {
-    login() {
-      console.log(this.form);
+    async login() {
+      await api.login(this.form);
+      this.$router.push({ name: "home" });
+      this.$message({
+        type: "success",
+        message: "登录成功"
+      });
     },
     async register() {
       const params = {};
@@ -144,19 +149,37 @@ export default {
           params[key] = this.form2[key];
         }
       });
+      if (this.isValid(params)) {
+        await api.register(params);
+        this.activeTab = "login";
+        this.form2 = {};
+        this.$message({
+          type: "success",
+          message: "用户已创建"
+        });
+      }
+    },
+    isValid(params) {
+      let flag = true;
       if (!/^1[34578]\d{9}$/.test(params.phone)) {
         this.$message({
           type: "warning",
-          message: "请填写正确的手机号码"
+          message: "手机号码不符合格式要求"
         });
-        return;
+        flag = false;
       }
-      await api.register(params);
-      this.activeTab = "login";
-      this.$message({
-        type: "success",
-        message: "用户已创建"
-      });
+      if (
+        !/^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test(
+          params.eMail
+        )
+      ) {
+        this.$message({
+          type: "warning",
+          message: "邮箱地址不符合格式要求"
+        });
+        flag = false;
+      }
+      return flag;
     }
   }
 };
