@@ -1,6 +1,12 @@
 import api from '@utils/http';
 
 export default class {
+  // 用户注册
+  static register = params => api.post('/api/register', params);
+
+  // 用户登录
+  static login = params => api.post('/api/login', params);
+
   // 获取诗列表
   static getPoemList = params => api.get('/api/getPoemList', params);
 

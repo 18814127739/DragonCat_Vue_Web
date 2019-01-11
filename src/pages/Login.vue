@@ -16,7 +16,7 @@
         >
           <el-form
             :model="form"
-            :rules="rules"
+            :rules="rules1"
             label-position="top"
           >
             <el-form-item
@@ -24,8 +24,8 @@
               prop="account"
             >
               <el-input
-                type="account"
                 size="medium"
+                placeholder="用户名/手机号/邮箱"
                 v-model="form.account"
               ></el-input>
             </el-form-item>
@@ -55,16 +55,15 @@
         >
           <el-form
             :model="form2"
-            :rules="rules"
+            :rules="rules2"
             label-position="top"
           >
             <el-form-item
               label="用户名："
-              prop="account"
+              prop="userName"
             >
               <el-input
-                type="account"
-                v-model="form2.account"
+                v-model="form2.userName"
                 size="medium"
               ></el-input>
             </el-form-item>
@@ -73,7 +72,6 @@
               prop="phone"
             >
               <el-input
-                type="account"
                 v-model="form2.phone"
                 size="medium"
               ></el-input>
@@ -83,7 +81,7 @@
               prop="eMail"
             >
               <el-input
-                type="account"
+                type="eMail"
                 v-model="form2.eMail"
                 size="medium"
               ></el-input>
@@ -113,21 +111,52 @@
   </div>
 </template>
 <script>
+import api from "@services";
+
 export default {
   data() {
     return {
       activeTab: "login",
       form: {},
       form2: {},
-      rules: {}
+      rules1: {
+        account: [{ required: true, message: "请填写账号", trigger: "blur" }],
+        password: [{ required: true, message: "请填写密码", trigger: "blur" }]
+      },
+      rules2: {
+        userName: [
+          { required: true, message: "请填写用户名", trigger: "blur" }
+        ],
+        phone: [{ required: true, message: "请填写手机号", trigger: "blur" }],
+        eMail: [{ required: true, message: "请填写邮箱", trigger: "blur" }],
+        password: [{ required: true, message: "请填写密码", trigger: "blur" }]
+      }
     };
   },
   methods: {
     login() {
       console.log(this.form);
     },
-    register() {
-      console.log(this.form2);
+    async register() {
+      const params = {};
+      Object.keys(this.form2).forEach(key => {
+        if (this.form2[key]) {
+          params[key] = this.form2[key];
+        }
+      });
+      if (!/^1[34578]\d{9}$/.test(params.phone)) {
+        this.$message({
+          type: "warning",
+          message: "请填写正确的手机号码"
+        });
+        return;
+      }
+      await api.register(params);
+      this.activeTab = "login";
+      this.$message({
+        type: "success",
+        message: "用户已创建"
+      });
     }
   }
 };
@@ -199,7 +228,7 @@ export default {
     .el-form {
       width: 100%;
       .el-form-item {
-        margin-bottom: 12px;
+        margin-bottom: 20px;
         .el-form-item__label {
           padding: 0;
           line-height: 32px;

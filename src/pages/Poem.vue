@@ -4,7 +4,7 @@
       <div class="input-group">
         <label>标题：</label>
         <el-input
-          v-model="title"
+          v-model="form.title"
           size="mini"
           @keyup.enter.native="onChange"
         ></el-input>
@@ -12,7 +12,7 @@
       <div class="input-group">
         <label>类型：</label>
         <el-select
-          v-model="curType"
+          v-model="form.type"
           size="mini"
           placeholder="请选择"
           @change="onChange"
@@ -29,7 +29,7 @@
       <div class="input-group">
         <label>主题：</label>
         <el-select
-          v-model="curTheme"
+          v-model="form.theme"
           size="mini"
           placeholder="请选择"
           @change="onChange"
@@ -46,7 +46,7 @@
       <div class="input-group">
         <label>排序：</label>
         <el-select
-          v-model="curSortWay"
+          v-model="form.sortWay"
           size="mini"
           placeholder="请选择"
           @change="onChange"
@@ -128,10 +128,12 @@ export default {
       ],
       poemList: [],
       curPoem: {},
-      title: "",
-      curTheme: 0, // 主题
-      curType: 1, // 文体类型， 1：诗  2：词
-      curSortWay: "desc",
+      form: {
+        title: "",
+        theme: "", // 主题
+        type: "", // 文体类型
+        sortWay: "desc"
+      },
       curPage: 1,
       total: 0,
       visible: false
@@ -144,22 +146,23 @@ export default {
   },
   computed: {
     themeList() {
-      return [{ value: 0, name: "全部" }].concat(this.$store.state.themeList);
+      return [{ value: "", name: "全部" }].concat(this.$store.state.themeList);
     },
     typeList() {
-      return this.$store.state.typeList;
+      return [{ value: "", name: "全部" }].concat(this.$store.state.typeList);
     }
   },
   methods: {
     async getPoemList() {
       const params = {
         pageSize: 8,
-        curPage: this.curPage,
-        title: this.title,
-        theme: this.curTheme,
-        type: this.curType,
-        sortWay: this.curSortWay
+        curPage: this.curPage
       };
+      Object.keys(this.form).forEach(key => {
+        if (this.form[key]) {
+          params[key] = this.form[key];
+        }
+      });
       const res = await api.getPoemList(params);
       this.poemList = res.list;
       this.total = res.total;
