@@ -81,7 +81,7 @@ export default {
 <style lang="less">
 .check-photo-dialog {
   .el-dialog {
-    margin-top: 12vh !important;
+    margin-top: 10vh !important;
     border-radius: 5px;
     background: white;
     .el-dialog__header {
@@ -97,7 +97,7 @@ export default {
       align-items: center;
       justify-content: center;
       overflow: auto;
-      max-height: 550px;
+      height: 570px;
       .left-wrap {
         position: fixed;
         align-self: flex-start;
