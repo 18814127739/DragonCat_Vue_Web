@@ -7,9 +7,9 @@ module.exports = {
         '@assets': `${__dirname}/src/assets`,
         '@components': `${__dirname}/src/components`,
         '@pages': `${__dirname}/src/pages`,
+        '@router': `${__dirname}/src/router`,
         '@services': `${__dirname}/src/services`,
         '@utils': `${__dirname}/src/utils`,
-        '@routes': `${__dirname}/src/routes`,
       }
     },
   },

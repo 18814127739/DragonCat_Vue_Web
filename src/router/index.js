@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Cookies from 'js-cookie';
+import { Message } from 'element-ui';
 
 const Home = () => import('@pages/Home')
 const Poem = () => import('@pages/Poem')
@@ -52,6 +54,24 @@ const router = new VueRouter({
   // mode: 'history',
   base: __dirname,
   routes: routes
-})
+});
+
+router.beforeEach((to, from, next) => {
+  if (['home', 'login'].includes(to.name)) {
+    next();
+  } else if (Cookies.get('token')) {
+    next();
+  } else {
+    Message.error('登录已超时，请重新登录');
+    redirectLogin();
+  }
+
+  function redirectLogin() {
+    next({
+      path: '/login',
+      query: { redirect: to.name }
+    })
+  }
+});
 
 export default router

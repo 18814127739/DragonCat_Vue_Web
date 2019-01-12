@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "element-ui": "^2.4.11",
+    "history": "^4.7.2",
+    "js-cookie": "^2.2.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "moment": "^2.23.0",

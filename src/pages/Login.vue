@@ -15,8 +15,8 @@
           name="login"
         >
           <el-form
-            :model="form"
-            :rules="rules1"
+            :model="loginInfo"
+            :rules="loginRules"
             label-position="top"
           >
             <el-form-item
@@ -26,7 +26,7 @@
               <el-input
                 size="medium"
                 placeholder="用户名/手机号/邮箱"
-                v-model="form.account"
+                v-model="loginInfo.account"
               ></el-input>
             </el-form-item>
             <el-form-item
@@ -35,7 +35,7 @@
             >
               <el-input
                 type="password"
-                v-model="form.password"
+                v-model="loginInfo.password"
                 autocomplete="off"
                 size="medium"
               ></el-input>
@@ -54,8 +54,8 @@
           name="register"
         >
           <el-form
-            :model="form2"
-            :rules="rules2"
+            :model="registerInfo"
+            :rules="registerRules"
             label-position="top"
           >
             <el-form-item
@@ -63,7 +63,7 @@
               prop="userName"
             >
               <el-input
-                v-model="form2.userName"
+                v-model="registerInfo.userName"
                 size="medium"
               ></el-input>
             </el-form-item>
@@ -72,7 +72,7 @@
               prop="phone"
             >
               <el-input
-                v-model="form2.phone"
+                v-model="registerInfo.phone"
                 size="medium"
               ></el-input>
             </el-form-item>
@@ -82,7 +82,7 @@
             >
               <el-input
                 type="eMail"
-                v-model="form2.eMail"
+                v-model="registerInfo.eMail"
                 size="medium"
               ></el-input>
             </el-form-item>
@@ -92,7 +92,7 @@
             >
               <el-input
                 type="password"
-                v-model="form2.password"
+                v-model="registerInfo.password"
                 autocomplete="off"
                 size="medium"
               ></el-input>
@@ -111,19 +111,20 @@
   </div>
 </template>
 <script>
+import Cookies from "js-cookie";
 import api from "@services";
 
 export default {
   data() {
     return {
       activeTab: "login",
-      form: {}, // 登录信息
-      form2: {}, // 注册信息
-      rules1: {
+      loginInfo: {}, // 登录信息
+      registerInfo: {}, // 注册信息
+      loginRules: {
         account: [{ required: true, message: "请填写账号", trigger: "blur" }],
         password: [{ required: true, message: "请填写密码", trigger: "blur" }]
       },
-      rules2: {
+      registerRules: {
         userName: [
           { required: true, message: "请填写用户名", trigger: "blur" }
         ],
@@ -135,8 +136,18 @@ export default {
   },
   methods: {
     async login() {
-      await api.login(this.form);
-      this.$router.push({ name: "home" });
+      const params = {
+        account: this.loginInfo.account || "",
+        password: this.loginInfo.password || ""
+      };
+      const res = await api.login(params);
+      Cookies.set("token", res.token, { expires: 1 });
+      this.$store.commit("userInfoSuccess", {
+        isLogin: true,
+        userInfo: res.userInfo
+      });
+      const toPath = this.$route.query.redirect;
+      this.$router.replace({ name: toPath || "home" });
       this.$message({
         type: "success",
         message: "登录成功"
@@ -144,15 +155,15 @@ export default {
     },
     async register() {
       const params = {};
-      Object.keys(this.form2).forEach(key => {
-        if (this.form2[key]) {
-          params[key] = this.form2[key];
+      Object.keys(this.registerInfo).forEach(key => {
+        if (this.registerInfo[key]) {
+          params[key] = this.registerInfo[key];
         }
       });
       if (this.isValid(params)) {
         await api.register(params);
         this.activeTab = "login";
-        this.form2 = {};
+        this.registerInfo = {};
         this.$message({
           type: "success",
           message: "用户已创建"

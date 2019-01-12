@@ -261,10 +261,11 @@ export default {
         name: item.name,
         url: item.url
       }));
+      const params = { userId: this.$store.state.userInfo._id, ...this.form };
       if (this.form._id) {
-        await api.editPoem(this.form);
+        await api.editPoem(params);
       } else {
-        await api.addPoem(this.form);
+        await api.addPoem(params);
       }
       this.$message({
         message: `${!this.form._id ? "新增" : "编辑"}诗篇成功`,

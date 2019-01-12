@@ -5,7 +5,7 @@
         @click="jump('home')"
         src="../assets/imgs/head.jpg"
       />
-      <label @click="jump('home')">{{user.name}}</label>
+      <label @click="jump('home')">{{userName}}</label>
     </div>
     <div class="pull-right">
       <router-link
@@ -34,9 +34,6 @@ export default {
   data() {
     return {
       curMenu: 0,
-      user: {
-        name: "龙猫先森"
-      },
       menus: [
         { id: 0, name: "个人主页", pathname: "personal-page" },
         { id: 1, name: "诗与远方", pathname: "poems-with-future" },
@@ -47,6 +44,11 @@ export default {
   },
   mounted() {
     this.curMenu = menuRouteMap[this.$router.currentRoute.name];
+  },
+  computed: {
+    userName() {
+      return this.$store.state.userInfo.userName || "";
+    }
   },
   methods: {
     jump(pathname) {

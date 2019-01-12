@@ -156,7 +156,8 @@ export default {
     async getPoemList() {
       const params = {
         pageSize: 8,
-        curPage: this.curPage
+        curPage: this.curPage,
+        userId: this.$store.state.userInfo._id
       };
       Object.keys(this.form).forEach(key => {
         if (this.form[key]) {

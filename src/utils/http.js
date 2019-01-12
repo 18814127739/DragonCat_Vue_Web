@@ -1,4 +1,4 @@
-import { getCookie } from './cookie';
+import Cookies from 'js-cookie';
 import { Message } from 'element-ui'
 
 function request(url, params, type) {
@@ -7,7 +7,7 @@ function request(url, params, type) {
     method: type,
     headers: {
       'content-type': 'application/json',
-      token: getCookie('token'), // 头部统一加tocken
+      token: Cookies.get('token'), // 头部统一加tocken
     },
   };
   if (type === 'post' || type === 'put' || type === 'delete') {

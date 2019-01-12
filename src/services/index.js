@@ -7,6 +7,9 @@ export default class {
   // 用户登录
   static login = params => api.post('/api/login', params);
 
+  // 获取用户信息
+  static getUserInfo = params => api.get('/api/getUserInfo', params);
+
   // 获取诗列表
   static getPoemList = params => api.get('/api/getPoemList', params);
 
