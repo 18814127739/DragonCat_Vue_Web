@@ -90,8 +90,7 @@ export default {
             that.onCheckPhoto(i);
           };
           element.className = "element";
-          element.style.backgroundColor =
-            "rgba(94,94,94," + (Math.random() * 0.5 + 0.25) + ")";
+          element.style.backgroundColor = "rgba(255,255,255,.5)";
 
           const img = document.createElement("img");
           img.className = "img";

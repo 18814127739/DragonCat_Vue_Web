@@ -69,6 +69,6 @@ body::-webkit-scrollbar-track {
 
 div::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-thumb {
-  background: #999999;
+  background: #D3D3D3;
   border-radius: 4px;
 }

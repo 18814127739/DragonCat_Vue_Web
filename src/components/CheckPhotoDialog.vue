@@ -7,17 +7,21 @@
     @close="onClose"
   >
     <div class="content">
-      <div
-        @click="checkLeft"
-        class="left-arrow"
-      >
-        <i class="icon-left-arrow"></i>
+      <div class="left-wrap">
+        <div
+          @click="checkLeft"
+          class="left-arrow"
+        >
+          <i class="icon-left-arrow"></i>
+        </div>
       </div>
-      <div
-        @click="checkRight"
-        class="right-arrow"
-      >
-        <i class="icon-right-arrow"></i>
+      <div class="right-wrap">
+        <div
+          @click="checkRight"
+          class="right-arrow"
+        >
+          <i class="icon-right-arrow"></i>
+        </div>
       </div>
       <img
         :src="photos[curIndex].path"
@@ -77,7 +81,7 @@ export default {
 <style lang="less">
 .check-photo-dialog {
   .el-dialog {
-    margin-top: 10vh !important;
+    margin-top: 12vh !important;
     border-radius: 5px;
     background: white;
     .el-dialog__header {
@@ -88,20 +92,25 @@ export default {
       padding: 4px;
     }
     .content {
-      position: relative;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 570px;
-      overflow: hidden;
-      img {
-        height: auto;
-        width: 100%;
+      overflow: auto;
+      max-height: 550px;
+      .left-wrap {
+        position: fixed;
+        align-self: flex-start;
+        padding-left: 10px;
+      }
+      .right-wrap {
+        position: fixed;
+        align-self: flex-end;
+        padding-right: 10px;
       }
       .left-arrow,
       .right-arrow {
         cursor: pointer;
-        position: absolute;
         height: 40px;
         width: 40px;
         background: rgba(255, 255, 255, 0.4);
@@ -110,14 +119,12 @@ export default {
         justify-content: center;
         border-radius: 20px;
         &:hover {
-          background: rgba(255, 255, 255, 0.6);
+          background: rgba(255, 255, 255, 0.7);
         }
       }
-      .left-arrow {
-        left: 10px;
-      }
-      .right-arrow {
-        right: 10px;
+      img {
+        height: auto;
+        width: 100%;
       }
     }
   }
