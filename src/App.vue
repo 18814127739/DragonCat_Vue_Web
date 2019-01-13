@@ -7,11 +7,12 @@ import Cookies from "js-cookie";
 export default {
   name: "app",
   mounted() {
-    if (Cookies.get("token")) {
+    const loginPath = "/login";
+    if (Cookies.get("token") && window.location.pathname !== loginPath) {
+      // 当cookie没有过期且不为登录页时请求用户信息
       this.$store.dispatch("getUserInfo");
     }
-  },
-  methods: {}
+  }
 };
 </script>
 

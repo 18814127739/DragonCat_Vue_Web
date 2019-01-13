@@ -127,7 +127,7 @@ const photos = new Array(144).fill(0).map((item, index) => {
     x,
     y
   }
-})
+});
 
 export default {
   table,

@@ -17,8 +17,10 @@ const store = new Vuex.Store({
       try {
         const res = await api.getUserInfo();
         commit('userInfoSuccess', { isLogin: true, userInfo: res.userInfo });
+        return true;
       } catch {
         commit('userInfoFail');
+        return false;
       }
     },
     async getThemeList({ commit }) {

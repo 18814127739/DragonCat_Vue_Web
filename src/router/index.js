@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Cookies from 'js-cookie';
 import { Message } from 'element-ui';
+// import store from '../store';
 
 const Home = () => import('@pages/Home')
 const Poem = () => import('@pages/Poem')
