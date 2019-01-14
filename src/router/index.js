@@ -6,7 +6,7 @@ import { Message } from 'element-ui';
 const Home = () => import('@pages/Home')
 const Poem = () => import('@pages/Poem')
 const EditPoem = () => import('@pages/EditPoem')
-const PersonalPage = () => import('@pages/PersonalPage')
+const Personal = () => import('@pages/Personal')
 const PhotoWall = () => import('@pages/PhotoWall')
 const ITNote = () => import('@pages/ITNote')
 const Login = () => import('@pages/Login')
@@ -37,7 +37,7 @@ const routes = [
   }, {
     name: 'personal-page',
     path: '/personal-page',
-    component: PersonalPage,
+    component: Personal,
   }, {
     name: 'IT-note',
     path: '/IT-note',

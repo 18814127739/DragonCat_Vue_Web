@@ -40,7 +40,10 @@
                 size="medium"
               ></el-input>
             </el-form-item>
-            <el-form-item class="btn-item">
+            <el-form-item
+              class="btn-item"
+              v-loading="loginLoading"
+            >
               <el-button
                 type="primary"
                 size="medium"
@@ -97,7 +100,10 @@
                 size="medium"
               ></el-input>
             </el-form-item>
-            <el-form-item class="btn-item">
+            <el-form-item
+              class="btn-item"
+              v-loading="registerLoading"
+            >
               <el-button
                 type="primary"
                 size="medium"
@@ -111,7 +117,6 @@
   </div>
 </template>
 <script>
-import Cookies from "js-cookie";
 import api from "@services";
 
 export default {
@@ -131,28 +136,38 @@ export default {
         phone: [{ required: true, message: "请填写手机号", trigger: "blur" }],
         eMail: [{ required: true, message: "请填写邮箱", trigger: "blur" }],
         password: [{ required: true, message: "请填写密码", trigger: "blur" }]
-      }
+      },
+      loginLoading: false,
+      registerLoading: false
     };
   },
   methods: {
-    async login() {
+    login() {
       const params = {
         account: this.loginInfo.account || "",
         password: this.loginInfo.password || ""
       };
-      const res = await api.login(params);
-      this.$store.commit("userInfoSuccess", {
-        isLogin: true,
-        userInfo: res.userInfo
-      });
-      const toPath = this.$route.query.redirect;
-      this.$router.replace({ path: toPath || "/" });
-      this.$message({
-        type: "success",
-        message: "登录成功"
-      });
+      this.loginLoading = true;
+      api
+        .login(params)
+        .then(res => {
+          this.loginLoading = false;
+          const toPath = this.$route.query.redirect;
+          this.$router.replace({ path: toPath || "/" });
+          this.$store.commit("userInfoSuccess", {
+            isLogin: true,
+            userInfo: res.userInfo
+          });
+          this.$message({
+            type: "success",
+            message: "登录成功"
+          });
+        })
+        .catch(() => {
+          this.loginLoading = false;
+        });
     },
-    async register() {
+    register() {
       const params = {};
       Object.keys(this.registerInfo).forEach(key => {
         if (this.registerInfo[key]) {
@@ -160,13 +175,21 @@ export default {
         }
       });
       if (this.isValid(params)) {
-        await api.register(params);
-        this.activeTab = "login";
-        this.registerInfo = {};
-        this.$message({
-          type: "success",
-          message: "用户已创建"
-        });
+        this.registerLoading = true;
+        api
+          .register(params)
+          .then(res => {
+            this.registerLoading = false;
+            this.activeTab = "login";
+            this.registerInfo = {};
+            this.$message({
+              type: "success",
+              message: "用户已创建"
+            });
+          })
+          .catch(() => {
+            this.registerLoading = false;
+          });
       }
     },
     isValid(params) {

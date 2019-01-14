@@ -10,6 +10,9 @@ export default class {
   // 获取用户信息
   static getUserInfo = params => api.get('/api/getUserInfo', params);
 
+  // 获取个人主页信息
+  static getHomePageInfo = params => api.get('/api/getHomePageInfo', params);
+
   // 获取诗列表
   static getPoemList = params => api.get('/api/getPoemList', params);
 

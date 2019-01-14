@@ -19,7 +19,6 @@ export default {
           });
         })
         .catch(() => {
-          this.$store.commit("userInfoFail");
           const arr = window.location.pathname.split("/");
           let redirect = "/";
           if (arr[1]) {

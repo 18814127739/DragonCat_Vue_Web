@@ -23,6 +23,7 @@
           class="img-wrap"
           v-for="(img,index) in poem.imgs"
           :key="index"
+          @click="onCheckPhoto($event, index)"
         >
           <img :src="img.url" />
         </div>
@@ -31,16 +32,25 @@
         slot="footer"
         class="dialog-footer"
       >
-
       </span>
     </div>
+    <!-- <CheckPhotoDialog
+      :photos="imgs"
+      :index="curIndex"
+      :visible="checkPhotoVisible"
+      @onClose="onDialogClose"
+    /> -->
   </el-dialog>
 </template>
 
 <script>
 import moment from "moment";
+// import CheckPhotoDialog from "@components/CheckPhotoDialog";
 
 export default {
+  components: {
+    // CheckPhotoDialog
+  },
   props: {
     visible: {
       type: Boolean,
@@ -48,6 +58,13 @@ export default {
     },
     poem: Object
   },
+  // data() {
+  //   return {
+  //     imgs: [],
+  //     curIndex: 0,
+  //     checkPhotoVisible: false
+  //   };
+  // },
   computed: {
     date() {
       return moment(this.poem.date).format("YYYY-MM-DD");
@@ -56,7 +73,16 @@ export default {
   methods: {
     onClose() {
       this.$emit("onClose");
+    },
+    onCheckPhoto(e, index) {
+      console.log(index);
+      // this.imgs = this.poem.imgs.map(item => ({ path: item.url }));
+      // this.curIndex = index;
+      // this.checkPhotoVisible = true;
     }
+    // onDialogClose() {
+    //   this.checkPhotoVisible = false;
+    // }
   }
 };
 </script>
@@ -115,7 +141,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(0, 0, 0, 0.15);
+        background: rgba(0, 0, 0, 0.1);
         margin: 0 6px;
         width: 80px;
         height: 80px;
