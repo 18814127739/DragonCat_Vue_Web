@@ -141,13 +141,12 @@ export default {
         password: this.loginInfo.password || ""
       };
       const res = await api.login(params);
-      Cookies.set("token", res.token, { expires: 1 });
       this.$store.commit("userInfoSuccess", {
         isLogin: true,
         userInfo: res.userInfo
       });
       const toPath = this.$route.query.redirect;
-      this.$router.replace({ name: toPath || "home" });
+      this.$router.replace({ path: toPath || "/" });
       this.$message({
         type: "success",
         message: "登录成功"

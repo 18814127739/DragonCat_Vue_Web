@@ -3,14 +3,34 @@
 </template>
 <script>
 import Cookies from "js-cookie";
+import api from "@services";
 
 export default {
   name: "app",
   mounted() {
-    const loginPath = "/login";
-    if (Cookies.get("token") && window.location.pathname !== loginPath) {
+    if (window.location.pathname !== "/login") {
       // 当cookie没有过期且不为登录页时请求用户信息
-      this.$store.dispatch("getUserInfo");
+      api
+        .getUserInfo()
+        .then(res => {
+          this.$store.commit("userInfoSuccess", {
+            isLogin: true,
+            userInfo: res.userInfo
+          });
+        })
+        .catch(() => {
+          this.$store.commit("userInfoFail");
+          const arr = window.location.pathname.split("/");
+          let redirect = "/";
+          if (arr[1]) {
+            arr.splice(0, 1);
+            redirect = arr.join("/");
+          }
+          this.$router.replace({
+            path: "/login",
+            query: { redirect: window.location.pathname }
+          });
+        });
     }
   }
 };

@@ -13,16 +13,6 @@ const store = new Vuex.Store({
     typeList: [], // 诗歌类型数据
   },
   actions: {
-    async getUserInfo({ commit }) {
-      try {
-        const res = await api.getUserInfo();
-        commit('userInfoSuccess', { isLogin: true, userInfo: res.userInfo });
-        return true;
-      } catch {
-        commit('userInfoFail');
-        return false;
-      }
-    },
     async getThemeList({ commit }) {
       if (this.state.themeList.length < 1) {
         const list = await api.getPoemThemes();

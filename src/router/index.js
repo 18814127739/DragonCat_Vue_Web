@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Cookies from 'js-cookie';
 import { Message } from 'element-ui';
-// import store from '../store';
 
 const Home = () => import('@pages/Home')
 const Poem = () => import('@pages/Poem')
@@ -58,7 +57,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (['home', 'login'].includes(to.name)) {
+  if (['login'].includes(to.name)) {
     next();
   } else if (Cookies.get('token')) {
     next();
@@ -70,7 +69,7 @@ router.beforeEach((to, from, next) => {
   function redirectLogin() {
     next({
       path: '/login',
-      query: { redirect: to.name }
+      query: { redirect: to.fullPath }
     })
   }
 });
