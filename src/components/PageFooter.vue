@@ -2,7 +2,15 @@
   <div class="page-footer">
     <div class="footer-main">
       <span>您好！现在是{{ momentStr }}</span>
-      <span>开发者：dragon_cat</span>
+      <div>
+        <span>开发者：dragon_cat</span>
+        <a
+          href="https://github.com/18814127739/DragonCat_Vue_Web.git"
+          target="_blank"
+        >
+          <i class="icon-github"></i>
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -51,6 +59,9 @@ export default {
     align-items: center;
     justify-content: space-between;
     padding: 0 24px;
+    .icon-github {
+      margin-left: 8px;
+    }
   }
 }
 </style>

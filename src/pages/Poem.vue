@@ -249,7 +249,7 @@ export default {
         overflow-x: hidden;
         overflow-y: auto;
         h3 {
-          color: #6f6f6f;
+          color: #3e3e3e;
           margin-top: 10px;
         }
         .word {

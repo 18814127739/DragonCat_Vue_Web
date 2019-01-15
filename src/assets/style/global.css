@@ -19,7 +19,9 @@ ul {
 .icon-edit-poem,
 .icon-delete-poem,
 .icon-left-arrow,
-.icon-right-arrow {
+.icon-right-arrow,
+.icon-github,
+.icon-education {
   display: inline-block;
   vertical-align: middle;
   font-style: normal;
@@ -51,6 +53,36 @@ ul {
   background: url('../imgs/icon/right-arrow-icon.png') no-repeat center center / cover;
 }
 
+.icon-github {
+  height: 21px;
+  width: 21px;
+  background: url('../imgs/icon/github.png') no-repeat center center / cover;
+}
+
+.icon-education,
+.icon-project-exp,
+.icon-award {
+  height: 22px;
+  width: 22px;
+}
+
+.icon-education {
+  background: url('../imgs/icon/education.png') no-repeat center center / cover;
+}
+
+.icon-project-exp {
+  background: url('../imgs/icon/project-exp.png') no-repeat center center / cover;
+}
+
+.icon-award {
+  background: url('../imgs/icon/award.png') no-repeat center center / cover;
+}
+
+.icon-interest {
+  width: 19px;
+  height: 19px;
+  background: url('../imgs/icon/interest.png') no-repeat center center / cover;
+}
 
 div::-webkit-scrollbar,
 body::-webkit-scrollbar {
