@@ -21,7 +21,10 @@ ul {
 .icon-left-arrow,
 .icon-right-arrow,
 .icon-github,
-.icon-education {
+.icon-education,
+.icon-project-exp,
+.icon-award,
+.icon-skill {
   display: inline-block;
   vertical-align: middle;
   font-style: normal;
@@ -61,7 +64,8 @@ ul {
 
 .icon-education,
 .icon-project-exp,
-.icon-award {
+.icon-award,
+.icon-skill {
   height: 22px;
   width: 22px;
 }
@@ -76,6 +80,10 @@ ul {
 
 .icon-award {
   background: url('../imgs/icon/award.png') no-repeat center center / cover;
+}
+
+.icon-skill {
+  background: url('../imgs/icon/skill2.png') no-repeat center center / cover;
 }
 
 .icon-interest {

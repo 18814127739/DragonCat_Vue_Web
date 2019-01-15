@@ -2,7 +2,7 @@
   <PageContainer>
     <div class="personal-page">
       <div class="left">
-        <div class="baseInfo">
+        <div class="base-info">
           <p>{{this.$store.state.userInfo.userName}}</p>
           <div class="motto">座右铭：以积极的心态面对困难，用坚定的决心迎接挑战。</div>
         </div>
@@ -41,7 +41,12 @@
       </div>
       <div class="right">
         <div class="skills">
-          <p>专业技能</p>
+          <div class="title">
+            <div class="icon-wrap">
+              <i class="icon-skill"></i>
+            </div>
+            专业技能
+          </div>
           <ul>
             <li
               v-for="item in data.skills"
@@ -98,11 +103,18 @@ export default {
   display: flex;
   justify-content: center;
   color: #3e3e3e;
+  background: -webkit-gradient(
+    linear,
+    left 0,
+    right 0,
+    from(#f0fff0),
+    to(#00e5ee)
+  );
   .left {
-    padding: 12px 20px;
-    width: 560px;
-    margin-right: 50px;
-    .baseInfo {
+    padding: 12px 30px;
+    width: 540px;
+    background: white;
+    .base-info {
       p {
         margin-top: 8px;
         font-size: 16px;
@@ -113,24 +125,8 @@ export default {
       margin-top: 30px;
       .title-item {
         display: flex;
-        .icon-wrap {
-          height: 30px;
-          width: 30px;
-          border-radius: 15px;
-          background: -webkit-gradient(
-            linear,
-            left 0,
-            right 0,
-            from(#eed2ee),
-            to(#bfefff)
-          );
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
         .title-wrap {
           flex: 1;
-          margin-left: 8px;
           padding-bottom: 1px;
           background: -webkit-gradient(
             linear,
@@ -154,22 +150,15 @@ export default {
   }
   .right {
     padding: 8px;
-    border-radius: 15px;
-    background: -webkit-gradient(
-      linear,
-      left 0,
-      right 0,
-      to(#eed2ee),
-      from(#bfefff)
-    );
+    background: rgba(37, 70, 101, 0.95);
     .skills {
+      color: white;
       z-index: 1;
-      background: white;
       width: 280px;
-      border-radius: 12px;
       padding: 12px 20px 20px;
-      p {
-        margin-top: 0;
+      .title {
+        display: flex;
+        align-items: center;
         font-size: 16px;
         font-weight: bold;
       }
@@ -178,12 +167,12 @@ export default {
           margin-top: 12px;
           .name {
             color: #3e3e3e;
+            color: white;
             margin-left: 2px;
           }
           .line {
             margin-top: 4px;
-            height: 14px;
-            background: rgba(94, 94, 94, 0.8);
+            height: 12px;
             .cover {
               height: 100%;
               width: 60%;
@@ -194,12 +183,27 @@ export default {
                 from(#eed2ee),
                 to(#bfefff)
               );
-              // background: #bfefff;
             }
           }
         }
       }
     }
+  }
+  .icon-wrap {
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    background: -webkit-gradient(
+      linear,
+      left 0,
+      right 0,
+      from(#eed2ee),
+      to(#bfefff)
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
   }
 }
 </style>
