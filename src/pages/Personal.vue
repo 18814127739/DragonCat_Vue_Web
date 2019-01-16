@@ -1,84 +1,73 @@
 <template>
   <PageContainer>
-    <div class="personal-page">
+    <div class="personal-page bg-f0fff0-00e5ee">
       <div class="left bg-eed2ee-bfefff">
         <div class="content">
           <div class="base-info">
             <p>{{this.$store.state.userInfo.userName}}</p>
             <div class="motto">座右铭：以积极的心态面对困难，用坚定的决心迎接挑战。</div>
           </div>
-          <div class="info-item education">
-            <TitleItem
-              iconClass="icon-education"
-              title="教育背景"
-            />
-            <div class="content-item">
-              <div class="space-between">
-                <div class="date">2013.09 - 2017.07</div>
-                <div class="name">{{data.education.university}}</div>
+          <InfoItem
+            iconClass="icon-education"
+            title="教育背景"
+          >
+            <div class="space-between">
+              <div class="date">2013.09 - 2017.07</div>
+              <div class="name">{{data.education.university}}</div>
+            </div>
+            <div
+              class="space-between"
+              :style="{marginTop:'5px'}"
+            >
+              <div>GPA：{{data.education.GPA}}</div>
+              <div>{{data.education.major}}</div>
+            </div>
+            <div
+              class="mt5"
+              v-if="data.education.courses.length > 0"
+            >
+              <div>主修课程：{{data.education.courses.join(',')}}</div>
+            </div>
+            <div
+              class="mt5"
+              v-if="data.education.pratice"
+            >
+              <div>校内实践：{{data.education.pratice}}</div>
+            </div>
+          </InfoItem>
+          <InfoItem
+            iconClass="icon-project-exp"
+            title="项目经验"
+          >
+          </InfoItem>
+          <InfoItem
+            iconClass="icon-award"
+            title="获奖情况"
+          >
+            <div
+              v-for="(item,index) in data.awards"
+              :key="index"
+            >
+              <div class="space-between mt5">
+                <div class="date">{{item.date}}</div>
+                <div class="name">{{item.name}}</div>
               </div>
               <div
-                class="space-between"
-                :style="{marginTop:'5px'}"
-              >
-                <div>GPA：{{data.education.GPA}}</div>
-                <div>{{data.education.major}}</div>
-              </div>
-              <div
-                class="mt5"
-                v-if="data.education.courses.length > 0"
-              >
-                <div>主修课程：{{data.education.courses.join(',')}}</div>
-              </div>
-              <div
-                class="mt5"
-                v-if="data.education.pratice"
-              >
-                <div>校内实践：{{data.education.pratice}}</div>
-              </div>
+                v-if="item.reason"
+                class="reason mt5"
+              >获奖理由：{{item.reason}}</div>
             </div>
-          </div>
-          <div class="info-item projectExp">
-            <TitleItem
-              iconClass="icon-project-exp"
-              title="项目经验"
-            />
-            <div class="content-item">
-            </div>
-          </div>
-          <div class="info-item awards">
-            <TitleItem
-              iconClass="icon-award"
-              title="获奖情况"
-            />
-            <div class="content-item">
-              <div
-                v-for="(item,index) in data.awards"
-                :key="index"
-              >
-                <div class="space-between mt5">
-                  <div class="date">{{item.date}}</div>
-                  <div class="name">{{item.name}}</div>
-                </div>
-                <div
-                  v-if="item.reason"
-                  class="reason mt5"
-                >获奖理由：{{item.reason}}</div>
-              </div>
-            </div>
-          </div>
-          <div class="info-item interests">
-            <TitleItem
-              iconClass="icon-interest"
-              title="兴趣爱好"
-            />
-            <div class="content-item">
-              <ve-pie
-                height="320px"
-                :data="chartData"
-              ></ve-pie>
-            </div>
-          </div>
+          </InfoItem>
+          <InfoItem
+            iconClass="icon-interest"
+            title="兴趣爱好"
+          >
+            <ve-pie
+              v-if="data.interests.length > 0"
+              height="320px"
+              :data="chartData"
+            ></ve-pie>
+          </InfoItem>
         </div>
       </div>
       <div class="right">
@@ -88,6 +77,7 @@
               <i class="icon-skill"></i>
             </div>
             专业技能
+            <i class="el-icon-edit"></i>
           </div>
           <ul>
             <li
@@ -115,11 +105,11 @@
 
 <script>
 import api from "@services";
-import TitleItem from "@components/TitleItem";
+import InfoItem from "@components/InfoItem";
 
 export default {
   components: {
-    TitleItem
+    InfoItem
   },
   data() {
     return {
@@ -164,13 +154,7 @@ export default {
   padding: 16px 32px 80px;
   display: flex;
   justify-content: center;
-  background: -webkit-gradient(
-    linear,
-    left 0,
-    right 0,
-    from(#f0fff0),
-    to(#00e5ee)
-  );
+  background: white;
   .left {
     padding: 2px;
     .content {
@@ -187,19 +171,14 @@ export default {
         }
       }
       .info-item {
-        margin-top: 30px;
-        .content-item {
-          .space-between {
-            margin-top: 12px;
-            .date,
-            .name {
-              font-weight: bold;
-            }
+        .space-between {
+          margin-top: 12px;
+          .date,
+          .name {
+            font-weight: bold;
           }
         }
-      }
-      .interests {
-        .content-item {
+        .ve-pie {
           margin-top: 12px;
         }
       }
@@ -211,13 +190,21 @@ export default {
     .skills {
       color: white;
       z-index: 1;
-      width: 300px;
-      padding: 12px 20px 20px;
+      width: 260px;
+      padding: 12px 30px 20px;
       .title {
         display: flex;
         align-items: center;
         font-size: 16px;
         font-weight: bold;
+        position: relative;
+        .el-icon-edit {
+          position: absolute;
+          right: 0;
+          cursor: pointer;
+          opacity: 0;
+          transition: opacity 0.7s;
+        }
       }
       ul {
         li {
@@ -241,6 +228,13 @@ export default {
                 border-bottom-right-radius: 6px;
               }
             }
+          }
+        }
+      }
+      &:hover {
+        .title {
+          .el-icon-edit {
+            opacity: 1;
           }
         }
       }

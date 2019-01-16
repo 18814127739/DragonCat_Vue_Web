@@ -141,6 +141,12 @@ export default {
       registerLoading: false
     };
   },
+  mounted() {
+    const account = localStorage.getItem("account");
+    if (account) {
+      this.$set(this.loginInfo, "account", account);
+    }
+  },
   methods: {
     login() {
       const params = {
@@ -151,6 +157,7 @@ export default {
       api
         .login(params)
         .then(res => {
+          localStorage.setItem("account", this.loginInfo.account);
           this.loginLoading = false;
           const toPath = this.$route.query.redirect;
           this.$router.replace({ path: toPath || "/" });

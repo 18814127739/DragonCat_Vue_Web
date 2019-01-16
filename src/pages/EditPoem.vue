@@ -328,6 +328,10 @@ export default {
     }
   }
   .upload-demo {
+    p {
+      margin-top: 0px;
+      line-height: 40px;
+    }
     .upload-btn {
       margin-left: 12px;
     }

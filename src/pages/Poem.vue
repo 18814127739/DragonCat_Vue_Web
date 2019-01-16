@@ -263,6 +263,7 @@ export default {
           right: 30px;
           top: 8px;
           opacity: 0;
+          transition: opacity 0.7s;
         }
         .delete-btn {
           right: 8px;
