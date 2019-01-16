@@ -1,5 +1,5 @@
 <template>
-  <div class="page-bar">
+  <div class="page-bar bg-f0fff0-00e5ee">
     <div class="pull-left">
       <img
         @click="jump('home')"
@@ -64,13 +64,6 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 8px 32px;
-  background: -webkit-gradient(
-    linear,
-    left 0,
-    right 0,
-    from(#f0fff0),
-    to(#00e5ee)
-  );
   .pull-left {
     display: flex;
     align-items: center;

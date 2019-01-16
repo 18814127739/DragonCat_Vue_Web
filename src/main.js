@@ -5,11 +5,13 @@ import store from './store';
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import ElementUI from 'element-ui';
+import VCharts from 'v-charts';
 import { sync } from 'vuex-router-sync';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@assets/style/global.css';
 
 Vue.use(ElementUI);
+Vue.use(VCharts);
 sync(store, router);
 
 Vue.config.productionTip = false

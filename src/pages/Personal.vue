@@ -1,40 +1,82 @@
 <template>
   <PageContainer>
     <div class="personal-page">
-      <div class="left">
-        <div class="base-info">
-          <p>{{this.$store.state.userInfo.userName}}</p>
-          <div class="motto">座右铭：以积极的心态面对困难，用坚定的决心迎接挑战。</div>
-        </div>
-        <div class="info-item">
-          <div class="title-item">
-            <div class="icon-wrap"><i class="icon-education"></i></div>
-            <div class="title-wrap">
-              <div class="title">教育背景</div>
+      <div class="left bg-eed2ee-bfefff">
+        <div class="content">
+          <div class="base-info">
+            <p>{{this.$store.state.userInfo.userName}}</p>
+            <div class="motto">座右铭：以积极的心态面对困难，用坚定的决心迎接挑战。</div>
+          </div>
+          <div class="info-item education">
+            <TitleItem
+              iconClass="icon-education"
+              title="教育背景"
+            />
+            <div class="content-item">
+              <div class="space-between">
+                <div class="date">2013.09 - 2017.07</div>
+                <div class="name">{{data.education.university}}</div>
+              </div>
+              <div
+                class="space-between"
+                :style="{marginTop:'5px'}"
+              >
+                <div>GPA：{{data.education.GPA}}</div>
+                <div>{{data.education.major}}</div>
+              </div>
+              <div
+                class="mt5"
+                v-if="data.education.courses.length > 0"
+              >
+                <div>主修课程：{{data.education.courses.join(',')}}</div>
+              </div>
+              <div
+                class="mt5"
+                v-if="data.education.pratice"
+              >
+                <div>校内实践：{{data.education.pratice}}</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="info-item">
-          <div class="title-item">
-            <div class="icon-wrap"><i class="icon-project-exp"></i></div>
-            <div class="title-wrap">
-              <div class="title">项目经验</div>
+          <div class="info-item projectExp">
+            <TitleItem
+              iconClass="icon-project-exp"
+              title="项目经验"
+            />
+            <div class="content-item">
             </div>
           </div>
-        </div>
-        <div class="info-item">
-          <div class="title-item">
-            <div class="icon-wrap"><i class="icon-award"></i></div>
-            <div class="title-wrap">
-              <div class="title">获奖情况</div>
+          <div class="info-item awards">
+            <TitleItem
+              iconClass="icon-award"
+              title="获奖情况"
+            />
+            <div class="content-item">
+              <div
+                v-for="(item,index) in data.awards"
+                :key="index"
+              >
+                <div class="space-between mt5">
+                  <div class="date">{{item.date}}</div>
+                  <div class="name">{{item.name}}</div>
+                </div>
+                <div
+                  v-if="item.reason"
+                  class="reason mt5"
+                >获奖理由：{{item.reason}}</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="info-item">
-          <div class="title-item">
-            <div class="icon-wrap"><i class="icon-interest"></i></div>
-            <div class="title-wrap">
-              <div class="title">兴趣爱好</div>
+          <div class="info-item interests">
+            <TitleItem
+              iconClass="icon-interest"
+              title="兴趣爱好"
+            />
+            <div class="content-item">
+              <ve-pie
+                height="320px"
+                :data="chartData"
+              ></ve-pie>
             </div>
           </div>
         </div>
@@ -42,7 +84,7 @@
       <div class="right">
         <div class="skills">
           <div class="title">
-            <div class="icon-wrap">
+            <div class="icon-wrap bg-eed2ee-bfefff">
               <i class="icon-skill"></i>
             </div>
             专业技能
@@ -55,11 +97,13 @@
               <div class="name">
                 {{item.name}}
               </div>
-              <div class="line">
-                <div
-                  class="cover"
-                  :style="{width:`${item.degree}%`}"
-                ></div>
+              <div class="line-wrap bg-eed2ee-bfefff">
+                <div class="line">
+                  <div
+                    class="cover bg-eed2ee-bfefff"
+                    :style="{width:`${item.degree}%`}"
+                  ></div>
+                </div>
               </div>
             </li>
           </ul>
@@ -71,13 +115,21 @@
 
 <script>
 import api from "@services";
+import TitleItem from "@components/TitleItem";
 
 export default {
+  components: {
+    TitleItem
+  },
   data() {
     return {
       data: {
         skills: [],
-        education: {}
+        education: {
+          courses: []
+        },
+        awards: [],
+        interests: []
       }
     };
   },
@@ -93,16 +145,25 @@ export default {
       this.data = res;
     }
   },
-  computed: {}
+  computed: {
+    chartData() {
+      return {
+        columns: ["兴趣", "喜欢指数"],
+        rows: this.data.interests.map(item => ({
+          兴趣: item.name,
+          喜欢指数: item.degree
+        }))
+      };
+    }
+  }
 };
 </script>
 
 <style lang="less" scoped>
 .personal-page {
-  padding: 16px 32px 46px;
+  padding: 16px 32px 80px;
   display: flex;
   justify-content: center;
-  color: #3e3e3e;
   background: -webkit-gradient(
     linear,
     left 0,
@@ -111,39 +172,35 @@ export default {
     to(#00e5ee)
   );
   .left {
-    padding: 12px 30px;
-    width: 540px;
-    background: white;
-    .base-info {
-      p {
-        margin-top: 8px;
-        font-size: 16px;
-        font-weight: bold;
+    padding: 2px;
+    .content {
+      padding: 12px 30px;
+      width: 540px;
+      background: white;
+      z-index: 1;
+      .base-info {
+        p {
+          color: #3e3e3e;
+          margin-top: 8px;
+          font-size: 16px;
+          font-weight: bold;
+        }
       }
-    }
-    .info-item {
-      margin-top: 30px;
-      .title-item {
-        display: flex;
-        .title-wrap {
-          flex: 1;
-          padding-bottom: 1px;
-          background: -webkit-gradient(
-            linear,
-            left 0,
-            right 0,
-            from(#eed2ee),
-            to(#bfefff)
-          );
-          .title {
-            display: flex;
-            background: white;
-            height: 100%;
-            z-index: 1;
-            align-items: center;
-            font-size: 16px;
-            font-weight: bold;
+      .info-item {
+        margin-top: 30px;
+        .content-item {
+          .space-between {
+            margin-top: 12px;
+            .date,
+            .name {
+              font-weight: bold;
+            }
           }
+        }
+      }
+      .interests {
+        .content-item {
+          margin-top: 12px;
         }
       }
     }
@@ -154,7 +211,7 @@ export default {
     .skills {
       color: white;
       z-index: 1;
-      width: 280px;
+      width: 300px;
       padding: 12px 20px 20px;
       .title {
         display: flex;
@@ -166,23 +223,23 @@ export default {
         li {
           margin-top: 12px;
           .name {
-            color: #3e3e3e;
             color: white;
             margin-left: 2px;
           }
-          .line {
+          .line-wrap {
             margin-top: 4px;
             height: 12px;
-            .cover {
+            padding: 1px;
+            .line {
               height: 100%;
-              width: 60%;
-              background: -webkit-gradient(
-                linear,
-                left 0,
-                right 0,
-                from(#eed2ee),
-                to(#bfefff)
-              );
+              background: rgba(37, 70, 101, 0.95);
+              z-index: 1;
+              .cover {
+                height: 100%;
+                width: 60%;
+                border-top-right-radius: 6px;
+                border-bottom-right-radius: 6px;
+              }
             }
           }
         }
@@ -193,13 +250,6 @@ export default {
     height: 30px;
     width: 30px;
     border-radius: 15px;
-    background: -webkit-gradient(
-      linear,
-      left 0,
-      right 0,
-      from(#eed2ee),
-      to(#bfefff)
-    );
     display: flex;
     align-items: center;
     justify-content: center;

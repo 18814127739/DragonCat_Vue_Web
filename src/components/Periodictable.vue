@@ -1,6 +1,9 @@
 <template>
   <div id='periodictable'>
-    <div id="container"></div>
+    <div
+      id="container"
+      class="bg-f0fff0-00e5ee"
+    ></div>
     <div id="menu">
       <button
         v-for="item in showType"
@@ -270,13 +273,6 @@ export default {
   #container {
     width: 100%;
     height: 100%;
-    background: -webkit-gradient(
-      linear,
-      left 0,
-      right 0,
-      from(#f0fff0),
-      to(#00e5ee)
-    );
     margin: 0;
     font-family: Helvetica, sans-serif;
     overflow: hidden;

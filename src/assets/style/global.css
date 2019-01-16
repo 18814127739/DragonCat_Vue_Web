@@ -16,6 +16,47 @@ ul {
   margin: 0;
 }
 
+.mt5 {
+  margin-top: 5px;
+}
+
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mt8 {
+  margin-top: 8px;
+}
+
+.mt12 {
+  margin-top: 12px;
+}
+
+.pd8 {
+  padding: 8px;
+}
+
+.pd12 {
+  padding: 12px;
+}
+
+.bg-eed2ee-bfefff {
+  background: -webkit-gradient(linear,
+    left 0,
+    right 0,
+    from(#eed2ee),
+    to(#bfefff));
+}
+
+.bg-f0fff0-00e5ee {
+  background: -webkit-gradient(linear,
+    left 0,
+    right 0,
+    from(#f0fff0),
+    to(#00e5ee));
+}
+
 .icon-edit-poem,
 .icon-delete-poem,
 .icon-left-arrow,
