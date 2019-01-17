@@ -10,9 +10,10 @@
           <InfoItem
             iconClass="icon-education"
             title="教育背景"
+            @onEdit="onEdit('educationDialog')"
           >
             <div class="space-between">
-              <div class="date">2013.09 - 2017.07</div>
+              <div class="date">2013.09-2017.07</div>
               <div class="name">{{data.education.university}}</div>
             </div>
             <div
@@ -38,11 +39,31 @@
           <InfoItem
             iconClass="icon-project-exp"
             title="项目经验"
+            @onEdit="onEdit('projectExp')"
           >
+            <div
+              v-for="item in data.projectExp"
+              :key="item._id"
+            >
+              <div class="space-between mt5">
+                <div class="date">{{`${dateToString(item.beginDate)}-${dateToString(item.endDate)}`}}</div>
+                <div class="name">{{item.name}}</div>
+                <div class="date">{{item.position}}</div>
+              </div>
+              <div class="mt5">
+                <div>项目描述：{{item.description}}</div>
+              </div>
+              <div class="mt5">
+                <div>
+                </div>
+                项目职责：{{item.task}}
+              </div>
+            </div>
           </InfoItem>
           <InfoItem
             iconClass="icon-award"
             title="获奖情况"
+            @onEdit="onEdit('awardsDialog')"
           >
             <div
               v-for="(item,index) in data.awards"
@@ -61,6 +82,7 @@
           <InfoItem
             iconClass="icon-interest"
             title="兴趣爱好"
+            @onEdit="onEdit('interestsDialog')"
           >
             <ve-pie
               v-if="data.interests.length > 0"
@@ -71,33 +93,31 @@
         </div>
       </div>
       <div class="right">
-        <div class="skills">
-          <div class="title">
-            <div class="icon-wrap bg-eed2ee-bfefff">
-              <i class="icon-skill"></i>
-            </div>
-            专业技能
-            <i class="el-icon-edit"></i>
+        <div class="title">
+          <div class="icon-wrap bg-eed2ee-bfefff">
+            <i class="icon-skill"></i>
           </div>
-          <ul>
-            <li
-              v-for="item in data.skills"
-              :key="item._id"
-            >
-              <div class="name">
-                {{item.name}}
-              </div>
-              <div class="line-wrap bg-eed2ee-bfefff">
-                <div class="line">
-                  <div
-                    class="cover bg-eed2ee-bfefff"
-                    :style="{width:`${item.degree}%`}"
-                  ></div>
-                </div>
-              </div>
-            </li>
-          </ul>
+          专业技能
+          <i class="el-icon-edit"></i>
         </div>
+        <ul>
+          <li
+            v-for="item in data.skills"
+            :key="item._id"
+          >
+            <div class="name">
+              {{item.name}}
+            </div>
+            <div class="line-wrap bg-eed2ee-bfefff">
+              <div class="line">
+                <div
+                  class="cover bg-eed2ee-bfefff"
+                  :style="{width:`${item.degree}%`}"
+                ></div>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </PageContainer>
@@ -105,6 +125,7 @@
 
 <script>
 import api from "@services";
+import moment from "moment";
 import InfoItem from "./components/InfoItem";
 
 export default {
@@ -118,22 +139,17 @@ export default {
         education: {
           courses: []
         },
+        projectExp: [],
         awards: [],
         interests: []
-      }
+      },
+      educationDialog: false,
+      awardsDialog: false,
+      interestsDialog: false
     };
   },
   mounted() {
     this.getHomePageInfo();
-  },
-  methods: {
-    async getHomePageInfo() {
-      const params = {
-        userId: this.$store.state.userInfo._id
-      };
-      const res = await api.getHomePageInfo(params);
-      this.data = res;
-    }
   },
   computed: {
     chartData() {
@@ -144,6 +160,28 @@ export default {
           喜欢指数: item.degree
         }))
       };
+    }
+  },
+  methods: {
+    async getHomePageInfo() {
+      const params = {
+        userId: this.$store.state.userInfo._id
+      };
+      const res = await api.getHomePageInfo(params);
+      this.data = res;
+    },
+    dateToString(date) {
+      return moment(date).format("YYYY.MM.DD");
+    },
+    onEdit(infoType) {
+      if ((infoType = "projectExp")) {
+        this.$router.push({ name: "edit-project-exp" });
+      } else {
+        this[infoType] = true;
+      }
+    },
+    onClose(infoType) {
+      this[infoType] = false;
     }
   }
 };
@@ -179,6 +217,7 @@ export default {
         .space-between {
           margin-top: 12px;
           .date,
+          .position,
           .name {
             font-weight: bold;
           }
@@ -190,57 +229,53 @@ export default {
     }
   }
   .right {
-    padding: 8px;
+    padding: 20px 30px;
     background: rgba(37, 70, 101, 0.95);
-    .skills {
-      color: white;
-      z-index: 1;
-      width: 260px;
-      padding: 12px 30px 20px;
-      .title {
-        display: flex;
-        align-items: center;
-        font-size: 16px;
-        font-weight: bold;
-        position: relative;
-        .el-icon-edit {
-          position: absolute;
-          right: 0;
-          cursor: pointer;
-          opacity: 0;
-          transition: opacity 0.7s;
-        }
+    color: white;
+    width: 260px;
+    .title {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      font-weight: bold;
+      position: relative;
+      .el-icon-edit {
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.7s;
       }
-      ul {
-        li {
-          margin-top: 12px;
-          .name {
-            color: white;
-            margin-left: 2px;
-          }
-          .line-wrap {
-            margin-top: 4px;
-            height: 12px;
-            padding: 1px;
-            .line {
+    }
+    ul {
+      li {
+        margin-top: 12px;
+        .name {
+          color: white;
+          margin-left: 2px;
+        }
+        .line-wrap {
+          margin-top: 4px;
+          height: 12px;
+          padding: 1px;
+          .line {
+            height: 100%;
+            background: rgba(37, 70, 101, 0.95);
+            z-index: 1;
+            .cover {
               height: 100%;
-              background: rgba(37, 70, 101, 0.95);
-              z-index: 1;
-              .cover {
-                height: 100%;
-                width: 60%;
-                border-top-right-radius: 6px;
-                border-bottom-right-radius: 6px;
-              }
+              width: 60%;
+              border-top-right-radius: 6px;
+              border-bottom-right-radius: 6px;
             }
           }
         }
       }
-      &:hover {
-        .title {
-          .el-icon-edit {
-            opacity: 1;
-          }
+    }
+    &:hover {
+      .title {
+        .el-icon-edit {
+          opacity: 1;
         }
       }
     }

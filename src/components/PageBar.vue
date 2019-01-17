@@ -23,6 +23,7 @@
 <script>
 const menuRouteMap = {
   "personal-page": 0,
+  "edit-project-exp": 0,
   "poems-with-future": 1,
   "new-poem": 1,
   "edit-poem": 1,

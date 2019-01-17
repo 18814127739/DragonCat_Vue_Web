@@ -263,7 +263,7 @@ export default {
       }));
       const params = { userId: this.$store.state.userInfo._id, ...this.form };
       if (this.form._id) {
-        await api.editPoem(params);
+        await api.updatePoem(params);
       } else {
         await api.addPoem(params);
       }

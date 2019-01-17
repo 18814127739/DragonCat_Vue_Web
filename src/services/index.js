@@ -13,6 +13,9 @@ export default class {
   // 获取个人主页信息
   static getHomePageInfo = params => api.get('/api/getHomePageInfo', params);
 
+  // 修改个人主页信息  专业技能/教育背景/项目经验/获奖情况/兴趣爱好
+  static updateHomePageInfo = params => api.post('/api/updateHomePageInfo', params);
+
   // 获取诗列表
   static getPoemList = params => api.get('/api/getPoemList', params);
 
@@ -26,7 +29,7 @@ export default class {
   static addPoem = params => api.post('/api/addPoem', params);
 
   // 编辑诗篇
-  static editPoem = params => api.post('/api/editPoem', params);
+  static updatePoem = params => api.post('/api/updatePoem', params);
 
   // 添加诗篇
   static deletePoem = params => api.post('/api/deletePoem', params);

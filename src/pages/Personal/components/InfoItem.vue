@@ -5,13 +5,14 @@
       <div class="title-wrap bg-eed2ee-bfefff">
         <div class="title">
           {{title}}
-          <i class="el-icon-edit"></i>
+          <i
+            class="el-icon-edit"
+            @click="onEdit"
+          ></i>
         </div>
       </div>
     </div>
-    <div class="content-item">
-      <slot></slot>
-    </div>
+    <slot></slot>
   </div>
 </template>
 <script>
@@ -24,6 +25,11 @@ export default {
     title: {
       type: String,
       default: ""
+    }
+  },
+  methods: {
+    onEdit() {
+      this.$emit("onEdit");
     }
   }
 };
