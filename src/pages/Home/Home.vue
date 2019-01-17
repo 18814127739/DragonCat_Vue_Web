@@ -6,9 +6,9 @@
   </PageContainer>
 </template>
 <script>
-import Periodictable from "@components/Periodictable";
-import SkyBox from "@components/SkyBox";
-import ThreeEarth from "@components/ThreeEarth";
+import Periodictable from "./components/Periodictable";
+import SkyBox from "./components/SkyBox";
+import ThreeEarth from "./components/ThreeEarth";
 
 export default {
   name: "home",

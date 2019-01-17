@@ -21,7 +21,7 @@ import * as THREE from "three";
 import TWEEN from "tween";
 import CSS3DRenderer from "@assets/libs/threejslibs/CSS3DRenderer";
 import TrackballControls from "@assets/libs/threejslibs/TrackballControls";
-import constants from "../constants";
+import constants from "@constants";
 
 const table = constants.table;
 

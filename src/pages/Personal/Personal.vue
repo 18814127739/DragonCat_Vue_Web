@@ -105,7 +105,7 @@
 
 <script>
 import api from "@services";
-import InfoItem from "@components/InfoItem";
+import InfoItem from "./components/InfoItem";
 
 export default {
   components: {
@@ -155,6 +155,11 @@ export default {
   display: flex;
   justify-content: center;
   background: white;
+  .left,
+  .right {
+    -webkit-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
   .left {
     padding: 2px;
     .content {

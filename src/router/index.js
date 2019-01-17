@@ -3,12 +3,12 @@ import VueRouter from 'vue-router'
 import Cookies from 'js-cookie';
 import { Message } from 'element-ui';
 
-const Home = () => import('@pages/Home')
-const Poem = () => import('@pages/Poem')
-const EditPoem = () => import('@pages/EditPoem')
-const Personal = () => import('@pages/Personal')
-const PhotoWall = () => import('@pages/PhotoWall')
-const ITNote = () => import('@pages/ITNote')
+const Home = () => import('@pages/Home/Home')
+const Poem = () => import('@pages/Poem/Poem')
+const EditPoem = () => import('@pages/Poem/EditPoem')
+const Personal = () => import('@pages/Personal/Personal')
+const PhotoWall = () => import('@pages/PhotoWall/PhotoWall')
+const ITNote = () => import('@pages/ITNote/ITNote')
 const Login = () => import('@pages/Login')
 
 Vue.use(VueRouter);

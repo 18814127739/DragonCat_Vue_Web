@@ -1,7 +1,10 @@
 <template>
   <PageContainer class="photo-wall">
     <div class="wrapper">
-      <div id="container" class="bg-f0fff0-00e5ee"></div>
+      <div
+        id="container"
+        class="bg-f0fff0-00e5ee"
+      ></div>
       <div id="menu">
         <button
           v-for="item in showType"
@@ -27,9 +30,9 @@ import * as THREE from "three";
 import TWEEN from "tween";
 import CSS3DRenderer from "@assets/libs/threejslibs/CSS3DRenderer";
 import TrackballControls from "@assets/libs/threejslibs/TrackballControls";
-import CheckPhotoDialog from "@components/CheckPhotoDialog";
-import VerifyDialog from "@components/VerifyDialog";
-import constants from "../constants";
+import CheckPhotoDialog from "./components/CheckPhotoDialog";
+import VerifyDialog from "./components/VerifyDialog";
+import constants from "@constants";
 
 const table = constants.table;
 const photos = constants.photos;

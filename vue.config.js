@@ -6,6 +6,7 @@ module.exports = {
       alias: {
         '@assets': `${__dirname}/src/assets`,
         '@components': `${__dirname}/src/components`,
+        '@constants': `${__dirname}/src/constants`,
         '@pages': `${__dirname}/src/pages`,
         '@router': `${__dirname}/src/router`,
         '@services': `${__dirname}/src/services`,

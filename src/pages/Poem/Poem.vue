@@ -113,7 +113,7 @@
 
 <script>
 import api from "@services";
-import CheckPoemDialog from "@components/CheckPoemDialog";
+import CheckPoemDialog from "./components/CheckPoemDialog";
 
 export default {
   name: "poem",
