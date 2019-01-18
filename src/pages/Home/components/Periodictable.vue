@@ -30,10 +30,10 @@ export default {
     return {
       curType: "table",
       showType: [
-        { id: "table", name: "TABLE" },
-        { id: "sphere", name: "SPHERE" },
-        { id: "helix", name: "HELIX" },
-        { id: "grid", name: "GRID" }
+        { id: "table", name: "悬浮墙" },
+        { id: "sphere", name: "水晶球" },
+        { id: "helix", name: "螺旋塔" },
+        { id: "grid", name: "展览厅" }
       ]
     };
   },

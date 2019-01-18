@@ -205,12 +205,21 @@ export default {
         }
         .el-icon-delete {
           cursor: pointer;
+          opacity: 0;
+          transition: opacity 0.7s;
         }
       }
       .row {
         display: flex;
         .el-form-item {
           flex: 1;
+        }
+      }
+      &:hover {
+        .item-bar {
+          .el-icon-delete {
+            opacity: 1;
+          }
         }
       }
     }

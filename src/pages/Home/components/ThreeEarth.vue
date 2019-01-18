@@ -1,5 +1,11 @@
 <template>
-  <div id='three-earth'></div>
+  <div class="three-earth">
+    <div id='three-earth'></div>
+    <div class="word1">保护地球</div>
+    <div class="word2">人人有责</div>
+    <div class="word3">好好学习</div>
+    <div class="word4">天天向上</div>
+  </div>
 </template>
 
 <script>
@@ -81,9 +87,70 @@ export default {
 </script>
 
 <style lang="less">
-#three-earth {
-  width: 100%;
-  height: 620px;
+.three-earth {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  #three-earth {
+    width: 100%;
+    height: 620px;
+  }
+  .word1,
+  .word2,
+  .word3,
+  .word4 {
+    position: absolute;
+    font-size: 62px;
+    font-weight: bold;
+    color: black;
+    backface-visibility: hidden;
+  }
+  .word1 {
+    animation: rotate1 15s linear infinite;
+  }
+  .word2 {
+    animation: rotate2 15s linear infinite;
+  }
+  .word3 {
+    animation: rotate3 15s linear infinite;
+  }
+  .word4 {
+    animation: rotate4 15s linear infinite;
+  }
+}
+
+@keyframes rotate1 {
+  from {
+    transform: rotateY(0deg) translateZ(270px);
+  }
+  to {
+    transform: rotateY(-360deg) translateZ(270px);
+  }
+}
+@keyframes rotate2 {
+  from {
+    transform: rotateY(90deg) translateZ(270px);
+  }
+  to {
+    transform: rotateY(-270deg) translateZ(270px);
+  }
+}
+@keyframes rotate3 {
+  from {
+    transform: rotateY(180deg) translateZ(270px);
+  }
+  to {
+    transform: rotateY(-180deg) translateZ(270px);
+  }
+}
+@keyframes rotate4 {
+  from {
+    transform: rotateY(270deg) translateZ(270px);
+  }
+  to {
+    transform: rotateY(-90deg) translateZ(270px);
+  }
 }
 </style>
 
