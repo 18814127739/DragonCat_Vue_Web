@@ -137,14 +137,14 @@ export default {
       this.projects.splice(index, 1);
     },
     async onSubmit() {
+      if (!this.isValid(this.projects)) {
+        return;
+      }
       const projectExp = this.projects.map(item => ({
         ...item,
         beginDate: item.date[0],
         endDate: item.date[1]
       }));
-      if (!this.isValid(projectExp)) {
-        return;
-      }
       const params = {
         userId: this.$store.state.userInfo._id,
         type: "projectExp",
@@ -157,10 +157,10 @@ export default {
       });
       this.$router.replace({ name: "personal-page" });
     },
-    isValid(projectExp) {
+    isValid(projects) {
       let flag = true;
       const inValidProject = [];
-      projectExp.forEach((item, index) => {
+      projects.forEach((item, index) => {
         if (
           !(
             item.name &&

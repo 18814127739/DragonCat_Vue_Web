@@ -70,7 +70,7 @@
       <el-form-item label="主修课程">
         <el-input
           type="textarea"
-          rows="4"
+          rows="3"
           maxlength="200"
           placeholder="不超过200字"
           v-model="data.courses"
@@ -79,7 +79,7 @@
       <el-form-item label="校内实践">
         <el-input
           type="textarea"
-          rows="4"
+          rows="3"
           maxlength="200"
           placeholder="不超过200字"
           v-model="data.pratice"
@@ -192,7 +192,7 @@ export default {
   }
   .el-dialog__body {
     padding: 10px 20px;
-    max-height: 450px;
+    max-height: 430px;
     overflow: auto;
   }
   .row {
