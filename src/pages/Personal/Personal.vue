@@ -135,7 +135,29 @@
             :key="index"
           >
             <div class="name">
-              {{item.name}}
+              <span>{{item.name}}</span>
+              <i
+                class="el-icon-delete"
+                @click="onRemoveSkills($event, 'skills', index)"
+              />
+            </div>
+            <el-slider v-model="item.degree"></el-slider>
+          </li>
+          <li
+            v-for="(item, index) in newSkills"
+            :key="index"
+          >
+            <div class="name">
+              <el-input
+                v-model="item.name"
+                maxlength="20"
+                placeholder="技能名称(不超过20字)"
+                size="mini"
+              />
+              <i
+                class="el-icon-delete"
+                @click="onRemoveSkills($event, 'newSkills', index)"
+              />
             </div>
             <el-slider v-model="item.degree"></el-slider>
           </li>
@@ -186,6 +208,7 @@ export default {
         interests: []
       },
       skills: [], // 专业技能表单数据
+      newSkills: [], // 编辑时新增的技能信息
       isEditSkills: false,
       educationDialog: false,
       awardsDialog: false,
@@ -230,23 +253,26 @@ export default {
       this[infoType] = false;
     },
     onAddSkills() {
-      this.skills.push({});
+      this.newSkills.push({});
     },
     onCancelEditSkills() {
       this.isEditSkills = false;
+      this.newSkills = [];
       this.skills = this.data.skills.map(item => ({ ...item }));
     },
-    onRemoveSkills(e, index) {
-      this.skills.splice(index, 1);
+    // 编辑时根据type判断移除的是已有技能 还是 新增技能
+    onRemoveSkills(e, type, index) {
+      this[type].splice(index, 1);
     },
     async onUpdateSkills() {
-      if (!this.isSkillsValid(this.skills)) {
+      const skills = [...this.skills, ...this.newSkills];
+      if (!this.isSkillsValid(skills)) {
         return;
       }
       const params = {
         userId: this.$store.state.userInfo._id,
         type: "skills",
-        data: this.skills
+        data: skills
       };
       await api.updateHomePageInfo(params);
       this.isEditSkills = false;
@@ -258,7 +284,7 @@ export default {
     },
     isSkillsValid(skills) {
       let flag = true;
-      this.skills.forEach(item => {
+      skills.forEach(item => {
         if (!item.name) {
           this.$message({
             type: "warning",
@@ -347,7 +373,18 @@ export default {
         margin-top: 12px;
         .name {
           color: white;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           margin-left: 2px;
+          .el-input {
+            width: 150px;
+          }
+          .el-icon-delete {
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.7s;
+          }
         }
         .line-wrap {
           margin-top: 6px;
@@ -362,6 +399,13 @@ export default {
               width: 60%;
               border-top-right-radius: 6px;
               border-bottom-right-radius: 6px;
+            }
+          }
+        }
+        &:hover {
+          .name {
+            .el-icon-delete {
+              opacity: 1;
             }
           }
         }
