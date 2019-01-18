@@ -123,7 +123,7 @@
               <div class="line">
                 <div
                   class="cover bg-eed2ee-bfefff"
-                  :style="{width:`${item.degree}%`}"
+                  :style="{width:`${item.degree + 2}%`}"
                 ></div>
               </div>
             </div>
@@ -333,7 +333,7 @@ export default {
       }
       .info-item {
         .space-between {
-          margin-top: 12px;
+          margin-top: 14px;
           .date,
           .position,
           .name {
@@ -390,6 +390,7 @@ export default {
           margin-top: 6px;
           height: 12px;
           padding: 1px;
+          overflow: hidden;
           .line {
             height: 100%;
             background: rgba(37, 70, 101, 0.95);

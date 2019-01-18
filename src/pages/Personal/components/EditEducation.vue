@@ -115,9 +115,14 @@ export default {
       }
     }
   },
+  watch: {
+    education: function(value) {
+      this.data = { ...value };
+    }
+  },
   data() {
     return {
-      data: { ...this.education },
+      data: {},
       rules: {
         university: [
           { required: true, message: "请填写大学名称", trigger: "blur" },
