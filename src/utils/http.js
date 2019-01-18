@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
-import { Message } from 'element-ui'
+import { Message } from 'element-ui';
+// import vueRouter from '@router';
 
 function request(url, params, type) {
   let newUrl = url;

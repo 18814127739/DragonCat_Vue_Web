@@ -28,14 +28,19 @@
           >
             <div class="row">
               <el-form-item label="项目名称">
-                <div class="row">
-                  <el-input
+                <el-input
+                  size="mini"
+                  maxlength="20"
+                  placeholder="不超过20字"
+                  v-model="item.name"
+                ></el-input>
+                <!-- <el-input
                     size="mini"
                     maxlength="20"
                     placeholder="不超过20字"
+                    @input="onChange($event, index, item, 'name')"
                     v-model="item.name"
-                  ></el-input>
-                </div>
+                  ></el-input> -->
               </el-form-item>
               <el-form-item label="担任岗位">
                 <el-input
@@ -115,23 +120,18 @@ export default {
         date: [item.beginDate, item.endDate]
       }));
       if (this.projects.length === 0) {
-        this.projects.push({
-          name: "",
-          position: "",
-          description: "",
-          task: "",
-          date: []
-        });
+        this.projects.push({});
       }
     },
+    // onChange(value, index, item, key) {
+    //   if (key === "name" && value.length > 20) {
+    //     console.log(value.slice(0, 20));
+    //     console.log({ ...item, [key]: value.slice(0, 20) });
+    //     this.$set(this.projects, index, { ...item, [key]: value.slice(0, 20) });
+    //   }
+    // },
     onAdd() {
-      this.projects.push({
-        name: "",
-        position: "",
-        description: "",
-        task: "",
-        date: []
-      });
+      this.projects.push({});
     },
     onRemove(e, index) {
       this.projects.splice(index, 1);
@@ -150,7 +150,6 @@ export default {
         type: "projectExp",
         data: projectExp
       };
-      console.log(params);
       await api.updateHomePageInfo(params);
       this.$message({
         type: "success",
@@ -204,7 +203,7 @@ export default {
       }
     }
     .project-item {
-      margin-bottom: 10px;
+      padding-bottom: 12px;
       .el-form-item {
         margin-bottom: 12px;
       }

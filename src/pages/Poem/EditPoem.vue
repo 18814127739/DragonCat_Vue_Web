@@ -16,6 +16,8 @@
               <el-input
                 v-model="form.title"
                 size="small"
+                maxlength="20"
+                placeholder="不超过20字"
               ></el-input>
             </el-form-item>
             <div class="row">
@@ -23,6 +25,8 @@
                 <el-input
                   v-model="form.author"
                   size="small"
+                  maxlength="10"
+                  placeholder="不超过10字"
                 ></el-input>
               </el-form-item>
               <el-form-item
@@ -77,7 +81,9 @@
               <el-input
                 class="content-input"
                 v-model="form.content[index]"
+                placeholder="不超过100字"
                 size="small"
+                maxlength="100"
               ></el-input>
               <i
                 v-if="index > 2"

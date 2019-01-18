@@ -13,7 +13,9 @@
             @onEdit="onEdit('educationDialog')"
           >
             <div class="space-between">
-              <div class="date">2013.09-2017.07</div>
+              <div class="date">
+                {{`${dateToString(data.education.beginDate)}-${dateToString(data.education.endDate)}`}}
+              </div>
               <div class="name">{{data.education.university}}</div>
             </div>
             <div
@@ -25,9 +27,9 @@
             </div>
             <div
               class="mt5"
-              v-if="data.education.courses.length > 0"
+              v-if="data.education.courses"
             >
-              <div>主修课程：{{data.education.courses.join(',')}}</div>
+              <div>主修课程：{{data.education.courses}}</div>
             </div>
             <div
               class="mt5"
@@ -120,6 +122,12 @@
         </ul>
       </div>
     </div>
+    <EditEducation
+      :visible="educationDialog"
+      :education="data.education"
+      @refreshInfo="getHomePageInfo"
+      @onClose="onClose('educationDialog')"
+    />
   </PageContainer>
 </template>
 
@@ -127,18 +135,18 @@
 import api from "@services";
 import moment from "moment";
 import InfoItem from "./components/InfoItem";
+import EditEducation from "./components/EditEducation";
 
 export default {
   components: {
-    InfoItem
+    InfoItem,
+    EditEducation
   },
   data() {
     return {
       data: {
         skills: [],
-        education: {
-          courses: []
-        },
+        education: {},
         projectExp: [],
         awards: [],
         interests: []
@@ -174,7 +182,7 @@ export default {
       return moment(date).format("YYYY.MM.DD");
     },
     onEdit(infoType) {
-      if ((infoType = "projectExp")) {
+      if (infoType === "projectExp") {
         this.$router.push({ name: "edit-project-exp" });
       } else {
         this[infoType] = true;
