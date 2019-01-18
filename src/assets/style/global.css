@@ -57,6 +57,14 @@ ul {
     to(#00e5ee));
 }
 
+.el-form-item {
+  margin-bottom: 12px;
+}
+
+.el-slider__runway {
+  margin: 10px 0;
+}
+
 .icon-edit-poem,
 .icon-delete-poem,
 .icon-left-arrow,

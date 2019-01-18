@@ -129,44 +129,30 @@
             </div>
           </li>
         </ul>
-        <div
-          v-if="isEditSkills"
-          class="edit-skills-pane"
-        >
-          <div
-            class="skill-item"
-            v-for="(item,index) in skills"
+        <ul v-if="isEditSkills">
+          <li
+            v-for="(item, index) in skills"
             :key="index"
           >
-            <div class="row">
-              <div class="label">{{`技能 ${index + 1}`}}</div>
-              <el-input
-                v-model="item.name"
-                maxlength="20"
-                placeholder="不超过20字"
-                size="mini"
-              />
-              <i
-                class="el-icon-delete"
-                @click="onRemoveSkills($event, index)"
-              ></i>
+            <div class="name">
+              {{item.name}}
             </div>
-            <div class="row">
-              <div class="label">熟练度</div>
-              <el-slider v-model="item.degree"></el-slider>
-            </div>
-          </div>
-          <div class="btn-group">
-            <el-button
-              size="mini"
-              type="primary"
-              @click="onUpdateSkills"
-            >保存</el-button>
-            <el-button
-              size="mini"
-              @click="onCancelEditSkills"
-            >取消</el-button>
-          </div>
+            <el-slider v-model="item.degree"></el-slider>
+          </li>
+        </ul>
+        <div
+          v-if="isEditSkills"
+          class="btn-group"
+        >
+          <el-button
+            size="mini"
+            type="primary"
+            @click="onUpdateSkills"
+          >保存</el-button>
+          <el-button
+            size="mini"
+            @click="onCancelEditSkills"
+          >取消</el-button>
         </div>
       </div>
     </div>
@@ -228,7 +214,7 @@ export default {
       const res = await api.getHomePageInfo(params);
       this.data = res;
       this.data.skills.sort((a, b) => b.degree - a.degree);
-      this.skills = [...this.data.skills];
+      this.skills = this.data.skills.map(item => ({ ...item }));
     },
     dateToString(date) {
       return moment(date).format("YYYY.MM.DD");
@@ -248,7 +234,7 @@ export default {
     },
     onCancelEditSkills() {
       this.isEditSkills = false;
-      this.skills = [...this.data.skills];
+      this.skills = this.data.skills.map(item => ({ ...item }));
     },
     onRemoveSkills(e, index) {
       this.skills.splice(index, 1);
@@ -364,7 +350,7 @@ export default {
           margin-left: 2px;
         }
         .line-wrap {
-          margin-top: 4px;
+          margin-top: 6px;
           height: 12px;
           padding: 1px;
           .line {
@@ -381,43 +367,9 @@ export default {
         }
       }
     }
-    .edit-skills-pane {
-      margin-top: 20px;
-      .skill-item {
-        margin-bottom: 14px;
-        .row {
-          display: flex;
-          align-items: center;
-          position: relative;
-          .label {
-            width: 60px;
-            text-align: left;
-          }
-          .el-slider {
-            flex: 1;
-          }
-          .el-input {
-            width: 120px;
-          }
-          .el-icon-delete {
-            cursor: pointer;
-            position: absolute;
-            right: 0;
-            opacity: 0;
-            transition: opacity 0.7s;
-          }
-        }
-        &:hover {
-          .row {
-            .el-icon-delete {
-              opacity: 1;
-            }
-          }
-        }
-      }
-      .btn-group {
-        margin-left: 60px;
-      }
+    .btn-group {
+      margin-top: 12px;
+      text-align: center;
     }
     &:hover {
       .title {
