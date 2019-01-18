@@ -34,13 +34,6 @@
                   placeholder="不超过20字"
                   v-model="item.name"
                 ></el-input>
-                <!-- <el-input
-                    size="mini"
-                    maxlength="20"
-                    placeholder="不超过20字"
-                    @input="onChange($event, index, item, 'name')"
-                    v-model="item.name"
-                  ></el-input> -->
               </el-form-item>
               <el-form-item label="担任岗位">
                 <el-input
@@ -109,6 +102,7 @@ export default {
   mounted() {
     this.getProjectExp();
   },
+  watch: {},
   methods: {
     async getProjectExp() {
       const params = {
@@ -123,13 +117,6 @@ export default {
         this.projects.push({});
       }
     },
-    // onChange(value, index, item, key) {
-    //   if (key === "name" && value.length > 20) {
-    //     console.log(value.slice(0, 20));
-    //     console.log({ ...item, [key]: value.slice(0, 20) });
-    //     this.$set(this.projects, index, { ...item, [key]: value.slice(0, 20) });
-    //   }
-    // },
     onAdd() {
       this.projects.push({});
     },

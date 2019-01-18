@@ -100,9 +100,18 @@
             <i class="icon-skill"></i>
           </div>
           专业技能
-          <i class="el-icon-edit"></i>
+          <i
+            class="el-icon-edit"
+            v-if="!isEditSkills"
+            @click="isEditSkills = true"
+          ></i>
+          <i
+            v-if="isEditSkills"
+            class="el-icon-plus"
+            @click="onAddSkills"
+          ></i>
         </div>
-        <ul>
+        <ul v-if="!isEditSkills">
           <li
             v-for="item in data.skills"
             :key="item._id"
@@ -120,6 +129,45 @@
             </div>
           </li>
         </ul>
+        <div
+          v-if="isEditSkills"
+          class="edit-skills-pane"
+        >
+          <div
+            class="skill-item"
+            v-for="(item,index) in skills"
+            :key="index"
+          >
+            <div class="row">
+              <div class="label">{{`技能 ${index + 1}`}}</div>
+              <el-input
+                v-model="item.name"
+                maxlength="20"
+                placeholder="不超过20字"
+                size="mini"
+              />
+              <i
+                class="el-icon-delete"
+                @click="onRemoveSkills($event, index)"
+              ></i>
+            </div>
+            <div class="row">
+              <div class="label">熟练度</div>
+              <el-slider v-model="item.degree"></el-slider>
+            </div>
+          </div>
+          <div class="btn-group">
+            <el-button
+              size="mini"
+              type="primary"
+              @click="onUpdateSkills"
+            >保存</el-button>
+            <el-button
+              size="mini"
+              @click="onCancelEditSkills"
+            >取消</el-button>
+          </div>
+        </div>
       </div>
     </div>
     <EditEducation
@@ -151,6 +199,8 @@ export default {
         awards: [],
         interests: []
       },
+      skills: [], // 专业技能表单数据
+      isEditSkills: false,
       educationDialog: false,
       awardsDialog: false,
       interestsDialog: false
@@ -177,6 +227,8 @@ export default {
       };
       const res = await api.getHomePageInfo(params);
       this.data = res;
+      this.data.skills.sort((a, b) => b.degree - a.degree);
+      this.skills = [...this.data.skills];
     },
     dateToString(date) {
       return moment(date).format("YYYY.MM.DD");
@@ -190,6 +242,52 @@ export default {
     },
     onClose(infoType) {
       this[infoType] = false;
+    },
+    onAddSkills() {
+      this.skills.push({});
+    },
+    onCancelEditSkills() {
+      this.isEditSkills = false;
+      this.skills = [...this.data.skills];
+    },
+    onRemoveSkills(e, index) {
+      this.skills.splice(index, 1);
+    },
+    async onUpdateSkills() {
+      if (!this.isSkillsValid(this.skills)) {
+        return;
+      }
+      const params = {
+        userId: this.$store.state.userInfo._id,
+        type: "skills",
+        data: this.skills
+      };
+      await api.updateHomePageInfo(params);
+      this.isEditSkills = false;
+      this.$message({
+        type: "success",
+        message: "技能信息已更新"
+      });
+      this.getHomePageInfo();
+    },
+    isSkillsValid(skills) {
+      let flag = true;
+      this.skills.forEach(item => {
+        if (!item.name) {
+          this.$message({
+            type: "warning",
+            message: "请完善技能信息"
+          });
+          flag = false;
+        } else if (!item.degree) {
+          this.$message({
+            type: "warning",
+            message: "技能熟练度不能为0"
+          });
+          flag = false;
+        }
+      });
+      return flag;
     }
   }
 };
@@ -247,10 +345,13 @@ export default {
       font-size: 16px;
       font-weight: bold;
       position: relative;
-      .el-icon-edit {
+      .el-icon-edit,
+      .el-icon-plus {
         position: absolute;
         right: 0;
         cursor: pointer;
+      }
+      .el-icon-edit {
         opacity: 0;
         transition: opacity 0.7s;
       }
@@ -278,6 +379,44 @@ export default {
             }
           }
         }
+      }
+    }
+    .edit-skills-pane {
+      margin-top: 20px;
+      .skill-item {
+        margin-bottom: 14px;
+        .row {
+          display: flex;
+          align-items: center;
+          position: relative;
+          .label {
+            width: 60px;
+            text-align: left;
+          }
+          .el-slider {
+            flex: 1;
+          }
+          .el-input {
+            width: 120px;
+          }
+          .el-icon-delete {
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            opacity: 0;
+            transition: opacity 0.7s;
+          }
+        }
+        &:hover {
+          .row {
+            .el-icon-delete {
+              opacity: 1;
+            }
+          }
+        }
+      }
+      .btn-group {
+        margin-left: 60px;
       }
     }
     &:hover {
