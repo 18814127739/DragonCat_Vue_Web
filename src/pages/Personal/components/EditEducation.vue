@@ -173,15 +173,21 @@ export default {
       this.$emit("onClose");
     },
     isValid(data) {
-      let flag = true;
       if (!(data.university && data.major && data.beginDate && data.endDate)) {
-        flag = false;
         this.$message({
           type: "warning",
           message: "请完善必填信息"
         });
+        return false;
       }
-      return flag;
+      if (Date.parse(data.beginDate) > Date.parse(data.endDate)) {
+        this.$message({
+          type: "warning",
+          message: "入学时间不得早于毕业时间"
+        });
+        return false;
+      }
+      return true;
     },
     onClose() {
       this.$emit("onClose");

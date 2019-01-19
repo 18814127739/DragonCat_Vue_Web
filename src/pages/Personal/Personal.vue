@@ -12,30 +12,32 @@
             title="教育背景"
             @onEdit="onEdit('educationDialog')"
           >
-            <div class="space-between">
-              <div class="date">
-                {{`${dateToString(data.education.beginDate)}-${dateToString(data.education.endDate)}`}}
+            <div v-if="data.education && data.education.university">
+              <div class="space-between">
+                <div class="date">
+                  {{`${dateToString(data.education.beginDate)}-${dateToString(data.education.endDate)}`}}
+                </div>
+                <div class="name">{{data.education.university}}</div>
               </div>
-              <div class="name">{{data.education.university}}</div>
-            </div>
-            <div
-              class="space-between"
-              :style="{marginTop:'5px'}"
-            >
-              <div>GPA：{{data.education.GPA}}</div>
-              <div>{{data.education.major}}</div>
-            </div>
-            <div
-              class="mt5"
-              v-if="data.education.courses"
-            >
-              <div>主修课程：{{data.education.courses}}</div>
-            </div>
-            <div
-              class="mt5"
-              v-if="data.education.pratice"
-            >
-              <div>校内实践：{{data.education.pratice}}</div>
+              <div
+                class="space-between"
+                :style="{marginTop:'5px'}"
+              >
+                <div>GPA：{{data.education.GPA}}</div>
+                <div>{{data.education.major}}</div>
+              </div>
+              <div
+                class="mt5"
+                v-if="data.education.courses"
+              >
+                <div>主修课程：{{data.education.courses}}</div>
+              </div>
+              <div
+                class="mt5"
+                v-if="data.education.pratice"
+              >
+                <div>校内实践：{{data.education.pratice}}</div>
+              </div>
             </div>
           </InfoItem>
           <InfoItem
@@ -43,22 +45,24 @@
             title="项目经验"
             @onEdit="onEdit('projectExp')"
           >
-            <div
-              v-for="item in data.projectExp"
-              :key="item._id"
-            >
-              <div class="space-between mt5">
-                <div class="date">{{`${dateToString(item.beginDate)}-${dateToString(item.endDate)}`}}</div>
-                <div class="name">{{item.name}}</div>
-                <div class="date">{{item.position}}</div>
-              </div>
-              <div class="mt5">
-                <div>项目描述：{{item.description}}</div>
-              </div>
-              <div class="mt5">
-                <div>
+            <div v-if="data.projectExp">
+              <div
+                v-for="item in data.projectExp"
+                :key="item._id"
+              >
+                <div class="space-between mt5">
+                  <div class="date">{{`${dateToString(item.beginDate,'YYYY.MM')}-${dateToString(item.endDate,'YYYY.MM')}`}}</div>
+                  <div class="name">{{item.name}}</div>
+                  <div class="date">{{item.position}}</div>
                 </div>
-                项目职责：{{item.task}}
+                <div class="mt5">
+                  <div>项目描述：{{item.description}}</div>
+                </div>
+                <div class="mt5">
+                  <div>
+                  </div>
+                  项目职责：{{item.task}}
+                </div>
               </div>
             </div>
           </InfoItem>
@@ -67,18 +71,20 @@
             title="获奖情况"
             @onEdit="onEdit('awardsDialog')"
           >
-            <div
-              v-for="(item,index) in data.awards"
-              :key="index"
-            >
-              <div class="space-between mt5">
-                <div class="date">{{item.date}}</div>
-                <div class="name">{{item.name}}</div>
-              </div>
+            <div v-if="data.awards">
               <div
-                v-if="item.reason"
-                class="reason mt5"
-              >获奖理由：{{item.reason}}</div>
+                v-for="(item,index) in data.awards"
+                :key="index"
+              >
+                <div class="space-between mt5">
+                  <div class="date">{{item.date}}</div>
+                  <div class="name">{{item.name}}</div>
+                </div>
+                <div
+                  v-if="item.reason"
+                  class="reason mt5"
+                >获奖理由：{{item.reason}}</div>
+              </div>
             </div>
           </InfoItem>
           <InfoItem
@@ -87,7 +93,7 @@
             @onEdit="onEdit('interestsDialog')"
           >
             <ve-pie
-              v-if="data.interests.length > 0"
+              v-if="data.interests && data.interests.length > 0"
               height="320px"
               :data="chartData"
             ></ve-pie>
@@ -184,6 +190,12 @@
       @refreshInfo="getHomePageInfo"
       @onClose="onClose('educationDialog')"
     />
+    <EditInterests
+      :visible="interestsDialog"
+      :interests="data.interests"
+      @refreshInfo="getHomePageInfo"
+      @onClose="onClose('interestsDialog')"
+    />
   </PageContainer>
 </template>
 
@@ -192,24 +204,20 @@ import api from "@services";
 import moment from "moment";
 import InfoItem from "./components/InfoItem";
 import EditEducation from "./components/EditEducation";
+import EditInterests from "./components/EditInterests";
 
 export default {
   components: {
     InfoItem,
-    EditEducation
+    EditEducation,
+    EditInterests
   },
   data() {
     return {
-      data: {
-        skills: [],
-        education: {},
-        projectExp: [],
-        awards: [],
-        interests: []
-      },
+      data: {},
       skills: [], // 专业技能表单数据
       newSkills: [], // 编辑时新增的技能信息
-      isEditSkills: false,
+      isEditSkills: false, // 技能编辑状态
       educationDialog: false,
       awardsDialog: false,
       interestsDialog: false
@@ -239,8 +247,8 @@ export default {
       this.data.skills.sort((a, b) => b.degree - a.degree);
       this.skills = this.data.skills.map(item => ({ ...item }));
     },
-    dateToString(date) {
-      return moment(date).format("YYYY.MM.DD");
+    dateToString(date, format) {
+      return moment(date).format(format || "YYYY.MM.DD");
     },
     onEdit(infoType) {
       if (infoType === "projectExp") {

@@ -103,7 +103,7 @@ export default {
     position: absolute;
     font-size: 62px;
     font-weight: bold;
-    color: black;
+    color: #00e5ee;
     backface-visibility: hidden;
   }
   .word1 {

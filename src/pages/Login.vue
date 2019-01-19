@@ -165,10 +165,6 @@ export default {
             isLogin: true,
             userInfo: res.userInfo
           });
-          this.$message({
-            type: "success",
-            message: "登录成功"
-          });
         })
         .catch(() => {
           this.loginLoading = false;
