@@ -43,7 +43,7 @@
           <InfoItem
             iconClass="icon-project-exp"
             title="项目经验"
-            @onEdit="onEdit('projectExp')"
+            @onEdit="onEdit('projectExp', 'edit-project-exp')"
           >
             <div v-if="data.projectExp">
               <div
@@ -69,7 +69,7 @@
           <InfoItem
             iconClass="icon-award"
             title="获奖情况"
-            @onEdit="onEdit('awardsDialog')"
+            @onEdit="onEdit('awards', 'edit-awards')"
           >
             <div v-if="data.awards">
               <div
@@ -219,7 +219,6 @@ export default {
       newSkills: [], // 编辑时新增的技能信息
       isEditSkills: false, // 技能编辑状态
       educationDialog: false,
-      awardsDialog: false,
       interestsDialog: false
     };
   },
@@ -250,9 +249,9 @@ export default {
     dateToString(date, format) {
       return moment(date).format(format || "YYYY.MM.DD");
     },
-    onEdit(infoType) {
-      if (infoType === "projectExp") {
-        this.$router.push({ name: "edit-project-exp" });
+    onEdit(infoType, pathName) {
+      if (["projectExp", "awards"].includes(infoType)) {
+        this.$router.push({ name: pathName });
       } else {
         this[infoType] = true;
       }

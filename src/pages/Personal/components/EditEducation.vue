@@ -190,6 +190,8 @@ export default {
       return true;
     },
     onClose() {
+      // 重新初始化数据
+      this.data = { ...this.education };
       this.$emit("onClose");
     }
   }

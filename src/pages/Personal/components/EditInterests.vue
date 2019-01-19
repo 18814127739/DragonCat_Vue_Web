@@ -3,40 +3,43 @@
     class="edit-interests"
     title="兴趣爱好"
     :visible="visible"
-    width="50%"
+    width="30%"
     @close="onClose"
   >
     <div class="row">
-      <div>兴趣</div>
-      <div>喜欢指数</div>
-      <i class="el-icon-plus" />
+      <div class="name">兴趣</div>
+      <div class="degree">喜欢指数</div>
+      <i
+        class="el-icon-plus"
+        @click="onAdd"
+      />
     </div>
-    <el-form
+    <div
+      class="row"
       v-for="(item,index) in data"
       :key="index"
-      :model="item"
-      label-width="60px"
     >
-      <div class="row">
-        <el-form-item
-          label=""
-          prop="major"
-        >
-          <el-input
-            size="mini"
-            maxlength="30"
-            placeholder="不超过20字"
-            v-model="item.name"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="">
-          <el-input
-            size="mini"
-            v-model="item.degree"
-          ></el-input>
-        </el-form-item>
+      <div class="name">
+        <el-input
+          size="mini"
+          maxlength="30"
+          placeholder="不超过20字"
+          v-model="item.name"
+        ></el-input>
       </div>
-    </el-form>
+      <div class="degree">
+        <el-input
+          size="mini"
+          maxlength="3"
+          placeholder="1~999"
+          v-model="item.degree"
+        ></el-input>
+      </div>
+      <i
+        class="el-icon-delete"
+        @click="onRemove($event, index)"
+      />
+    </div>
     <span
       slot="footer"
       class="dialog-footer"
@@ -77,8 +80,14 @@ export default {
     }
   },
   methods: {
+    onAdd() {
+      this.data.push({});
+    },
+    onRemove(e, index) {
+      this.data.splice(index, 1);
+    },
     async onConfirm() {
-      if (!this.isValid(this.data)) {
+      if (!this.isValid()) {
         return;
       }
       const params = {
@@ -94,24 +103,28 @@ export default {
       this.$emit("refreshInfo");
       this.$emit("onClose");
     },
-    isValid(data) {
-      if (!(data.university && data.major && data.beginDate && data.endDate)) {
-        this.$message({
-          type: "warning",
-          message: "请完善必填信息"
-        });
-        return false;
-      }
-      if (Date.parse(data.beginDate) > Date.parse(data.endDate)) {
-        this.$message({
-          type: "warning",
-          message: "入学时间不得早于毕业时间"
-        });
-        return false;
-      }
-      return true;
+    isValid() {
+      let flag = true;
+      this.data.forEach(item => {
+        if (!item.name || !item.degree) {
+          this.$message({
+            type: "warning",
+            message: "请完善兴趣信息"
+          });
+          flag = false;
+        } else if (!/^[1-9][0-9]{1,2}$/.test(item.degree)) {
+          this.$message({
+            type: "warning",
+            message: "喜欢指数不符合输入要求"
+          });
+          flag = false;
+        }
+      });
+      return flag;
     },
     onClose() {
+      // 重新初始化数据
+      this.data = this.interests.map(item => ({ ...item }));
       this.$emit("onClose");
     }
   }
@@ -131,8 +144,28 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    .el-form-item {
+    padding: 6px;
+    .name {
+      flex: 4;
+    }
+    .degree {
+      margin-left: 12px;
+      flex: 4;
+    }
+    .el-icon-plus,
+    .el-icon-delete {
       flex: 1;
+      text-align: right;
+      cursor: pointer;
+    }
+    .el-icon-delete {
+      opacity: 0;
+      transition: opacity 0.7s;
+    }
+    &:hover {
+      .el-icon-delete {
+        opacity: 1;
+      }
     }
   }
 }

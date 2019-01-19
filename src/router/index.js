@@ -8,6 +8,7 @@ const Poem = () => import('@pages/Poem/Poem')
 const EditPoem = () => import('@pages/Poem/EditPoem')
 const Personal = () => import('@pages/Personal/Personal')
 const EditProjectExp = () => import('@pages/Personal/EditProjectExp')
+const EditAwards = () => import('@pages/Personal/EditAwards')
 const PhotoWall = () => import('@pages/PhotoWall/PhotoWall')
 const ITNote = () => import('@pages/ITNote/ITNote')
 const Login = () => import('@pages/Login')
@@ -43,6 +44,11 @@ const routes = [
     name: 'edit-project-exp',
     path: '/edit-project-exp',
     component: EditProjectExp,
+  }, {
+    name: 'edit-awards',
+    path: '/edit-awards',
+    component: EditAwards,
+
   }, {
     name: 'IT-note',
     path: '/IT-note',
