@@ -77,7 +77,7 @@
                 :key="index"
               >
                 <div class="space-between mt5">
-                  <div class="date">{{item.date}}</div>
+                  <div class="date">{{dateToString(item.date)}}</div>
                   <div class="name">{{item.name}}</div>
                 </div>
                 <div
@@ -285,7 +285,7 @@ export default {
       this.isEditSkills = false;
       this.$message({
         type: "success",
-        message: "技能信息已更新"
+        message: "信息修改成功"
       });
       this.getHomePageInfo();
     },

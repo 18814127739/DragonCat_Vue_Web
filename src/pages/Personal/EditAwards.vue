@@ -24,34 +24,41 @@
           </div>
           <el-form
             :model="item"
+            :rules="rules"
             label-width="80px"
           >
-            <el-form-item label="奖项名称">
-              <el-input
-                size="mini"
-                maxlength="20"
-                placeholder="不超过20字"
-                v-model="item.name"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="获奖时间">
-              <el-date-picker
-                v-model="item.date"
-                type="daterange"
-                size="mini"
-                range-separator="-"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
+            <div class="row">
+              <el-form-item
+                label="奖项名称"
+                prop="name"
               >
-              </el-date-picker>
-              <el-checkbox v-model="checked">时间段</el-checkbox>
-            </el-form-item>
+                <el-input
+                  size="mini"
+                  maxlength="30"
+                  placeholder="不超过30字"
+                  v-model="item.name"
+                ></el-input>
+              </el-form-item>
+              <el-form-item
+                label="获奖时间"
+                prop="date"
+              >
+                <el-date-picker
+                  v-if="!item.isRangeDate"
+                  v-model="item.date"
+                  type="date"
+                  size="mini"
+                  placeholder="选择日期"
+                >
+                </el-date-picker>
+              </el-form-item>
+            </div>
             <el-form-item label="获奖理由">
               <el-input
                 type="textarea"
-                maxlength="200"
-                placeholder="不超过200字"
-                v-model="item.description"
+                maxlength="100"
+                placeholder="不超过100字"
+                v-model="item.reason"
               ></el-input>
             </el-form-item>
           </el-form>
@@ -79,7 +86,11 @@ import api from "@services";
 export default {
   data() {
     return {
-      awards: []
+      awards: [],
+      rules: {
+        name: [{ required: true, message: "请填写奖项名称", trigger: "blur" }],
+        date: [{ required: true, message: "请填写获奖日期", trigger: "blur" }]
+      }
     };
   },
   mounted() {
@@ -104,7 +115,7 @@ export default {
       this.awards.splice(index, 1);
     },
     async onSubmit() {
-      if (!this.isValid(this.awards)) {
+      if (!this.isValid()) {
         return;
       }
       const params = {
@@ -119,11 +130,11 @@ export default {
       });
       this.$router.replace({ name: "personal-page" });
     },
-    isValid(awards) {
+    isValid() {
       let flag = true;
       const inValidAward = [];
-      awards.forEach((item, index) => {
-        if (!(item.name && item.date && item.date.length > 0)) {
+      this.awards.forEach((item, index) => {
+        if (!(item.name && item.date)) {
           flag = false;
           inValidAward.push(`奖项${index + 1}`);
         }
@@ -131,7 +142,7 @@ export default {
       if (!flag) {
         this.$message({
           type: "warning",
-          message: `请完善${inValidAward.join(",")}的信息`
+          message: `请完善${inValidAward.join(",")}的必填项信息`
         });
       }
       return flag;
@@ -158,10 +169,14 @@ export default {
     }
     .award-item {
       padding-bottom: 12px;
+      .row {
+        display: flex;
+        align-items: center;
+      }
       .el-form-item {
-        margin-bottom: 12px;
-        .el-input {
-          width: 250px;
+        flex: 1;
+        .el-date-editor.el-input {
+          width: 100%;
         }
       }
       .item-bar {
