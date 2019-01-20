@@ -23,17 +23,15 @@
         <el-input
           size="mini"
           maxlength="30"
-          placeholder="不超过20字"
+          placeholder="1-20字"
           v-model="item.name"
         ></el-input>
       </div>
       <div class="degree">
-        <el-input
-          size="mini"
-          maxlength="3"
-          placeholder="1~999"
+        <el-slider
+          :min="10"
           v-model="item.degree"
-        ></el-input>
+        ></el-slider>
       </div>
       <i
         class="el-icon-delete"
@@ -112,10 +110,10 @@ export default {
             message: "请完善兴趣信息"
           });
           flag = false;
-        } else if (!/^[1-9][0-9]{1,2}$/.test(item.degree)) {
+        } else if (!/^[1-9][0-9]{0,2}$/.test(item.degree)) {
           this.$message({
             type: "warning",
-            message: "喜欢指数不符合输入要求"
+            message: "请输入1~999的正整数"
           });
           flag = false;
         }

@@ -17,7 +17,7 @@
                 v-model="form.title"
                 size="small"
                 maxlength="20"
-                placeholder="不超过20字"
+                placeholder="1-20字"
               ></el-input>
             </el-form-item>
             <div class="row">
@@ -26,7 +26,7 @@
                   v-model="form.author"
                   size="small"
                   maxlength="10"
-                  placeholder="不超过10字"
+                  placeholder="1-10字"
                 ></el-input>
               </el-form-item>
               <el-form-item
@@ -81,7 +81,7 @@
               <el-input
                 class="content-input"
                 v-model="form.content[index]"
-                placeholder="不超过100字"
+                placeholder="1-100字"
                 size="small"
                 maxlength="100"
               ></el-input>
@@ -128,7 +128,7 @@
             <span
               slot="tip"
               class="el-upload__tip"
-            >（只能上传jpg / jpeg / png文件，且不超过5M）</span>
+            >（只能上传jpg / jpeg / png文件，且不大于5M）</span>
           </el-upload>
         </el-col>
       </el-row>
@@ -212,7 +212,7 @@ export default {
       this.form.content.splice(index, 1);
     },
     onBeforeUpload(file) {
-      const isLimit = file.size <= 5242880; // 不超过5M
+      const isLimit = file.size <= 5242880; // 5M
       if (!isLimit) {
         this.$message({
           type: "warning",

@@ -18,7 +18,7 @@
         <el-input
           size="mini"
           maxlength="30"
-          placeholder="不超过30字"
+          placeholder="1-30字"
           v-model="data.university"
         ></el-input>
       </el-form-item>
@@ -30,7 +30,7 @@
           <el-input
             size="mini"
             maxlength="30"
-            placeholder="不超过30字"
+            placeholder="1-30字"
             v-model="data.major"
           ></el-input>
         </el-form-item>
@@ -72,7 +72,7 @@
           type="textarea"
           rows="3"
           maxlength="200"
-          placeholder="不超过200字"
+          placeholder="1-200字"
           v-model="data.courses"
         ></el-input>
       </el-form-item>
@@ -81,7 +81,7 @@
           type="textarea"
           rows="3"
           maxlength="200"
-          placeholder="不超过200字"
+          placeholder="1-200字"
           v-model="data.pratice"
         ></el-input>
       </el-form-item>

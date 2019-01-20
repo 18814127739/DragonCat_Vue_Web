@@ -31,7 +31,7 @@
                 <el-input
                   size="mini"
                   maxlength="20"
-                  placeholder="不超过20字"
+                  placeholder="1-20字"
                   v-model="item.name"
                 ></el-input>
               </el-form-item>
@@ -39,7 +39,7 @@
                 <el-input
                   size="mini"
                   maxlength="20"
-                  placeholder="不超过20字"
+                  placeholder="1-20字"
                   v-model="item.position"
                 ></el-input>
               </el-form-item>
@@ -59,7 +59,7 @@
               <el-input
                 type="textarea"
                 maxlength="200"
-                placeholder="不超过200字"
+                placeholder="1-200字"
                 v-model="item.description"
               ></el-input>
             </el-form-item>
@@ -67,7 +67,7 @@
               <el-input
                 type="textarea"
                 maxlength="200"
-                placeholder="不超过200字"
+                placeholder="1-200字"
                 v-model="item.task"
               ></el-input>
             </el-form-item>

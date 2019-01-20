@@ -147,7 +147,10 @@
                 @click="onRemoveSkills($event, 'skills', index)"
               />
             </div>
-            <el-slider v-model="item.degree"></el-slider>
+            <el-slider
+              :min="1"
+              v-model="item.degree"
+            ></el-slider>
           </li>
           <li
             v-for="(item, index) in newSkills"
@@ -157,7 +160,7 @@
               <el-input
                 v-model="item.name"
                 maxlength="20"
-                placeholder="技能名称(不超过20字)"
+                placeholder="技能名称(1-20字)"
                 size="mini"
               />
               <i
@@ -165,7 +168,10 @@
                 @click="onRemoveSkills($event, 'newSkills', index)"
               />
             </div>
-            <el-slider v-model="item.degree"></el-slider>
+            <el-slider
+              :min="1"
+              v-model="item.degree"
+            ></el-slider>
           </li>
         </ul>
         <div
@@ -296,12 +302,6 @@ export default {
           this.$message({
             type: "warning",
             message: "请完善技能信息"
-          });
-          flag = false;
-        } else if (!item.degree) {
-          this.$message({
-            type: "warning",
-            message: "技能熟练度不能为0"
           });
           flag = false;
         }
