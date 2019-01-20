@@ -325,7 +325,7 @@ export default {
   }
 
   button {
-    color: #6f6f6f;
+    color: #5f5f5f;
     background: transparent;
     outline: 1px solid rgba(155, 48, 255, 0.35);
     border: 0px;

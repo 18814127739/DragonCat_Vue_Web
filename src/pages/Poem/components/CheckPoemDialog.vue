@@ -117,7 +117,6 @@ export default {
     .content {
       text-align: center;
       .title {
-        color: #6f6f6f;
         margin-bottom: 12px;
         font-size: 18px;
       }

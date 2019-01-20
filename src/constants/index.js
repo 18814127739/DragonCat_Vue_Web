@@ -119,17 +119,17 @@ const table = [
   "Og", "Oganesson", "(294)", 18, 7
 ];
 
-const photos = new Array(144).fill(0).map((item, index) => {
-  const x = index % 16 + 2;
-  const y = parseInt(1 + index / 16);
-  return {
-    path: require(`../assets/imgs/photos/${index % 144}.jpg`),
-    x,
-    y
-  }
-});
+// const photos = new Array(144).fill(0).map((item, index) => {
+//   const x = index % 16 + 2;
+//   const y = parseInt(1 + index / 16);
+//   return {
+//     url: require(`../assets/imgs/photos/${index % 144}.jpg`),
+//     x,
+//     y
+//   }
+// });
 
 export default {
   table,
-  photos,
+  // photos,
 }

@@ -24,7 +24,8 @@
         </div>
       </div>
       <img
-        :src="photos[curIndex].path"
+        v-if="photos[curIndex]"
+        :src="photos[curIndex].url"
         alt=""
       />
     </div>

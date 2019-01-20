@@ -10,6 +10,7 @@ const Personal = () => import('@pages/Personal/Personal')
 const EditProjectExp = () => import('@pages/Personal/EditProjectExp')
 const EditAwards = () => import('@pages/Personal/EditAwards')
 const PhotoWall = () => import('@pages/PhotoWall/PhotoWall')
+const PhotoWallManage = () => import('@pages/PhotoWall/Manage')
 const ITNote = () => import('@pages/ITNote/ITNote')
 const Login = () => import('@pages/Login')
 
@@ -57,7 +58,11 @@ const routes = [
     name: 'photo-wall',
     path: '/photo-wall',
     component: PhotoWall,
-  },
+  }, {
+    name: 'photo-wall-manage',
+    path: '/photo-wall-manage',
+    component: PhotoWallManage,
+  }
 ]
 
 const router = new VueRouter({

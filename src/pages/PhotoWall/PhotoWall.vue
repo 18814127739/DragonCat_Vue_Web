@@ -5,7 +5,22 @@
         id="container"
         class="bg-f0fff0-00e5ee"
       ></div>
-      <div id="menu">
+      <div
+        v-if="isBlank"
+        class="guide"
+      >
+        <p class="flex-center">照片墙空空如也(ಥ﹏ಥ)</p>
+        <p class="flex-center">去记录我的美好时光</p>
+        <div
+          class="camera-wrap flex-center"
+          @click="onManage"
+        >
+          <div class="camera flex-center">
+            <img src="../../assets/imgs/pics/camera.png" />
+          </div>
+        </div>
+      </div>
+      <div class="menu">
         <button
           v-for="item in showType"
           :key="item.id"
@@ -14,6 +29,10 @@
           @click="curType = item.id"
         >{{item.name}}</button>
       </div>
+      <i
+        class="el-icon-edit"
+        @click="onManage"
+      />
     </div>
     <CheckPhotoDialog
       :photos="photos"
@@ -30,12 +49,11 @@ import * as THREE from "three";
 import TWEEN from "tween";
 import CSS3DRenderer from "@assets/libs/threejslibs/CSS3DRenderer";
 import TrackballControls from "@assets/libs/threejslibs/TrackballControls";
+import getPhotosWithXY from "@utils/getPhotosWithXY";
+import constants from "@constants";
+import api from "@services";
 import CheckPhotoDialog from "./components/CheckPhotoDialog";
 import VerifyDialog from "./components/VerifyDialog";
-import constants from "@constants";
-
-const table = constants.table;
-const photos = constants.photos;
 
 export default {
   components: {
@@ -44,7 +62,8 @@ export default {
   },
   data() {
     return {
-      photos: photos,
+      photos: [],
+      isBlank: false, // 是否没有照片
       curIndex: 0,
       curType: "table",
       showType: [
@@ -57,9 +76,26 @@ export default {
     };
   },
   mounted() {
-    this.initPeriodictable();
+    this.getData();
   },
   methods: {
+    async getData() {
+      const params = {
+        userId: this.$store.state.userInfo._id
+      };
+      const res = await api.getPhotoWallInfo(params);
+      this.photos = getPhotosWithXY(res.photos);
+
+      // 渲染照片墙
+      if (this.photos.length > 0) {
+        this.initPhotoWall();
+      } else {
+        this.isBlank = true;
+      }
+    },
+    onManage() {
+      this.$router.push({ name: "photo-wall-manage" });
+    },
     onCheckPhoto(index) {
       this.curIndex = index;
       this.visible = true;
@@ -67,7 +103,7 @@ export default {
     onClose() {
       this.visible = false;
     },
-    initPeriodictable() {
+    initPhotoWall() {
       const that = this;
       let camera, scene, renderer;
       let controls;
@@ -83,11 +119,10 @@ export default {
       function init() {
         camera = new THREE.PerspectiveCamera(40, width / height, 1, 10000);
         camera.position.z = 3000;
-
         scene = new THREE.Scene();
 
         // table
-        for (let i = 0; i < photos.length; i++) {
+        for (let i = 0; i < that.photos.length; i++) {
           const element = document.createElement("div");
           element.onclick = function() {
             that.onCheckPhoto(i);
@@ -97,7 +132,7 @@ export default {
 
           const img = document.createElement("img");
           img.className = "img";
-          img.src = photos[i].path;
+          img.src = that.photos[i].url;
           element.appendChild(img);
 
           var object = new THREE.CSS3DObject(element);
@@ -109,8 +144,8 @@ export default {
           objects.push(object);
 
           var object = new THREE.Object3D();
-          object.position.x = photos[i].x * 140 - 1330;
-          object.position.y = -(photos[i].y * 180) + 990; // 周期表的y方向
+          object.position.x = that.photos[i].x * 140 - 1330;
+          object.position.y = -(that.photos[i].y * 180) + 990; // 周期表的y方向
 
           targets.table.push(object);
         }
@@ -171,13 +206,11 @@ export default {
         }
 
         //
-
         renderer = new THREE.CSS3DRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById("container").appendChild(renderer.domElement);
 
         //
-
         controls = new THREE.TrackballControls(camera, renderer.domElement);
         controls.rotateSpeed = 1.5;
         controls.minDistance = 500;
@@ -223,7 +256,6 @@ export default {
         transform(targets.table, 2000);
 
         //
-
         window.addEventListener("resize", onWindowResize, false);
       }
 
@@ -297,14 +329,45 @@ export default {
       font-family: Helvetica, sans-serif;
       overflow: hidden;
     }
-
-    #menu {
+    .menu {
       position: absolute;
       top: 10px;
       width: 100%;
       text-align: center;
     }
-
+    .el-icon-edit {
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 32px;
+      line-height: 27px;
+    }
+    .guide {
+      position: absolute;
+      top: 18%;
+      width: 100%;
+      p {
+        font-size: 32px;
+        color: #9b30ff;
+        line-height: 57px;
+      }
+      .camera-wrap {
+        width: 100%;
+        .camera {
+          cursor: pointer;
+          box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+          height: 60px;
+          width: 60px;
+          border-radius: 30px;
+          border: 1px solid #9b30ff;
+          background: inherit;
+          transition: background 0.5s;
+          &:hover {
+            background: rgba(255, 255, 255, 0.75);
+          }
+        }
+      }
+    }
     .element {
       display: flex;
       align-items: center;
@@ -320,14 +383,12 @@ export default {
         width: 100%;
       }
     }
-
     .element:hover {
       box-shadow: 0px 0px 12px rgba(255, 0, 98, 0.5);
       border: 1px solid rgba(127, 255, 255, 0.75);
     }
-
     button {
-      color: #6f6f6f;
+      color: #5f5f5f;
       background: transparent;
       outline: 1px solid rgba(155, 48, 255, 0.35);
       border: 0px;
@@ -345,4 +406,3 @@ export default {
   }
 }
 </style>
-

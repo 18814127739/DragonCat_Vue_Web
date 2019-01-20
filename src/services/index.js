@@ -34,9 +34,12 @@ export default class {
   // 添加诗篇
   static deletePoem = params => api.post('/api/deletePoem', params);
 
+  // 获取照片墙信息
+  static getPhotoWallInfo = params => api.get('/api/getPhotoWallInfo', params);
+
+  // 修改照片墙信息
+  static updatePhotoWallInfo = params => api.post('/api/updatePhotoWallInfo', params);
+
   // 查看照片墙身份验证
   static checkPhotoVerify = params => api.post('/api/checkPhotoVerify', params);
-
-  // 获取个人介绍信息
-  static getIntroduction = params => api.get('/api/getIntroduction', params);
 }

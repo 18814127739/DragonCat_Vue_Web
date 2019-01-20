@@ -93,7 +93,7 @@ export default {
     a {
       font-size: 14px;
       margin-left: 24px;
-      color: #6f6f6f;
+      color: #5f5f5f;
       text-decoration: none;
       padding: 12px 0;
     }
