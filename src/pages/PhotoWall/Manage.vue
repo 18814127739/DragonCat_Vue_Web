@@ -8,7 +8,6 @@
         :before-upload="onBeforeUpload"
         :on-success="onSuccess"
         :on-exceed="onExceed"
-        :on-remove="onRemove"
         :on-error="onError"
         :limit="144"
         :show-file-list="false"
@@ -31,6 +30,12 @@
           v-for="(item,index) in fileList"
           :key="index"
         >
+          <div
+            class="btn-delete flex-center"
+            @click="onDelete($event, index)"
+          >
+            <i class="icon-error" />
+          </div>
           <img
             :src="item.url"
             alt=""
@@ -95,6 +100,9 @@ export default {
       });
       this.$router.push({ name: "photo-wall" });
     },
+    onDelete(e, index) {
+      this.fileList.splice(index, 1);
+    },
     onClear() {
       this.$confirm(`确认清空所有照片吗？`, "提示", {
         type: "warning"
@@ -135,7 +143,7 @@ export default {
     },
     onSuccess(res, file, fileList) {
       const num = fileList.length;
-      let delay = 400;
+      let delay = 500;
       if (101 < num && num <= 144) {
         delay = 1500;
       } else if (80 < num && num <= 100) {
@@ -143,9 +151,9 @@ export default {
       } else if (60 < num && num <= 80) {
         delay = 800;
       } else if (40 < num && num <= 60) {
-        delay = 600;
+        delay = 700;
       } else if (num <= 40) {
-        delay = 400;
+        delay = 500;
       }
       // 一次上传多张照片时，由于异步原因导致onSuccess回调中的状态存在异常状况
       // 暂时通过延时0.7秒来进行处理
@@ -156,9 +164,6 @@ export default {
           this.$message.error(res.message);
         }
       }, delay);
-    },
-    onRemove(file, fileList) {
-      this.fileList = fileList;
     },
     onExceed() {
       this.$message.warning("最多上传144张照片");
@@ -189,15 +194,32 @@ export default {
     flex-wrap: wrap;
     .photo-wrap {
       width: 140px;
-      height: 100px;
+      height: 160px;
       display: flex;
-      align-items: center;
       overflow: hidden;
       justify-content: center;
       margin: 6px;
+      position: relative;
       img {
-        height: 100%;
         width: auto;
+        height: 100%;
+      }
+      .btn-delete {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: white;
+        height: 18px;
+        width: 18px;
+        border-radius: 9px;
+        opacity: 0;
+        transition: opacity 0.4s;
+        cursor: pointer;
+      }
+      &:hover {
+        .btn-delete {
+          opacity: 1;
+        }
       }
     }
   }

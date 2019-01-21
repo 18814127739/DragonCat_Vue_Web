@@ -76,7 +76,8 @@ ul {
 .icon-education,
 .icon-project-exp,
 .icon-award,
-.icon-skill {
+.icon-skill,
+.icon-error {
   display: inline-block;
   vertical-align: middle;
   font-style: normal;
@@ -136,6 +137,15 @@ ul {
 
 .icon-skill {
   background: url('../imgs/icon/skill2.png') no-repeat center center / cover;
+}
+
+.icon-error {
+  height: 16px;
+  width: 16px;
+}
+
+.icon-error {
+  background: url('../imgs/icon/error.png') no-repeat center center / cover;
 }
 
 .icon-interest {

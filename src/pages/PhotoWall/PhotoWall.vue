@@ -144,8 +144,8 @@ export default {
           objects.push(object);
 
           var object = new THREE.Object3D();
-          object.position.x = that.photos[i].x * 140 - 1330;
-          object.position.y = -(that.photos[i].y * 180) + 990; // 周期表的y方向
+          object.position.x = that.photos[i].x * 140 - 1330; // 140为element宽度+20
+          object.position.y = -(that.photos[i].y * 180) + 990; // 周期表的y方向， 180为element高度+20
 
           targets.table.push(object);
         }
@@ -370,7 +370,7 @@ export default {
     }
     .element {
       display: flex;
-      align-items: center;
+      justify-content: center;
       width: 120px;
       height: 160px;
       box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
@@ -379,8 +379,8 @@ export default {
       cursor: pointer;
       overflow: hidden;
       img {
-        height: auto;
-        width: 100%;
+        width: auto;
+        height: 100%;
       }
     }
     .element:hover {

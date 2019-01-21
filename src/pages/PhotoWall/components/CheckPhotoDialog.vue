@@ -114,13 +114,13 @@ export default {
         cursor: pointer;
         height: 40px;
         width: 40px;
-        background: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.5);
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 20px;
         &:hover {
-          background: rgba(255, 255, 255, 0.7);
+          background: rgba(255, 255, 255, 0.8);
         }
       }
       img {
