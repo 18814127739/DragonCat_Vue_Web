@@ -363,7 +363,7 @@ export default {
           background: inherit;
           transition: background 0.5s;
           &:hover {
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.9);
           }
         }
       }

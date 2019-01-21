@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 import { Message } from 'element-ui';
-// import vueRouter from '@router';
 
 function request(url, params, type) {
   let newUrl = url;
@@ -27,7 +26,6 @@ function request(url, params, type) {
     }
   }
 
-  // fetch本身不支持设置请求超时时间
   // 通过Promise.race()比较两个Promise谁先改变状态来达到请求超时的效果
   return Promise.race([
     window.fetch(newUrl, options).then((res) => {

@@ -22,7 +22,7 @@
         <span
           slot="tip"
           class="el-upload__tip"
-        >（图片不能大于500KB）</span>
+        >（小于500KB）</span>
       </el-upload>
       <div class="photo-list">
         <div
@@ -208,7 +208,7 @@ export default {
         position: absolute;
         top: 4px;
         right: 4px;
-        background: white;
+        background: #ee6363;
         height: 18px;
         width: 18px;
         border-radius: 9px;
