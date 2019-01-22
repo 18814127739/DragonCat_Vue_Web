@@ -7,6 +7,7 @@
         :file-list="fileList"
         :before-upload="onBeforeUpload"
         :on-success="onSuccess"
+        :on-change="onChange"
         :on-exceed="onExceed"
         :on-error="onError"
         :limit="144"
@@ -32,7 +33,7 @@
         >
           <div
             class="btn-delete flex-center"
-            @click="onDelete($event, index)"
+            @click="onDelete($event, index, item.fileName)"
           >
             <i class="icon-error" />
           </div>
@@ -75,6 +76,9 @@ export default {
     this.getPhotos();
   },
   methods: {
+    onChange(file, fileList) {
+      // console.log(fileList);
+    },
     async getPhotos() {
       const params = {
         userId: this.$store.state.userInfo._id
@@ -84,7 +88,8 @@ export default {
     },
     async onSubmit() {
       const photos = this.fileList.map(item => ({
-        name: item.name,
+        name: item.name, // 原文件名
+        fileName: item.fileName, // 在服务器上的文件名
         url: item.url
       }));
       const params = {
@@ -100,7 +105,22 @@ export default {
       });
       this.$router.push({ name: "photo-wall" });
     },
-    onDelete(e, index) {
+    // 删除单张照片
+    async onDelete(e, index, photoName) {
+      const params = {
+        userId: this.$store.state.userInfo._id,
+        data: {
+          photos: this.fileList
+            .filter(item => item.fileName !== photoName)
+            .map(item => ({
+              name: item.name, // 原文件名
+              fileName: item.fileName, // 在服务器上的文件名
+              url: item.url
+            }))
+        },
+        photoName
+      };
+      await api.deletePhoto(params);
       this.fileList.splice(index, 1);
     },
     onClear() {
@@ -112,10 +132,11 @@ export default {
             userId: this.$store.state.userInfo._id,
             data: {
               photos: []
-            }
+            },
+            delPhotos: this.fileList.map(item => item.fileName)
           };
-          await api.updatePhotoWallInfo(params);
-          this.getPhotos();
+          await api.clearPhotos(params);
+          this.fileList = [];
         })
         .catch(() => {});
     },
@@ -159,7 +180,11 @@ export default {
       // 暂时通过延时0.7秒来进行处理
       setTimeout(() => {
         if (Number(res.code) === 0 && res.data) {
-          this.fileList.push({ ...file, url: res.data.path });
+          this.fileList.push({
+            ...file,
+            url: res.data.path,
+            fileName: res.data.filename
+          });
         } else {
           this.$message.error(res.message);
         }

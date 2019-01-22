@@ -40,6 +40,12 @@ export default class {
   // 修改照片墙信息
   static updatePhotoWallInfo = params => api.post('/api/updatePhotoWallInfo', params);
 
+  // 清空照片
+  static clearPhotos = params => api.post('/api/clearPhotos', params);
+  
+  // 删除照片
+  static deletePhoto = params => api.post('/api/deletePhoto', params);
+
   // 查看照片墙身份验证
   static checkPhotoVerify = params => api.post('/api/checkPhotoVerify', params);
 
