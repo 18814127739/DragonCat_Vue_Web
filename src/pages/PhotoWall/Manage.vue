@@ -115,12 +115,13 @@ export default {
       })
         .then(async () => {
           // fileList可能由于删除操作导致照片信息不完整，因此需先查出用户的所有照片
-          const delPhotos = await api.getPhotoWallInfo({
+          const res = await api.getPhotoWallInfo({
             userId: this.$store.state.userInfo._id
           });
+          const delPhotos = res.photos.map(item => item.fileName);
           const params = {
             userId: this.$store.state.userInfo._id,
-            delPhotos: delPhotos.map(item => item.fileName)
+            delPhotos
           };
           await api.clearPhotos(params);
           this.fileList = [];
@@ -161,7 +162,7 @@ export default {
       } else if (40 < num && num <= 60) {
         delay = 700;
       } else if (num <= 40) {
-        delay = 500;
+        delay = 600;
       }
       // 一次上传多张照片时，由于异步原因导致onSuccess回调中的状态存在异常状况
       // 暂时通过延时0.7秒来进行处理
