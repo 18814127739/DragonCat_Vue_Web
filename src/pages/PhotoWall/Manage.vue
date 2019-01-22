@@ -33,7 +33,7 @@
         >
           <div
             class="btn-delete flex-center"
-            @click="onDelete($event, index, item.fileName)"
+            @click="onRemove($event, index)"
           >
             <i class="icon-error" />
           </div>
@@ -105,22 +105,8 @@ export default {
       });
       this.$router.push({ name: "photo-wall" });
     },
-    // 删除单张照片
-    async onDelete(e, index, photoName) {
-      const params = {
-        userId: this.$store.state.userInfo._id,
-        data: {
-          photos: this.fileList
-            .filter(item => item.fileName !== photoName)
-            .map(item => ({
-              name: item.name, // 原文件名
-              fileName: item.fileName, // 在服务器上的文件名
-              url: item.url
-            }))
-        },
-        photoName
-      };
-      await api.deletePhoto(params);
+    // 移除照片
+    async onRemove(e, index) {
       this.fileList.splice(index, 1);
     },
     onClear() {
@@ -128,12 +114,13 @@ export default {
         type: "warning"
       })
         .then(async () => {
+          // fileList可能由于删除操作导致照片信息不完整，因此需先查出用户的所有照片
+          const delPhotos = await api.getPhotoWallInfo({
+            userId: this.$store.state.userInfo._id
+          });
           const params = {
             userId: this.$store.state.userInfo._id,
-            data: {
-              photos: []
-            },
-            delPhotos: this.fileList.map(item => item.fileName)
+            delPhotos: delPhotos.map(item => item.fileName)
           };
           await api.clearPhotos(params);
           this.fileList = [];
