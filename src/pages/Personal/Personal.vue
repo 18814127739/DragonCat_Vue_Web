@@ -113,67 +113,71 @@
           ></i>
           <i
             v-if="isEditSkills"
-            class="el-icon-plus"
-            @click="onAddSkills"
+            class="el-icon-close"
+            @click="onCancelEditSkills"
           ></i>
         </div>
-        <ul v-if="!isEditSkills">
-          <li
-            v-for="item in data.skills"
-            :key="item._id"
-          >
-            <div class="name">
-              {{item.name}}
-            </div>
-            <div class="line-wrap bg-eed2ee-bfefff">
-              <div class="line">
-                <div
-                  class="cover bg-eed2ee-bfefff"
-                  :style="{width:`${item.degree + 2}%`}"
-                ></div>
+        <transition name="el-zoom-in-center">
+          <ul v-show="!isEditSkills">
+            <li
+              v-for="item in data.skills"
+              :key="item._id"
+            >
+              <div class="name">
+                {{item.name}}
               </div>
-            </div>
-          </li>
-        </ul>
-        <ul v-if="isEditSkills">
-          <li
-            v-for="(item, index) in skills"
-            :key="index"
-          >
-            <div class="name">
-              <span>{{item.name}}</span>
-              <i
-                class="el-icon-delete"
-                @click="onRemoveSkills($event, 'skills', index)"
-              />
-            </div>
-            <el-slider
-              :min="1"
-              v-model="item.degree"
-            ></el-slider>
-          </li>
-          <li
-            v-for="(item, index) in newSkills"
-            :key="index"
-          >
-            <div class="name">
-              <el-input
-                v-model="item.name"
-                maxlength="20"
-                placeholder="技能名称(1-20字)"
-                size="mini"
-              />
-              <i
-                class="el-icon-delete"
-                @click="onRemoveSkills($event, 'newSkills', index)"
-              />
-            </div>
-            <el-slider
-              :min="1"
-              v-model="item.degree"
-            ></el-slider>
-          </li>
-        </ul>
+              <div class="line-wrap bg-eed2ee-bfefff">
+                <div class="line">
+                  <div
+                    class="cover bg-eed2ee-bfefff"
+                    :style="{width:`${item.degree + 2}%`}"
+                  ></div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </transition>
+        <transition name="el-zoom-in-center">
+          <ul v-show="isEditSkills">
+            <li
+              v-for="(item, index) in skills"
+              :key="index"
+            >
+              <div class="name">
+                <span>{{item.name}}</span>
+                <i
+                  class="el-icon-delete"
+                  @click="onRemoveSkills($event, 'skills', index)"
+                />
+              </div>
+              <el-slider
+                :min="1"
+                v-model="item.degree"
+              ></el-slider>
+            </li>
+            <li
+              v-for="(item, index) in newSkills"
+              :key="index"
+            >
+              <div class="name">
+                <el-input
+                  v-model="item.name"
+                  maxlength="20"
+                  placeholder="技能名称(1-20字)"
+                  size="mini"
+                />
+                <i
+                  class="el-icon-delete"
+                  @click="onRemoveSkills($event, 'newSkills', index)"
+                />
+              </div>
+              <el-slider
+                :min="1"
+                v-model="item.degree"
+              ></el-slider>
+            </li>
+          </ul>
+        </transition>
         <div
           v-if="isEditSkills"
           class="btn-group"
@@ -185,8 +189,8 @@
           >保存</el-button>
           <el-button
             size="mini"
-            @click="onCancelEditSkills"
-          >取消</el-button>
+            @click="onAddSkills"
+          >添加</el-button>
         </div>
       </div>
     </div>
@@ -361,7 +365,7 @@ export default {
       font-weight: bold;
       position: relative;
       .el-icon-edit,
-      .el-icon-plus {
+      .el-icon-close {
         position: absolute;
         right: 0;
         cursor: pointer;
