@@ -105,10 +105,7 @@ export default {
   watch: {},
   methods: {
     async getProjectExp() {
-      const params = {
-        userId: this.$store.state.userInfo._id
-      };
-      const res = await api.getHomePageInfo(params);
+      const res = await api.getHomePageInfo();
       this.projects = res.projectExp.map(item => ({
         ...item,
         date: [item.beginDate, item.endDate]
@@ -133,7 +130,6 @@ export default {
         endDate: item.date[1]
       }));
       const params = {
-        userId: this.$store.state.userInfo._id,
         type: "projectExp",
         data: projectExp
       };

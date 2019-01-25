@@ -89,7 +89,6 @@ export default {
         return;
       }
       const params = {
-        userId: this.$store.state.userInfo._id,
         type: "interests",
         data: this.data
       };

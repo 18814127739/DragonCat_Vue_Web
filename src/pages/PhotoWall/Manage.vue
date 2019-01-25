@@ -80,10 +80,7 @@ export default {
       // console.log(fileList);
     },
     async getPhotos() {
-      const params = {
-        userId: this.$store.state.userInfo._id
-      };
-      const res = await api.getPhotoWallInfo(params);
+      const res = await api.getPhotoWallInfo();
       this.fileList = res.photos;
     },
     async onSubmit() {
@@ -93,7 +90,6 @@ export default {
         url: item.url
       }));
       const params = {
-        userId: this.$store.state.userInfo._id,
         data: {
           photos
         }
@@ -115,12 +111,9 @@ export default {
       })
         .then(async () => {
           // fileList可能由于删除操作导致照片信息不完整，因此需先查出用户的所有照片
-          const res = await api.getPhotoWallInfo({
-            userId: this.$store.state.userInfo._id
-          });
+          const res = await api.getPhotoWallInfo();
           const delPhotos = res.photos.map(item => item.fileName);
           const params = {
-            userId: this.$store.state.userInfo._id,
             delPhotos
           };
           await api.clearPhotos(params);
@@ -165,7 +158,7 @@ export default {
         delay = 600;
       }
       // 一次上传多张照片时，由于异步原因导致onSuccess回调中的状态存在异常状况
-      // 暂时通过延时0.7秒来进行处理
+      // 暂时通过延时0.x秒来进行处理
       setTimeout(() => {
         if (Number(res.code) === 0 && res.data) {
           this.fileList.push({

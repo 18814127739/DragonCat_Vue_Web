@@ -80,10 +80,7 @@ export default {
   },
   methods: {
     async getData() {
-      const params = {
-        userId: this.$store.state.userInfo._id
-      };
-      const res = await api.getPhotoWallInfo(params);
+      const res = await api.getPhotoWallInfo();
       this.photos = getPhotosWithXY(res.photos);
 
       // 渲染照片墙

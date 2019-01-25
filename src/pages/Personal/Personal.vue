@@ -244,10 +244,7 @@ export default {
   },
   methods: {
     async getHomePageInfo() {
-      const params = {
-        userId: this.$store.state.userInfo._id
-      };
-      const res = await api.getHomePageInfo(params);
+      const res = await api.getHomePageInfo();
       this.data = res;
       this.data.skills.sort((a, b) => b.degree - a.degree);
       this.skills = this.data.skills.map(item => ({ ...item }));
@@ -283,7 +280,6 @@ export default {
         return;
       }
       const params = {
-        userId: this.$store.state.userInfo._id,
         type: "skills",
         data: skills
       };

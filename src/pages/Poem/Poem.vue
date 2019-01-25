@@ -157,7 +157,6 @@ export default {
       const params = {
         pageSize: 8,
         curPage: this.curPage,
-        userId: this.$store.state.userInfo._id
       };
       Object.keys(this.form).forEach(key => {
         if (this.form[key]) {

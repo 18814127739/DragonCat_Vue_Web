@@ -99,10 +99,7 @@ export default {
   watch: {},
   methods: {
     async getAwards() {
-      const params = {
-        userId: this.$store.state.userInfo._id
-      };
-      const res = await api.getHomePageInfo(params);
+      const res = await api.getHomePageInfo();
       this.awards = res.awards;
       if (this.awards.length === 0) {
         this.awards.push({});
@@ -119,7 +116,6 @@ export default {
         return;
       }
       const params = {
-        userId: this.$store.state.userInfo._id,
         type: "awards",
         data: this.awards
       };
