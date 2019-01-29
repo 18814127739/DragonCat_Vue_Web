@@ -1,63 +1,39 @@
 <template>
   <PageContainer>
     <div class="photo-wall-manage">
-      <el-upload
-        class="upload-demo"
-        action="http://localhost:8081/api/photoUpload"
-        :file-list="fileList"
-        :before-upload="onBeforeUpload"
-        :on-success="onSuccess"
-        :on-change="onChange"
-        :on-exceed="onExceed"
-        :on-error="onError"
-        :limit="144"
-        :show-file-list="false"
-        multiple
-        accept="image/*"
-        name="photo"
-      >
-        <el-button
-          size="small"
-          type="primary"
-        >添加照片</el-button>
-        <span
-          slot="tip"
-          class="el-upload__tip"
-        >（小于500KB）</span>
-      </el-upload>
-      <div class="photo-list">
-        <div
-          class="photo-wrap bg-eed2ee-bfefff"
-          v-for="(item,index) in fileList"
-          :key="index"
-        >
-          <div
-            class="btn-delete flex-center"
-            @click="onRemove($event, index)"
+      <div class="space-between">
+        <div class="left flex-center">
+          <el-upload
+            class="upload-demo"
+            action="http://localhost:8081/api/photoUpload"
+            :file-list="fileList"
+            :before-upload="onBeforeUpload"
+            :on-success="onSuccess"
+            :on-exceed="onExceed"
+            :on-error="onError"
+            :limit="144"
+            :show-file-list="false"
+            multiple
+            accept="image/*"
+            name="photo"
           >
-            <i class="icon-error" />
-          </div>
-          <img
-            :src="item.url"
-            alt=""
-          />
+            <el-button size="small" type="primary">添加照片</el-button>
+          </el-upload>
+          <el-checkbox v-model="isNeedPwd">设置访问密码</el-checkbox>
+          <el-input v-if="isNeedPwd" v-model="password" placeholder="访问密码" size="small"/>
+        </div>
+        <div class="right">
+          <el-button type="primary" size="small" @click="onSubmit">提交</el-button>
+          <el-button size="small" @click="onBack">返回</el-button>
         </div>
       </div>
-      <div class="mt12 flex-center">
-        <el-button
-          type="primary"
-          size="small"
-          @click="onSubmit"
-        >提交</el-button>
-        <el-button
-          type="danger"
-          size="small"
-          @click="onClear"
-        >清空</el-button>
-        <el-button
-          size="small"
-          @click="onBack"
-        >返回</el-button>
+      <div class="photo-list">
+        <div class="photo-wrap bg-eed2ee-bfefff" v-for="(item,index) in fileList" :key="index">
+          <div class="btn-delete flex-center" @click="onRemove($event, index)">
+            <i class="icon-error"/>
+          </div>
+          <img :src="item.url" alt>
+        </div>
       </div>
     </div>
   </PageContainer>
@@ -69,30 +45,48 @@ import api from "@services";
 export default {
   data() {
     return {
-      fileList: []
+      fileList: [],
+      isNeedPwd: false,
+      password: ""
     };
   },
   mounted() {
+    // 不能通过输入url直接访问
+    if (this.$route.params.action !== "manage") {
+      this.$router.replace("/");
+      return;
+    }
     this.getPhotos();
   },
   methods: {
-    onChange(file, fileList) {
-      // console.log(fileList);
-    },
     async getPhotos() {
-      const res = await api.getPhotoWallInfo();
+      const res = await api.getPhotoWallInfo({ action: "manage" });
       this.fileList = res.photos;
+      this.isNeedPwd = res.isNeedPwd;
+      this.password = res.password;
     },
     async onSubmit() {
+      if (this.isNeedPwd) {
+        if (!this.password) {
+          this.$message({
+            type: "warning",
+            message: "请填写访问密码"
+          });
+          return;
+        } else {
+          // 重设访问密码后，清空localStorage
+          localStorage.removeItem("isPassVerify");
+        }
+      }
       const photos = this.fileList.map(item => ({
         name: item.name, // 原文件名
         fileName: item.fileName, // 在服务器上的文件名
         url: item.url
       }));
       const params = {
-        data: {
-          photos
-        }
+        isNeedPwd: this.isNeedPwd,
+        password: this.isNeedPwd ? this.password : "",
+        photos
       };
       await api.updatePhotoWallInfo(params);
       this.$message({
@@ -104,22 +98,6 @@ export default {
     // 移除照片
     async onRemove(e, index) {
       this.fileList.splice(index, 1);
-    },
-    onClear() {
-      this.$confirm(`确认清空所有照片吗？`, "提示", {
-        type: "warning"
-      })
-        .then(async () => {
-          // fileList可能由于删除操作导致照片信息不完整，因此需先查出用户的所有照片
-          const res = await api.getPhotoWallInfo();
-          const delPhotos = res.photos.map(item => item.fileName);
-          const params = {
-            delPhotos
-          };
-          await api.clearPhotos(params);
-          this.fileList = [];
-        })
-        .catch(() => {});
     },
     onBack() {
       this.$router.go(-1);
@@ -184,20 +162,27 @@ export default {
 .photo-wall-manage {
   padding: 16px 32px 46px;
   text-align: center;
-  .upload-demo {
-    .upload-btn {
-      margin-left: 12px;
+  .left {
+    .upload-demo {
+      .upload-btn {
+        margin-left: 12px;
+      }
+      .el-upload__tip {
+        margin-left: 8px;
+        color: red;
+      }
     }
-    .el-upload__tip {
-      margin-left: 12px;
-      color: red;
+    .el-checkbox {
+      margin: 0 12px;
     }
   }
   .photo-list {
-    margin-top: 24px;
+    margin-top: 16px;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    height: 100%;
+    overflow-y: auto;
     .photo-wrap {
       width: 140px;
       height: 160px;

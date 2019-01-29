@@ -1,22 +1,13 @@
 <template>
   <PageContainer class="photo-wall">
     <div class="wrapper">
-      <div
-        id="container"
-        class="bg-f0fff0-00e5ee"
-      ></div>
-      <div
-        v-if="isBlank"
-        class="guide"
-      >
+      <div id="container" class="bg-f0fff0-00e5ee"></div>
+      <div v-if="isBlank" class="guide">
         <p class="flex-center">照片墙空空如也(ಥ﹏ಥ)</p>
         <p class="flex-center">去记录我的美好时光</p>
-        <div
-          class="camera-wrap flex-center"
-          @click="onManage"
-        >
+        <div class="camera-wrap flex-center" @click="onManage">
           <div class="camera flex-center">
-            <img src="../../assets/imgs/pics/camera.png" />
+            <img src="../../assets/imgs/pics/camera.png">
           </div>
         </div>
       </div>
@@ -29,18 +20,11 @@
           @click="curType = item.id"
         >{{item.name}}</button>
       </div>
-      <i
-        class="el-icon-edit"
-        @click="onManage"
-      />
+      <i class="el-icon-edit" @click="onManage" title="编辑"/>
+      <i class="el-icon-delete" @click="onClear" title="清空"/>
     </div>
-    <CheckPhotoDialog
-      :photos="photos"
-      :index="curIndex"
-      :visible="visible"
-      @onClose="onClose"
-    />
-    <VerifyDialog />
+    <CheckPhotoDialog :photos="photos" :index="curIndex" :visible="visible" @onClose="onClose"/>
+    <VerifyDialog :visible="verifyVisible"/>
   </PageContainer>
 </template>
 
@@ -72,7 +56,8 @@ export default {
         { id: "helix", name: "螺旋塔" },
         { id: "grid", name: "展览厅" }
       ],
-      visible: false
+      visible: false,
+      verifyVisible: false
     };
   },
   mounted() {
@@ -81,8 +66,11 @@ export default {
   methods: {
     async getData() {
       const res = await api.getPhotoWallInfo();
+      if (res.isNeedPwd) {
+        const isPassVerify = localStorage.getItem("isPassVerify");
+        this.verifyVisible = isPassVerify === "Y" ? false : true;
+      }
       this.photos = getPhotosWithXY(res.photos);
-
       // 渲染照片墙
       if (this.photos.length > 0) {
         this.initPhotoWall();
@@ -91,22 +79,41 @@ export default {
       }
     },
     onManage() {
-      this.$router.push({ name: "photo-wall-manage" });
+      this.$router.push({
+        name: "photo-wall-manage",
+        params: { action: "manage" }
+      });
     },
     onCheckPhoto(index) {
       this.curIndex = index;
       this.visible = true;
     },
+    onClear() {
+      this.$confirm(`确认清空所有照片吗？`, "提示", {
+        type: "warning"
+      })
+        .then(async () => {
+          const params = {
+            delPhotos: this.photos.map(item => item.fileName)
+          };
+          await api.clearPhotos(params);
+          this.photos = [];
+          this.initPhotoWall();
+        })
+        .catch(() => {});
+    },
     onClose() {
       this.visible = false;
     },
     initPhotoWall() {
+      const container = document.getElementById("container");
+      container.innerHTML = "";
       const that = this;
       let camera, scene, renderer;
       let controls;
       let objects = [];
       let targets = { table: [], sphere: [], helix: [], grid: [] };
-      let container = document.getElementById("container");
+
       let width = container.clientWidth,
         height = container.clientHeight;
 
@@ -332,12 +339,18 @@ export default {
       width: 100%;
       text-align: center;
     }
-    .el-icon-edit {
+    .el-icon-edit,
+    .el-icon-delete {
       cursor: pointer;
       position: absolute;
       top: 10px;
-      right: 32px;
       line-height: 27px;
+    }
+    .el-icon-edit {
+      right: 60px;
+    }
+    .el-icon-delete {
+      right: 32px;
     }
     .guide {
       position: absolute;

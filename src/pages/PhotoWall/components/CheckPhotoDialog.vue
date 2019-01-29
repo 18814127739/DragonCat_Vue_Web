@@ -1,33 +1,23 @@
 <template>
   <el-dialog
     class="check-photo-dialog"
-    title=""
+    title
     :visible="visible"
     :show-close="false"
     @close="onClose"
   >
     <div class="content">
       <div class="left-wrap">
-        <div
-          @click="checkLeft"
-          class="left-arrow"
-        >
+        <div @click="checkLeft" class="left-arrow">
           <i class="icon-left-arrow"></i>
         </div>
       </div>
       <div class="right-wrap">
-        <div
-          @click="checkRight"
-          class="right-arrow"
-        >
+        <div @click="checkRight" class="right-arrow">
           <i class="icon-right-arrow"></i>
         </div>
       </div>
-      <img
-        v-if="photos[curIndex]"
-        :src="photos[curIndex].url"
-        alt=""
-      />
+      <img v-if="photos[curIndex]" :src="photos[curIndex].url" alt>
     </div>
   </el-dialog>
 </template>

@@ -11,26 +11,11 @@
   >
     <div class="input-group">
       <label>请输入密码：</label>
-      <el-input
-        v-model="password"
-        size="small"
-        type="password"
-        @keyup.enter.native="onConfirm"
-      ></el-input>
+      <el-input v-model="password" size="small" type="password" @keyup.enter.native="onConfirm"></el-input>
     </div>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        size="small"
-        @click="onCancel"
-      >取 消</el-button>
-      <el-button
-        size="small"
-        type="primary"
-        @click="onConfirm"
-      >确 定</el-button>
+    <span slot="footer" class="dialog-footer">
+      <el-button size="small" @click="onCancel">取 消</el-button>
+      <el-button size="small" type="primary" @click="onConfirm">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -42,13 +27,14 @@ import api from "@services";
 export default {
   data() {
     return {
-      visible: false,
       password: ""
     };
   },
-  mounted() {
-    const isPassVerify = localStorage.getItem("isPassVerify");
-    this.visible = isPassVerify === "Y" ? false : true;
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
     async onConfirm() {

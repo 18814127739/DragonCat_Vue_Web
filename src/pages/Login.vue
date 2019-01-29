@@ -118,6 +118,7 @@
 </template>
 <script>
 import api from "@services";
+import Cookies from 'js-cookie';
 
 export default {
   data() {
