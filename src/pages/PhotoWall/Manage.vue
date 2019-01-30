@@ -3,22 +3,15 @@
     <div class="photo-wall-manage">
       <div class="space-between">
         <div class="left flex-center">
-          <el-upload
-            class="upload-demo"
-            action="http://localhost:8081/api/photoUpload"
-            :file-list="fileList"
-            :before-upload="onBeforeUpload"
-            :on-success="onSuccess"
-            :on-exceed="onExceed"
-            :on-error="onError"
-            :limit="144"
-            :show-file-list="false"
-            multiple
+          <el-button size="small" type="primary" @click="onClick">添加照片</el-button>
+          <input
+            class="upload-input"
+            type="file"
+            ref="input"
             accept="image/*"
-            name="photo"
+            multiple
+            @change="onChange"
           >
-            <el-button size="small" type="primary">添加照片</el-button>
-          </el-upload>
           <el-checkbox v-model="isNeedPwd">设置访问密码</el-checkbox>
           <el-input v-if="isNeedPwd" v-model="password" placeholder="访问密码" size="small"/>
         </div>
@@ -27,7 +20,7 @@
           <el-button size="small" @click="onBack">返回</el-button>
         </div>
       </div>
-      <div class="photo-list">
+      <div class="photo-list" v-loading="loading">
         <div class="photo-wrap bg-eed2ee-bfefff" v-for="(item,index) in fileList" :key="index">
           <div class="btn-delete flex-center" @click="onRemove($event, index)">
             <i class="icon-error"/>
@@ -47,7 +40,8 @@ export default {
     return {
       fileList: [],
       isNeedPwd: false,
-      password: ""
+      password: "",
+      loading: false
     };
   },
   mounted() {
@@ -65,18 +59,137 @@ export default {
       this.isNeedPwd = res.isNeedPwd;
       this.password = res.password;
     },
-    async onSubmit() {
-      if (this.isNeedPwd) {
-        if (!this.password) {
-          this.$message({
-            type: "warning",
-            message: "请填写访问密码"
-          });
-          return;
-        } else {
-          // 重设访问密码后，清空localStorage
-          localStorage.removeItem("isPassVerify");
+    onClick() {
+      // 点击时value重置为null，为了避免选择同样的照片时不触发onChange事件
+      this.$refs.input.value = null;
+      this.$refs.input.click();
+    },
+    onChange(ev) {
+      const files = ev.target.files;
+      if (!files) return;
+      if (files.length + this.fileList.length > 144) {
+        this.$message({
+          type: "warning",
+          message: "最多上传144张照片"
+        });
+        return;
+      }
+      const postFiles = Array.prototype.slice.call(files);
+      if (!this.isLimit(postFiles)) {
+        this.$message({
+          type: "warning",
+          message: "图片不能大于500KB"
+        });
+        return;
+      }
+      const option = {
+        headers: {},
+        withCredentials: false,
+        files: postFiles,
+        filename: "photo",
+        action: "http://localhost:8081/api/photoUpload",
+        onSuccess: res => {
+          if (res.code === 0) {
+            this.loading = false;
+            res.data.forEach(item => {
+              this.fileList.push({
+                ...item,
+                url: item.path,
+                fileName: item.filename
+              });
+            });
+          } else {
+            this.loading = false;
+            this.$message.error(res.message);
+          }
+        },
+        onError: err => {
+          this.$message.error(err);
         }
+      };
+      this.loading = true;
+      this.upload(option);
+    },
+    isLimit(files) {
+      let flag = true;
+      files.forEach(file => {
+        if (file.size > 512000) {
+          flag = false;
+        }
+      });
+      return flag;
+    },
+    onRemove(e, index) {
+      this.fileList.splice(index, 1);
+    },
+    upload(option) {
+      if (typeof XMLHttpRequest === "undefined") {
+        return;
+      }
+      const { action } = option;
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+      option.files.forEach(file => {
+        formData.append(option.filename, file);
+      });
+      xhr.onerror = function error(e) {
+        option.onError(e);
+      };
+      xhr.onload = onload = () => {
+        if (xhr.status < 200 || xhr.status >= 300) {
+          return option.onError(getError(action, option, xhr));
+        }
+        option.onSuccess(getBody(xhr));
+      };
+      xhr.open("post", action, true);
+
+      if (option.withCredentials && "withCredentials" in xhr) {
+        xhr.withCredentials = true;
+      }
+
+      const headers = option.headers || {};
+      for (let item in headers) {
+        if (headers.hasOwnProperty(item) && headers[item] !== null) {
+          xhr.setRequestHeader(item, headers[item]);
+        }
+      }
+      xhr.send(formData);
+      return xhr;
+
+      function getBody(xhr) {
+        const text = xhr.responseText || xhr.response;
+        if (!text) {
+          return text;
+        }
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          return text;
+        }
+      }
+      function getError(action, option, xhr) {
+        let msg;
+        if (xhr.response) {
+          msg = `${xhr.response.error || xhr.response}`;
+        } else if (xhr.responseText) {
+          msg = `${xhr.responseText}`;
+        } else {
+          msg = `fail to post ${action} ${xhr.status}`;
+        }
+        const err = new Error(msg);
+        err.status = xhr.status;
+        err.method = "post";
+        err.url = action;
+        return err;
+      }
+    },
+    async onSubmit() {
+      if (this.isNeedPwd && !this.password) {
+        this.$message({
+          type: "warning",
+          message: "请填写访问密码"
+        });
+        return;
       }
       const photos = this.fileList.map(item => ({
         name: item.name, // 原文件名
@@ -95,65 +208,8 @@ export default {
       });
       this.$router.push({ name: "photo-wall" });
     },
-    // 移除照片
-    async onRemove(e, index) {
-      this.fileList.splice(index, 1);
-    },
     onBack() {
       this.$router.go(-1);
-    },
-    onBeforeUpload(file) {
-      const isLimit = file.size <= 512000;
-      if (!isLimit) {
-        this.$message({
-          type: "warning",
-          message: "图片不能大于500KB"
-        });
-      }
-      const isJpgOrPng = ["png", "jpg", "jpeg"].includes(
-        file.type.split("/")[1]
-      );
-      if (!isJpgOrPng) {
-        this.$message({
-          type: "warning",
-          message: "不支持该格式图片"
-        });
-      }
-      return isLimit && isJpgOrPng;
-    },
-    onSuccess(res, file, fileList) {
-      const num = fileList.length;
-      let delay = 500;
-      if (101 < num && num <= 144) {
-        delay = 1500;
-      } else if (80 < num && num <= 100) {
-        delay = 1000;
-      } else if (60 < num && num <= 80) {
-        delay = 800;
-      } else if (40 < num && num <= 60) {
-        delay = 700;
-      } else if (num <= 40) {
-        delay = 600;
-      }
-      // 一次上传多张照片时，由于异步原因导致onSuccess回调中的状态存在异常状况
-      // 暂时通过延时0.x秒来进行处理
-      setTimeout(() => {
-        if (Number(res.code) === 0 && res.data) {
-          this.fileList.push({
-            ...file,
-            url: res.data.path,
-            fileName: res.data.filename
-          });
-        } else {
-          this.$message.error(res.message);
-        }
-      }, delay);
-    },
-    onExceed() {
-      this.$message.warning("最多上传144张照片");
-    },
-    onError(err) {
-      this.$message.error(err);
     }
   }
 };
@@ -163,14 +219,8 @@ export default {
   padding: 16px 32px 46px;
   text-align: center;
   .left {
-    .upload-demo {
-      .upload-btn {
-        margin-left: 12px;
-      }
-      .el-upload__tip {
-        margin-left: 8px;
-        color: red;
-      }
+    .upload-input {
+      display: none;
     }
     .el-checkbox {
       margin: 0 12px;
@@ -181,6 +231,7 @@ export default {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    min-height: 70vh;
     height: 100%;
     overflow-y: auto;
     .photo-wrap {

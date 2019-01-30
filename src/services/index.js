@@ -45,7 +45,4 @@ export default class {
   
   // 查看照片墙身份验证
   static checkPhotoVerify = params => api.post('/api/checkPhotoVerify', params);
-
-  // 上传照片
-  static uploadPhotos = params => api.post('/api/photoUpload', params);
 }

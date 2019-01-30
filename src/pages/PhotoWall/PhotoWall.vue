@@ -46,8 +46,7 @@ export default {
   },
   data() {
     return {
-      photos: [],
-      isBlank: false, // 是否没有照片
+      photos: [{}],
       curIndex: 0,
       curType: "table",
       showType: [
@@ -63,6 +62,11 @@ export default {
   mounted() {
     this.getData();
   },
+  computed: {
+    isBlank() {
+      return this.photos.length === 0;
+    }
+  },
   methods: {
     async getData() {
       const res = await api.getPhotoWallInfo();
@@ -74,8 +78,6 @@ export default {
       // 渲染照片墙
       if (this.photos.length > 0) {
         this.initPhotoWall();
-      } else {
-        this.isBlank = true;
       }
     },
     onManage() {
@@ -354,7 +356,7 @@ export default {
     }
     .guide {
       position: absolute;
-      top: 18%;
+      top: 16%;
       width: 100%;
       p {
         font-size: 32px;
