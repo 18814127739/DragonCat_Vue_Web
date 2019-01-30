@@ -1,5 +1,7 @@
 import Cookies from 'js-cookie';
-import { Message } from 'element-ui';
+import {
+  Message
+} from 'element-ui';
 
 function request(url, params, type) {
   let newUrl = url;
@@ -28,18 +30,18 @@ function request(url, params, type) {
 
   // 通过Promise.race()比较两个Promise谁先改变状态来达到请求超时的效果
   return Promise.race([
-    window.fetch(newUrl, options).then((res) => {
-      if (res.ok) {
-        return res;
-      }
-      return Promise.reject(`${res.status}(${res.statusText})`);
-    }).catch(error => Promise.reject(String(error))),
-    new Promise(((resolve, reject) => {
-      setTimeout(() => {
-        reject('请求超时');
-      }, 20000);
-    }))])
-    .then(response => response.json())
+      window.fetch(newUrl, options).then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`${res.status}(${res.statusText})`);
+      }).catch(error => Promise.reject(String(error))),
+      new Promise(((resolve, reject) => {
+        setTimeout(() => {
+          reject('请求超时');
+        }, 20000);
+      }))
+    ])
     .then((data) => {
       if (Number(data.code) === 0) {
         return data.data;

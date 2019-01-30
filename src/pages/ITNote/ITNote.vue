@@ -37,7 +37,7 @@ export default {
       if (files.length + this.fileList.length > 144) {
         this.$message({
           type: "warning",
-          message: "最多上传144张照片"
+          message: `最多上传144张照片，当前已上传${this.fileList.length}张`
         });
         return;
       }
@@ -49,9 +49,6 @@ export default {
         });
         return;
       }
-      postFiles.forEach((item, index) => {
-        item.uid = Date.now() + index;
-      });
       const option = {
         headers: {},
         withCredentials: false,
@@ -79,18 +76,6 @@ export default {
       };
       this.loading = true;
       this.upload(option);
-    },
-    isLimit(files) {
-      let flag = true;
-      files.forEach(file => {
-        if (file.size > 512000) {
-          flag = false;
-        }
-      });
-      return flag;
-    },
-    onRemove(e, index) {
-      this.fileList.splice(index, 1);
     },
     upload(option) {
       if (typeof XMLHttpRequest === "undefined") {
@@ -152,6 +137,18 @@ export default {
         err.url = action;
         return err;
       }
+    },
+    isLimit(files) {
+      let flag = true;
+      files.forEach(file => {
+        if (file.size > 512000) {
+          flag = false;
+        }
+      });
+      return flag;
+    },
+    onRemove(e, index) {
+      this.fileList.splice(index, 1);
     }
   }
 };

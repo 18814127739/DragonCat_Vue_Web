@@ -60,12 +60,12 @@ export default {
       this.password = res.password;
     },
     onClick() {
-      // 点击时value重置为null，为了避免选择同样的照片时不触发onChange事件
+      // 点击时value重置为null，避免选择同样的照片时不触发onChange事件
       this.$refs.input.value = null;
       this.$refs.input.click();
     },
-    onChange(ev) {
-      const files = ev.target.files;
+    onChange(e) {
+      const files = e.target.files;
       if (!files) return;
       if (files.length + this.fileList.length > 144) {
         this.$message({
@@ -82,13 +82,27 @@ export default {
         });
         return;
       }
-      const option = {
-        headers: {},
-        withCredentials: false,
-        files: postFiles,
-        filename: "photo",
-        action: "http://localhost:8081/api/photoUpload",
-        onSuccess: res => {
+      this.loading = true;
+      this.upload(postFiles);
+    },
+    upload(files) {
+      const formData = new FormData();
+      files.forEach(file => {
+        formData.append("photo", file);
+      });
+      const options = {
+        method: "post",
+        body: formData
+      };
+      fetch("http://localhost:8081/api/photoUpload", options)
+        .then(res => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            return Promise.reject(`${res.status}(${res.statusText})`);
+          }
+        })
+        .then(res => {
           if (res.code === 0) {
             this.loading = false;
             res.data.forEach(item => {
@@ -102,13 +116,11 @@ export default {
             this.loading = false;
             this.$message.error(res.message);
           }
-        },
-        onError: err => {
-          this.$message.error(err);
-        }
-      };
-      this.loading = true;
-      this.upload(option);
+        })
+        .catch(err => {
+          this.loading = false;
+          this.$message.err(err);
+        });
     },
     isLimit(files) {
       let flag = true;
@@ -121,67 +133,6 @@ export default {
     },
     onRemove(e, index) {
       this.fileList.splice(index, 1);
-    },
-    upload(option) {
-      if (typeof XMLHttpRequest === "undefined") {
-        return;
-      }
-      const { action } = option;
-      const xhr = new XMLHttpRequest();
-      const formData = new FormData();
-      option.files.forEach(file => {
-        formData.append(option.filename, file);
-      });
-      xhr.onerror = function error(e) {
-        option.onError(e);
-      };
-      xhr.onload = onload = () => {
-        if (xhr.status < 200 || xhr.status >= 300) {
-          return option.onError(getError(action, option, xhr));
-        }
-        option.onSuccess(getBody(xhr));
-      };
-      xhr.open("post", action, true);
-
-      if (option.withCredentials && "withCredentials" in xhr) {
-        xhr.withCredentials = true;
-      }
-
-      const headers = option.headers || {};
-      for (let item in headers) {
-        if (headers.hasOwnProperty(item) && headers[item] !== null) {
-          xhr.setRequestHeader(item, headers[item]);
-        }
-      }
-      xhr.send(formData);
-      return xhr;
-
-      function getBody(xhr) {
-        const text = xhr.responseText || xhr.response;
-        if (!text) {
-          return text;
-        }
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          return text;
-        }
-      }
-      function getError(action, option, xhr) {
-        let msg;
-        if (xhr.response) {
-          msg = `${xhr.response.error || xhr.response}`;
-        } else if (xhr.responseText) {
-          msg = `${xhr.responseText}`;
-        } else {
-          msg = `fail to post ${action} ${xhr.status}`;
-        }
-        const err = new Error(msg);
-        err.status = xhr.status;
-        err.method = "post";
-        err.url = action;
-        return err;
-      }
     },
     async onSubmit() {
       if (this.isNeedPwd && !this.password) {
@@ -229,7 +180,6 @@ export default {
   .photo-list {
     margin-top: 16px;
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
     min-height: 70vh;
     height: 100%;
