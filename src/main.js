@@ -14,7 +14,7 @@ Vue.use(ElementUI);
 Vue.use(VCharts);
 sync(store, router);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 const requireComponent = require.context('@components', false, /Page[A-Z]\w+\.(vue|js)$/);
 requireComponent.keys().forEach(fileName => {
   // 获取组件配置
@@ -26,11 +26,11 @@ requireComponent.keys().forEach(fileName => {
   )
   // 全局注册组件
   Vue.component(componentName, componentConfig.default || componentConfig)
-})
+});
 
 new Vue({
   el: '#app',
   router,
   store,
   render: h => h(App)
-})
+});

@@ -3,6 +3,9 @@ import VueRouter from 'vue-router'
 import Cookies from 'js-cookie';
 import { Message } from 'element-ui';
 
+Vue.use(VueRouter);
+
+const Login = () => import('@pages/Login')
 const Home = () => import('@pages/Home/Home')
 const Poem = () => import('@pages/Poem/Poem')
 const EditPoem = () => import('@pages/Poem/EditPoem')
@@ -12,9 +15,6 @@ const EditAwards = () => import('@pages/Personal/EditAwards')
 const PhotoWall = () => import('@pages/PhotoWall/PhotoWall')
 const PhotoWallManage = () => import('@pages/PhotoWall/Manage')
 const ITNote = () => import('@pages/ITNote/ITNote')
-const Login = () => import('@pages/Login')
-
-Vue.use(VueRouter);
 
 const routes = [
   {
@@ -90,4 +90,4 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-export default router
+export default router;
