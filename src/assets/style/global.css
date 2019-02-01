@@ -52,19 +52,19 @@ ul {
 }
 
 .bg-eed2ee-bfefff {
-  background: -webkit-gradient(linear,
-    left 0,
-    right 0,
-    from(#eed2ee),
-    to(#bfefff));
+  background: linear-gradient(45deg, #eed2ee 0%, #bfefff 100%);
 }
 
-.bg-f0fff0-00e5ee {
-  background: -webkit-gradient(linear,
-    left 0,
-    right 0,
-    from(#F0FFFF),
-    to(#00e5ee));
+.bg-header {
+  background: linear-gradient(0deg, #F0FFFF 0%, rgba(0, 229, 238, .6) 100%);
+}
+
+.bg-white-blue {
+  background: linear-gradient(180deg, #F0FFFF 0%, #00e5ee 100%);
+}
+
+.bg-poem {
+  background: linear-gradient(270deg, #fff0f5 0%, #bfefff 100%);
 }
 
 .el-slider__runway {

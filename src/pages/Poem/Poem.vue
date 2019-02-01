@@ -3,92 +3,53 @@
     <div class="query-bar">
       <div class="input-group">
         <label>标题：</label>
-        <el-input
-          v-model="form.title"
-          size="mini"
-          @keyup.enter.native="onChange"
-        ></el-input>
+        <el-input v-model="form.title" size="mini" @keyup.enter.native="onChange"></el-input>
       </div>
       <div class="input-group">
         <label>类型：</label>
-        <el-select
-          v-model="form.type"
-          size="mini"
-          placeholder="请选择"
-          @change="onChange"
-        >
+        <el-select v-model="form.type" size="mini" placeholder="请选择" @change="onChange">
           <el-option
             v-for="item in typeList"
             :key="item._id"
             :label="item.name"
             :value="item.value"
-          >
-          </el-option>
+          ></el-option>
         </el-select>
       </div>
       <div class="input-group">
         <label>主题：</label>
-        <el-select
-          v-model="form.theme"
-          size="mini"
-          placeholder="请选择"
-          @change="onChange"
-        >
+        <el-select v-model="form.theme" size="mini" placeholder="请选择" @change="onChange">
           <el-option
             v-for="item in themeList"
             :key="item._id"
             :label="item.name"
             :value="item.value"
-          >
-          </el-option>
+          ></el-option>
         </el-select>
       </div>
       <div class="input-group">
         <label>排序：</label>
-        <el-select
-          v-model="form.sortWay"
-          size="mini"
-          placeholder="请选择"
-          @change="onChange"
-        >
+        <el-select v-model="form.sortWay" size="mini" placeholder="请选择" @change="onChange">
           <el-option
             v-for="item in sortWayList"
             :key="item._id"
             :label="item.name"
             :value="item.value"
-          >
-          </el-option>
+          ></el-option>
         </el-select>
       </div>
-      <el-button
-        class="btn"
-        type="primary"
-        size="mini"
-        plain
-        @click="toPage('new-poem')"
-      >为你写诗</el-button>
+      <el-button class="btn" type="primary" size="mini" plain @click="toPage('new-poem')">为你写诗</el-button>
     </div>
     <div class="content">
       <ul>
-        <li
-          v-for="item in poemList"
-          :key="item._id"
-          @click="onCheckPoem(item)"
-        >
+        <li v-for="item in poemList" :key="item._id" class="bg-poem" @click="onCheckPoem(item)">
           <i
             class="el-icon-edit edit-btn"
             @click.stop="toPage('edit-poem', {title:item.title, poem:item})"
           ></i>
-          <i
-            class="el-icon-delete delete-btn"
-            @click.stop="onDeletePoem(item._id, item.title)"
-          ></i>
+          <i class="el-icon-delete delete-btn" @click.stop="onDeletePoem(item._id, item.title)"></i>
           <h3>{{item.title}}</h3>
-          <div
-            class="word"
-            v-for="(word,index) in item.content"
-            :key="index"
-          >{{word}}</div>
+          <div class="word" v-for="(word,index) in item.content" :key="index">{{word}}</div>
         </li>
       </ul>
     </div>
@@ -100,14 +61,9 @@
         :page-size="8"
         :current-page="this.curPage"
         @current-change="onPageChange"
-      >
-      </el-pagination>
+      ></el-pagination>
     </div>
-    <CheckPoemDialog
-      :poem="curPoem"
-      :visible="visible"
-      @onClose="onClose"
-    />
+    <CheckPoemDialog :poem="curPoem" :visible="visible" @onClose="onClose"/>
   </PageContainer>
 </template>
 
@@ -156,7 +112,7 @@ export default {
     async getPoemList() {
       const params = {
         pageSize: 8,
-        curPage: this.curPage,
+        curPage: this.curPage
       };
       Object.keys(this.form).forEach(key => {
         if (this.form[key]) {
@@ -233,13 +189,6 @@ export default {
         height: 260px;
         border-radius: 5px;
         margin: 0 8px 16px;
-        background: -webkit-gradient(
-          linear,
-          left 0,
-          right 0,
-          from(#bfefff),
-          to(#fff0f5)
-        );
         position: relative;
         vertical-align: middle;
         cursor: pointer;

@@ -13,10 +13,7 @@
         <span class="date">{{date}}</span>
       </div>
       <div class="word">
-        <p
-          v-for="(item,index) in poem.content"
-          :key="index"
-        >{{item}}</p>
+        <p v-for="(item,index) in poem.content" :key="index">{{item}}</p>
       </div>
       <div class="imgs">
         <div
@@ -25,21 +22,17 @@
           :key="index"
           @click="onCheckPhoto($event, index)"
         >
-          <img :src="img.url" />
+          <img :src="img.url">
         </div>
       </div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-      </span>
+      <span slot="footer" class="dialog-footer"></span>
     </div>
     <!-- <CheckPhotoDialog
       :photos="imgs"
       :index="curIndex"
       :visible="checkPhotoVisible"
       @onClose="onDialogClose"
-    /> -->
+    />-->
   </el-dialog>
 </template>
 
@@ -92,13 +85,7 @@ export default {
   .el-dialog {
     margin-top: 12vh !important;
     border-radius: 5px;
-    background: -webkit-gradient(
-      linear,
-      left 0,
-      right 0,
-      from(#bfefff),
-      to(#fff0f5)
-    );
+    background: linear-gradient(270deg, #fff0f5 0%, #bfefff 100%);
     .el-dialog__header {
       text-align: center;
       padding-top: 24px;

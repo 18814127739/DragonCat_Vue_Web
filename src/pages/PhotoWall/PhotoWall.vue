@@ -1,7 +1,7 @@
 <template>
   <PageContainer class="photo-wall">
     <div class="wrapper">
-      <div id="container" class="bg-f0fff0-00e5ee"></div>
+      <div id="container" class="bg-white-blue"></div>
       <div v-if="isBlank" class="guide">
         <p class="flex-center">照片墙空空如也(ಥ﹏ಥ)</p>
         <p class="flex-center">去记录我的美好时光</p>

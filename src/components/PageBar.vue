@@ -1,5 +1,5 @@
 <template>
-  <div class="page-bar bg-f0fff0-00e5ee">
+  <div class="page-bar bg-header">
     <div class="pull-left">
       <img
         @click="jump('home')"

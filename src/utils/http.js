@@ -9,7 +9,7 @@ function request(url, params, type) {
     method: type,
     headers: {
       'content-type': 'application/json',
-      Authorization: `Bearer ${Cookies.get('token')}`, // 头部统一加tocken
+      Authorization: `Bearer ${Cookies.get('token')}`, // 头部统一加token
     },
   };
   if (type === 'post' || type === 'put' || type === 'delete') {

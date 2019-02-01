@@ -2,7 +2,7 @@
   <div id='periodictable'>
     <div
       id="container"
-      class="bg-f0fff0-00e5ee"
+      class="bg-white-blue"
     ></div>
     <div id="menu">
       <button

@@ -7,35 +7,22 @@
             <p>{{this.$store.state.userInfo.userName}}</p>
             <div class="motto">座右铭：以积极的心态面对困难，用坚定的决心迎接挑战。</div>
           </div>
-          <InfoItem
-            iconClass="icon-education"
-            title="教育背景"
-            @onEdit="onEdit('educationDialog')"
-          >
+          <InfoItem iconClass="icon-education" title="教育背景" @onEdit="onEdit('educationDialog')">
             <div v-if="data.education && data.education.university">
               <div class="space-between">
-                <div class="date">
-                  {{`${dateToString(data.education.beginDate)}-${dateToString(data.education.endDate)}`}}
-                </div>
+                <div
+                  class="date"
+                >{{`${dateToString(data.education.beginDate)}-${dateToString(data.education.endDate)}`}}</div>
                 <div class="name">{{data.education.university}}</div>
               </div>
-              <div
-                class="space-between"
-                :style="{marginTop:'5px'}"
-              >
+              <div class="space-between" :style="{marginTop:'5px'}">
                 <div>GPA：{{data.education.GPA}}</div>
                 <div>{{data.education.major}}</div>
               </div>
-              <div
-                class="mt5"
-                v-if="data.education.courses"
-              >
+              <div class="mt5" v-if="data.education.courses">
                 <div>主修课程：{{data.education.courses}}</div>
               </div>
-              <div
-                class="mt5"
-                v-if="data.education.pratice"
-              >
+              <div class="mt5" v-if="data.education.pratice">
                 <div>校内实践：{{data.education.pratice}}</div>
               </div>
             </div>
@@ -46,12 +33,11 @@
             @onEdit="onEdit('projectExp', 'edit-project-exp')"
           >
             <div v-if="data.projectExp">
-              <div
-                v-for="item in data.projectExp"
-                :key="item._id"
-              >
+              <div v-for="item in data.projectExp" :key="item._id">
                 <div class="space-between mt5">
-                  <div class="date">{{`${dateToString(item.beginDate,'YYYY.MM')}-${dateToString(item.endDate,'YYYY.MM')}`}}</div>
+                  <div
+                    class="date"
+                  >{{`${dateToString(item.beginDate,'YYYY.MM')}-${dateToString(item.endDate,'YYYY.MM')}`}}</div>
                   <div class="name">{{item.name}}</div>
                   <div class="date">{{item.position}}</div>
                 </div>
@@ -59,39 +45,24 @@
                   <div>项目描述：{{item.description}}</div>
                 </div>
                 <div class="mt5">
-                  <div>
-                  </div>
+                  <div></div>
                   项目职责：{{item.task}}
                 </div>
               </div>
             </div>
           </InfoItem>
-          <InfoItem
-            iconClass="icon-award"
-            title="获奖情况"
-            @onEdit="onEdit('awards', 'edit-awards')"
-          >
+          <InfoItem iconClass="icon-award" title="获奖情况" @onEdit="onEdit('awards', 'edit-awards')">
             <div v-if="data.awards">
-              <div
-                v-for="(item,index) in data.awards"
-                :key="index"
-              >
+              <div v-for="(item,index) in data.awards" :key="index">
                 <div class="space-between mt5">
                   <div class="date">{{dateToString(item.date)}}</div>
                   <div class="name">{{item.name}}</div>
                 </div>
-                <div
-                  v-if="item.reason"
-                  class="reason mt5"
-                >获奖理由：{{item.reason}}</div>
+                <div v-if="item.reason" class="reason mt5">获奖理由：{{item.reason}}</div>
               </div>
             </div>
           </InfoItem>
-          <InfoItem
-            iconClass="icon-interest"
-            title="兴趣爱好"
-            @onEdit="onEdit('interestsDialog')"
-          >
+          <InfoItem iconClass="icon-interest" title="兴趣爱好" @onEdit="onEdit('interestsDialog')">
             <ve-pie
               v-if="data.interests && data.interests.length > 0"
               height="320px"
@@ -104,34 +75,17 @@
         <div class="title">
           <div class="icon-wrap bg-eed2ee-bfefff">
             <i class="icon-skill"></i>
-          </div>
-          专业技能
-          <i
-            class="el-icon-edit"
-            v-if="!isEditSkills"
-            @click="isEditSkills = true"
-          ></i>
-          <i
-            v-if="isEditSkills"
-            class="el-icon-close"
-            @click="onCancelEditSkills"
-          ></i>
+          </div>专业技能
+          <i class="el-icon-edit" v-if="!isEditSkills" @click="isEditSkills = true"></i>
+          <i v-if="isEditSkills" class="el-icon-close" @click="onCancelEditSkills"></i>
         </div>
         <transition name="el-zoom-in-center">
           <ul v-show="!isEditSkills">
-            <li
-              v-for="item in data.skills"
-              :key="item._id"
-            >
-              <div class="name">
-                {{item.name}}
-              </div>
+            <li v-for="item in data.skills" :key="item._id">
+              <div class="name">{{item.name}}</div>
               <div class="line-wrap bg-eed2ee-bfefff">
                 <div class="line">
-                  <div
-                    class="cover bg-eed2ee-bfefff"
-                    :style="{width:`${item.degree + 2}%`}"
-                  ></div>
+                  <div class="cover bg-eed2ee-bfefff" :style="{width:`${item.degree + 2}%`}"></div>
                 </div>
               </div>
             </li>
@@ -139,58 +93,25 @@
         </transition>
         <transition name="el-zoom-in-center">
           <ul v-show="isEditSkills">
-            <li
-              v-for="(item, index) in skills"
-              :key="index"
-            >
+            <li v-for="(item, index) in skills" :key="index">
               <div class="name">
                 <span>{{item.name}}</span>
-                <i
-                  class="el-icon-delete"
-                  @click="onRemoveSkills($event, 'skills', index)"
-                />
+                <i class="el-icon-delete" @click="onRemoveSkills($event, 'skills', index)"/>
               </div>
-              <el-slider
-                :min="1"
-                v-model="item.degree"
-              ></el-slider>
+              <el-slider :min="1" v-model="item.degree"></el-slider>
             </li>
-            <li
-              v-for="(item, index) in newSkills"
-              :key="index"
-            >
+            <li v-for="(item, index) in newSkills" :key="index">
               <div class="name">
-                <el-input
-                  v-model="item.name"
-                  maxlength="20"
-                  placeholder="技能名称(1-20字)"
-                  size="mini"
-                />
-                <i
-                  class="el-icon-delete"
-                  @click="onRemoveSkills($event, 'newSkills', index)"
-                />
+                <el-input v-model="item.name" maxlength="20" placeholder="技能名称(1-20字)" size="mini"/>
+                <i class="el-icon-delete" @click="onRemoveSkills($event, 'newSkills', index)"/>
               </div>
-              <el-slider
-                :min="1"
-                v-model="item.degree"
-              ></el-slider>
+              <el-slider :min="1" v-model="item.degree"></el-slider>
             </li>
           </ul>
         </transition>
-        <div
-          v-if="isEditSkills"
-          class="btn-group"
-        >
-          <el-button
-            size="mini"
-            type="primary"
-            @click="onUpdateSkills"
-          >保存</el-button>
-          <el-button
-            size="mini"
-            @click="onAddSkills"
-          >添加</el-button>
+        <div v-if="isEditSkills" class="btn-group">
+          <el-button size="mini" type="primary" @click="onUpdateSkills">保存</el-button>
+          <el-button size="mini" @click="onAddSkills">添加</el-button>
         </div>
       </div>
     </div>
@@ -415,6 +336,12 @@ export default {
             .el-icon-delete {
               opacity: 1;
             }
+          }
+        }
+
+        .el-slider {
+          .el-slider__bar {
+            background-color: linear-gradient(45deg, #eed2ee 0%, #bfefff 100%);
           }
         }
       }
