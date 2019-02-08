@@ -56,11 +56,11 @@ ul {
 }
 
 .bg-header {
-  background: linear-gradient(0deg, #F0FFFF 0%, rgba(0, 229, 238, .6) 100%);
+  background: linear-gradient(0deg, #F0FFFF 2%, rgba(0, 229, 238, .5) 100%);
 }
 
 .bg-white-blue {
-  background: linear-gradient(180deg, #F0FFFF 0%, #00e5ee 100%);
+  background: linear-gradient(180deg, #F0FFFF 7%, #00e5ee 105%);
 }
 
 .bg-poem {
