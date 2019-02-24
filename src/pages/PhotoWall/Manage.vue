@@ -34,6 +34,7 @@
 
 <script>
 import api from "@services";
+import compressImgs from "@utils/compressImgs";
 
 export default {
   data() {
@@ -74,16 +75,16 @@ export default {
         });
         return;
       }
-      const postFiles = Array.prototype.slice.call(files);
-      if (!this.isLimit(postFiles)) {
-        this.$message({
-          type: "warning",
-          message: "图片不能大于500KB"
-        });
-        return;
-      }
       this.loading = true;
-      this.upload(postFiles);
+      const postFiles = Array.prototype.slice.call(files);
+      // 压缩图片， 第2个参数为多少KB以上需要进行压缩，第3、4个参数为压缩后图片的最大宽高
+      compressImgs(postFiles, 300, 800, 800)
+        .then(compressFiles => {
+          this.upload(compressFiles);
+        })
+        .catch(err => {
+          this.$message.error(err);
+        });
     },
     upload(files) {
       const formData = new FormData();

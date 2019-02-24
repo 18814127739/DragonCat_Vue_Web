@@ -17,7 +17,7 @@
 
 <script>
 import api from "@services";
-import { resolve, reject } from "q";
+import compressImgs from "@utils/compressImgs";
 
 export default {
   data() {
@@ -44,8 +44,8 @@ export default {
       }
       this.loading = true;
       const postFiles = Array.prototype.slice.call(files);
-      // 图片压缩后再上传
-      this.compressFiles(postFiles)
+      // 图片压缩后再上传, 第二个参数为size大于多少时需要压缩，单位KB
+      compressImgs(postFiles)
         .then(compressFiles => {
           const option = {
             headers: {},
@@ -150,81 +150,6 @@ export default {
     },
     onRemove(e, index) {
       this.fileList.splice(index, 1);
-    },
-    // 压缩图片文件
-    compressFiles(files) {
-      const ts = this;
-      const arr = files.map(
-        file =>
-          new Promise(resolve => {
-            // 小于300K则直接返回，否则进行压缩
-            if (file.size < 307200) {
-              resolve(file);
-              return;
-            }
-            const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d");
-
-            const reader = new FileReader();
-            const img = new Image();
-
-            reader.onload = function(e) {
-              img.src = this.result;
-            };
-
-            img.onload = function() {
-              // 图片原始宽高
-              const originWidth = this.width;
-              const originHeight = this.height;
-              // 限制最大宽高
-              const maxWidth = 600;
-              const maxHeight = 600;
-              let targetWidth = originWidth;
-              let targetHeight = originHeight;
-              // 若原始宽/高超出最大宽/高， 则等比例压缩宽/高
-              if (originWidth > maxWidth || originHeight > maxHeight) {
-                if (originWidth / originHeight > maxWidth / maxHeight) {
-                  targetWidth = maxWidth;
-                  targetHeight = Math.round(
-                    maxWidth * (originHeight / originWidth)
-                  );
-                } else {
-                  targetHeight = maxHeight;
-                  targetWidth = Math.round(
-                    maxHeight * (originWidth / originHeight)
-                  );
-                }
-              }
-              // 用canvas描绘出新的图像
-              canvas.width = targetWidth;
-              canvas.height = targetHeight;
-              context.clearRect(0, 0, targetWidth, targetHeight);
-              context.drawImage(img, 0, 0, targetWidth, targetHeight);
-              const targetImg = canvas.toDataURL(
-                file.type || "image/png",
-                0.92
-              );
-              // 将base64转换成file对象
-              const targetFile = ts.dataURLtoFile(targetImg, file.name);
-              resolve(targetFile);
-            };
-            // 读取文件内容
-            reader.readAsDataURL(file);
-          })
-      );
-      return Promise.all(arr);
-    },
-    //将base64转换为文件
-    dataURLtoFile(dataurl, filename) {
-      var arr = dataurl.split(","),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new File([u8arr], filename, { type: mime });
     }
   }
 };
