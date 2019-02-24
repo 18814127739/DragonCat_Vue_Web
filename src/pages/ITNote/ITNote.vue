@@ -17,7 +17,7 @@
 
 <script>
 import api from "@services";
-import compressImgs from "@utils/compressImgs";
+import { compressImgs } from "compress-imgs";
 
 export default {
   data() {
