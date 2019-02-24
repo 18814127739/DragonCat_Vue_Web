@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Cookies from 'js-cookie';
-import { Message } from 'element-ui';
+import {
+  Message
+} from 'element-ui';
 
 Vue.use(VueRouter);
 
@@ -16,54 +18,52 @@ const PhotoWall = () => import('@pages/PhotoWall/PhotoWall')
 const PhotoWallManage = () => import('@pages/PhotoWall/Manage')
 const ITNote = () => import('@pages/ITNote/ITNote')
 
-const routes = [
-  {
-    name: 'login',
-    path: '/login',
-    component: Login,
-  }, {
-    name: 'home',
-    path: '/',
-    component: Home,
-  }, {
-    name: 'poems-with-future',
-    path: '/poems-with-future',
-    component: Poem,
-  }, {
-    name: 'new-poem',
-    path: '/new-poem',
-    component: EditPoem,
-  }, {
-    name: 'edit-poem',
-    path: '/edit-poem/:title',
-    component: EditPoem,
-  }, {
-    name: 'personal-page',
-    path: '/personal-page',
-    component: Personal,
-  }, {
-    name: 'edit-project-exp',
-    path: '/edit-project-exp',
-    component: EditProjectExp,
-  }, {
-    name: 'edit-awards',
-    path: '/edit-awards',
-    component: EditAwards,
+const routes = [{
+  name: 'login',
+  path: '/login',
+  component: Login,
+}, {
+  name: 'home',
+  path: '/',
+  component: Home,
+}, {
+  name: 'poems-with-future',
+  path: '/poems-with-future',
+  component: Poem,
+}, {
+  name: 'new-poem',
+  path: '/new-poem',
+  component: EditPoem,
+}, {
+  name: 'edit-poem',
+  path: '/edit-poem/:title',
+  component: EditPoem,
+}, {
+  name: 'personal-page',
+  path: '/personal-page',
+  component: Personal,
+}, {
+  name: 'edit-project-exp',
+  path: '/edit-project-exp',
+  component: EditProjectExp,
+}, {
+  name: 'edit-awards',
+  path: '/edit-awards',
+  component: EditAwards,
 
-  }, {
-    name: 'IT-note',
-    path: '/IT-note',
-    component: ITNote,
-  }, {
-    name: 'photo-wall',
-    path: '/photo-wall',
-    component: PhotoWall,
-  }, {
-    name: 'photo-wall-manage',
-    path: '/photo-wall-manage',
-    component: PhotoWallManage,
-  }
-]
+}, {
+  name: 'IT-note',
+  path: '/IT-note',
+  component: ITNote,
+}, {
+  name: 'photo-wall',
+  path: '/photo-wall',
+  component: PhotoWall,
+}, {
+  name: 'photo-wall-manage',
+  path: '/photo-wall-manage',
+  component: PhotoWallManage,
+}]
 
 const router = new VueRouter({
   mode: process.env.NODE_ENV === 'production' ? 'hash' : 'history',
@@ -78,14 +78,15 @@ router.beforeEach((to, from, next) => {
   } else if (Cookies.get('token')) {
     next();
   } else {
-    Message.error('登录已超时，请重新登录');
     redirectLogin();
   }
 
   function redirectLogin() {
     next({
       path: '/login',
-      query: { redirect: to.fullPath }
+      query: {
+        redirect: to.fullPath
+      }
     })
   }
 });

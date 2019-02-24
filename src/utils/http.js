@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import {
   Message
 } from 'element-ui';
+import 'whatwg-fetch';
 
 function request(url, params, type) {
   let newUrl = url;
@@ -52,7 +53,9 @@ function request(url, params, type) {
       }
       return Promise.reject(data.message);
     }).catch((error) => {
-      Message.error(error);
+      if (error !== '401(Unauthorized)') {
+        Message.error(error);
+      }
       return Promise.reject(error);
     });
 }

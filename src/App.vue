@@ -25,6 +25,10 @@ export default {
             arr.splice(0, 1);
             redirect = arr.join("/");
           }
+          this.$message({
+            type: "warning",
+            message: "登录已超时，请重新登录"
+          });
           this.$router.replace({
             path: "/login",
             query: { redirect: window.location.pathname }
