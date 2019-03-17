@@ -24,10 +24,19 @@ workbox.setConfig({
 
 workbox.precaching.precacheAndRoute([]);
 
-// html的缓存策略
+// 通过回调函数来匹配请求路由将会让策略更加灵活,
+const matchHtmlFunction = ({
+    url,
+}) => {
+    // 如果请求路由匹配了就返回 true，也可以返回一个参数对象以供 handler 接收处理
+    if (url.pathname === '/') {
+        return true;
+    }
+    return false;
+};
+
 workbox.routing.registerRoute(
-    // /\.html$/,
-    'http://localhost:8083/',
+    matchHtmlFunction,
     new workbox.strategies.NetworkFirst({
         cacheName: 'html-cache',
     })
@@ -56,7 +65,7 @@ workbox.routing.registerRoute(
     })
 );
 
-// 通过回调函数来匹配请求路由将会让策略更加灵活,匹配本地图片资源路径
+// 匹配本地图片资源路径
 const matchLocalImgsFunction = ({
     url,
 }) => {
