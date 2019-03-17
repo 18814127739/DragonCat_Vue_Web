@@ -1,9 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Cookies from 'js-cookie';
-import {
-  Message
-} from 'element-ui';
 
 Vue.use(VueRouter);
 
@@ -66,8 +63,8 @@ const routes = [{
 }]
 
 const router = new VueRouter({
-  mode: process.env.NODE_ENV === 'production' ? 'hash' : 'history',
-  // mode: 'history',
+  // mode: process.env.NODE_ENV === 'production' ? 'hash' : 'history',
+  mode: 'history',
   base: __dirname,
   routes: routes
 });

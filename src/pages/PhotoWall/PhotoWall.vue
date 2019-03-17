@@ -23,7 +23,13 @@
       <i class="el-icon-edit" @click="onManage" title="编辑"/>
       <i class="el-icon-delete" @click="onClear" title="清空"/>
     </div>
-    <CheckPhotoDialog :photos="photos" :index="curIndex" :visible="visible" @onClose="onClose"/>
+    <CheckPhotoDialog
+      :photos="photos"
+      :index="curIndex"
+      :visible="visible"
+      @onClose="onClose"
+      @updateIndex="updateIndex"
+    />
     <VerifyDialog :visible="verifyVisible"/>
   </PageContainer>
 </template>
@@ -89,6 +95,9 @@ export default {
     onCheckPhoto(index) {
       this.curIndex = index;
       this.visible = true;
+    },
+    updateIndex(offset) {
+      this.curIndex += offset;
     },
     onClear() {
       this.$confirm(`确认清空所有照片吗？`, "提示", {

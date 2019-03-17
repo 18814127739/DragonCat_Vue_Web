@@ -42,7 +42,7 @@ export default class {
 
   // 清空照片
   static clearPhotos = params => api.post('/api/clearPhotos', params);
-  
+
   // 查看照片墙身份验证
   static checkPhotoVerify = params => api.post('/api/checkPhotoVerify', params);
 }
