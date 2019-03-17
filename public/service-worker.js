@@ -18,9 +18,9 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.0.0/workbox-sw.js');
 
 // 不打印日志
-workbox.setConfig({
-    debug: false
-});
+// workbox.setConfig({
+//     debug: false
+// });
 
 workbox.precaching.precacheAndRoute([]);
 
@@ -29,6 +29,7 @@ const matchHtmlFunction = ({
     url,
 }) => {
     // 如果请求路由匹配了就返回 true，也可以返回一个参数对象以供 handler 接收处理
+    // 使用hash路由时，该域名下所有页面(访问index.html)的请求url都是域名的根路径'/'
     if (url.pathname === '/') {
         return true;
     }

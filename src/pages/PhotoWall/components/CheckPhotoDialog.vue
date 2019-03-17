@@ -7,17 +7,17 @@
     @close="onClose"
   >
     <div class="content">
-      <div class="left-wrap" v-if="curIndex > 0">
+      <div class="left-wrap" v-if="index > 0">
         <div @click="checkLeft" class="left-arrow">
           <i class="icon-left-arrow"></i>
         </div>
       </div>
-      <div class="right-wrap" v-if="curIndex < photos.length - 1">
+      <div class="right-wrap" v-if="index < photos.length - 1">
         <div @click="checkRight" class="right-arrow">
           <i class="icon-right-arrow"></i>
         </div>
       </div>
-      <img v-if="photos[curIndex]" :src="photos[curIndex].url" alt>
+      <img v-if="photos[index]" :src="photos[index].url" alt>
     </div>
   </el-dialog>
 </template>
@@ -28,11 +28,6 @@ export default {
     return {
       curIndex: 0
     };
-  },
-  watch: {
-    index: function(val) {
-      this.curIndex = val;
-    }
   },
   props: {
     visible: {
@@ -49,28 +44,24 @@ export default {
   },
   methods: {
     checkLeft() {
-      if (this.curIndex > 0) {
-        if (this.curIndex === 1) {
+      if (this.index > 0) {
+        if (this.index === 1) {
           this.$message({
             type: "warning",
             message: "这是第一张图片了"
           });
         }
-        --this.curIndex;
-        // 同步更新父组件的curIndex, 否则下次点击同一张照片时由于父组件的curIndex没有改变
-        // 不会触发watch事件，导致弹窗的照片显示不正确
         this.$emit("updateIndex", -1); 
       }
     },
     checkRight() {
-      if (this.curIndex < this.photos.length - 1) {
-        if (this.curIndex === this.photos.length - 2) {
+      if (this.index < this.photos.length - 1) {
+        if (this.index === this.photos.length - 2) {
           this.$message({
             type: "warning",
             message: "这是最后一张图片了"
           });
         }
-        ++this.curIndex;
         this.$emit("updateIndex", 1);
       }
     },
