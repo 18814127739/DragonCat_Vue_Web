@@ -89,12 +89,6 @@ module.exports = {
                 maxEntries: 20,
                 maxAgeSeconds: 60 * 60,
               },
-              backgroundSync: {
-                name: 'my-queue-name',
-                options: {
-                  maxRetentionTime: 60 * 60,
-                },
-              },
               cacheableResponse: {
                 statuses: [0, 200],
               },
