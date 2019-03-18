@@ -235,7 +235,7 @@ export default {
         var button = document.getElementById("table");
         button.addEventListener(
           "click",
-          function(event) {
+          function() {
             transform(targets.table, 2000);
           },
           false

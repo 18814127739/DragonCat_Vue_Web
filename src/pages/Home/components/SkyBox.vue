@@ -30,7 +30,6 @@ export default {
         lon = 90,
         onMouseDownLon = 0,
         lat = 0,
-        onMouseDownLat = 0,
         phi = 0,
         theta = 0,
         target = new THREE.Vector3();
@@ -137,7 +136,7 @@ export default {
         }
       }
 
-      function onDocumentMouseUp(event) {
+      function onDocumentMouseUp() {
         isUserInteracting = false;
       }
 
