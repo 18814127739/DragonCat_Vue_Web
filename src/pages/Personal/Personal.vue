@@ -246,6 +246,13 @@ export default {
       return flag;
     },
     onSavePdf() {
+      if(this.isEditSkills) {
+        this.$message({
+          type: 'warning',
+          message: '请先完成技能编辑'
+        });
+        return;
+      }
       const pdfEle = document.getElementById("pdf-content");
       html2canvas(pdfEle).then(canvas => {
         const contentWidth = canvas.width;
@@ -253,9 +260,9 @@ export default {
         //一页pdf显示html页面生成的canvas高度;
         const pageHeight = (contentWidth / 592.28) * 841.89;
         //未生成pdf的html页面高度
-        const leftHeight = contentHeight;
+        let leftHeight = contentHeight;
         //页面偏移
-        const position = 0;
+        let position = 0;
         //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
         const imgWidth = 595.28;
         const imgHeight = (592.28 / contentWidth) * contentHeight;
