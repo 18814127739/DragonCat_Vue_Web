@@ -32,7 +32,7 @@ module.exports = {
         clientsClaim: true, // Service Worker 被激活后使其立即获得页面控制权
         swDest: `${__dirname}/dist/service-worker.js`, // 输出 Service worker 文件
         runtimeCaching: [
-          // 插件会将打包后会生成precache-manifest文件，存放了打包后的姿态资源列表
+          // 插件打包后会生成precache-manifest文件，存放了打包后的姿态资源列表
           // 然后通过workbox.precaching.precacheAndRoute(self.__precacheManifest, {});缓存起来
           // 因此不需要额外处理
 
@@ -87,7 +87,7 @@ module.exports = {
               cacheName: 'api-cache',
               expiration: {
                 maxEntries: 20,
-                maxAgeSeconds: 60 * 60,
+                maxAgeSeconds: 24 * 60 * 60,
               },
               cacheableResponse: {
                 statuses: [0, 200],
@@ -124,12 +124,8 @@ module.exports = {
   },
   productionSourceMap: false, // 生产环境不生成source-map
   devServer: {
+    // https: true,
     proxy: {
-      '/api/miniProgram': {
-        target: 'http://175.6.136.234:8081/', // 接口域名
-        secure: false, // 如果是https接口，需要配置这个参数
-        changeOrigin: true, //是否跨域
-      },
       '/api': {
         target: 'http://localhost:8081/',
         secure: false,

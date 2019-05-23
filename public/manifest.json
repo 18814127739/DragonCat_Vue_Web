@@ -1,0 +1,10 @@
+{
+    "name": "龙猫先森的秘密花园",
+    "short_name": "Mini Garden",
+    "icons": [{
+        "src": "../src/assets/imgs/pics/app-icon.png",
+        "type": "image/png",
+        "size": "128x1288"
+    }],
+    "start_url": "/index.html"
+}
