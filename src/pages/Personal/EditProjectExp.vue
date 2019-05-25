@@ -4,44 +4,20 @@
       <div class="wrap">
         <div class="title">
           <h3>项目经验</h3>
-          <el-button
-            type="primary"
-            size="mini"
-            @click="onAdd"
-          >添加</el-button>
+          <el-button type="primary" size="mini" @click="onAdd">添加</el-button>
         </div>
-        <div
-          class="project-item"
-          v-for="(item,index) in projects"
-          :key="index"
-        >
+        <div class="project-item" v-for="(item,index) in projects" :key="index">
           <div class="item-bar">
             <span>{{`项目${index + 1}`}}</span>
-            <i
-              class="el-icon-delete"
-              @click="onRemove($event, index)"
-            ></i>
+            <i class="el-icon-delete" @click="onRemove($event, index)"></i>
           </div>
-          <el-form
-            :model="item"
-            label-width="80px"
-          >
+          <el-form :model="item" label-width="80px">
             <div class="row">
               <el-form-item label="项目名称">
-                <el-input
-                  size="mini"
-                  maxlength="20"
-                  placeholder="1-20字"
-                  v-model="item.name"
-                ></el-input>
+                <el-input size="mini" maxlength="20" placeholder="1-20字" v-model="item.name"></el-input>
               </el-form-item>
               <el-form-item label="担任岗位">
-                <el-input
-                  size="mini"
-                  maxlength="20"
-                  placeholder="1-20字"
-                  v-model="item.position"
-                ></el-input>
+                <el-input size="mini" maxlength="20" placeholder="1-20字" v-model="item.position"></el-input>
               </el-form-item>
             </div>
             <el-form-item label="参与时间">
@@ -52,22 +28,23 @@
                 range-separator="-"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-              >
-              </el-date-picker>
+              ></el-date-picker>
             </el-form-item>
             <el-form-item label="项目描述">
               <el-input
                 type="textarea"
-                maxlength="200"
-                placeholder="1-200字"
+                :rows="3"
+                maxlength="300"
+                placeholder="1-300字"
                 v-model="item.description"
               ></el-input>
             </el-form-item>
             <el-form-item label="主要工作">
               <el-input
                 type="textarea"
-                maxlength="200"
-                placeholder="1-200字"
+                :rows="3"
+                maxlength="300"
+                placeholder="1-300字"
                 v-model="item.task"
               ></el-input>
             </el-form-item>
@@ -75,15 +52,8 @@
         </div>
         <el-form label-width="80px">
           <el-form-item>
-            <el-button
-              type="primary"
-              @click="onSubmit"
-              size="mini"
-            >提交</el-button>
-            <el-button
-              size="mini"
-              @click="goBack"
-            >返回</el-button>
+            <el-button type="primary" @click="onSubmit" size="mini">提交</el-button>
+            <el-button size="mini" @click="goBack">返回</el-button>
           </el-form-item>
         </el-form>
       </div>

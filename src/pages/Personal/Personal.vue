@@ -284,7 +284,9 @@ export default {
             }
           }
         }
-        pdf.save("我的简历.pdf");
+        pdf.save("我的简历.pdf").then(() => {
+          console.log('nice');
+        });
       });
     }
   }
