@@ -3,7 +3,97 @@
     <div class="personal-page bg-f0fff0-00e5ee">
       <div class="top">
         <div id="pdf-content">
-          <div class="left bg-eed2ee-bfefff">
+          <div class="left">
+            <div class="left-top">
+              <div class="avatar">
+                <div class="img-bg">
+                  <div class="img-wrap flex-center">
+                    <img src="../../assets/imgs/pics/avatar.png" alt>
+                  </div>
+                  <div class="img-upload flex-center">
+                    <img src="../../assets/imgs/pics/header-camera.png" alt>
+                    <div>上传照片</div>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-info">
+                <div class="title">
+                  <div class="icon-wrap bg-eed2ee-bfefff">
+                    <i class="icon-profile"></i>
+                  </div>基本信息
+                  <i class="el-icon-edit"></i>
+                </div>
+                <div class="item">
+                  <i class="icon-age"/>
+                  25岁
+                </div>
+                <div class="item">
+                  <i class="icon-area"/>广东广州
+                </div>
+                <div class="item">
+                  <i class="icon-exp"/>2年工作经验
+                </div>
+                <div class="item">
+                  <i class="icon-phone"/>18814127739
+                </div>
+                <div class="item">
+                  <i class="icon-email"/>326001106@qq.com
+                </div>
+              </div>
+            </div>
+            <div class="left-bottom">
+              <div class="title">
+                <div class="icon-wrap bg-eed2ee-bfefff">
+                  <i class="icon-skill"></i>
+                </div>专业技能
+                <i class="el-icon-edit" v-if="!isEditSkills" @click="isEditSkills = true"></i>
+                <i v-if="isEditSkills" class="el-icon-close" @click="onCancelEditSkills"></i>
+              </div>
+              <transition name="el-zoom-in-center">
+                <ul v-show="!isEditSkills">
+                  <li v-for="item in data.skills" :key="item._id">
+                    <div class="name">{{item.name}}</div>
+                    <div class="line-wrap bg-eed2ee-bfefff">
+                      <div class="line">
+                        <div class="cover bg-eed2ee-bfefff" :style="{width:`${item.degree + 2}%`}"></div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </transition>
+              <transition name="el-zoom-in-center">
+                <ul v-show="isEditSkills">
+                  <li v-for="(item, index) in skills" :key="index">
+                    <div class="name">
+                      <span>{{item.name}}</span>
+                      <i class="el-icon-delete" @click="onRemoveSkills($event, 'skills', index)"/>
+                    </div>
+                    <el-slider :min="1" v-model="item.degree"></el-slider>
+                  </li>
+                  <li v-for="(item, index) in newSkills" :key="index">
+                    <div class="name">
+                      <el-input
+                        v-model="item.name"
+                        maxlength="20"
+                        placeholder="技能名称(1-20字)"
+                        size="mini"
+                      />
+                      <i
+                        class="el-icon-delete"
+                        @click="onRemoveSkills($event, 'newSkills', index)"
+                      />
+                    </div>
+                    <el-slider :min="1" v-model="item.degree"></el-slider>
+                  </li>
+                </ul>
+              </transition>
+            </div>
+            <div v-if="isEditSkills" class="btn-group">
+              <el-button size="mini" type="primary" @click="onUpdateSkills">保存</el-button>
+              <el-button size="mini" @click="onAddSkills">添加</el-button>
+            </div>
+          </div>
+          <div class="right bg-eed2ee-bfefff">
             <div class="content">
               <div class="base-info">
                 <p>{{this.$store.state.userInfo.userName}}</p>
@@ -43,10 +133,10 @@
                       <div class="name">{{item.name}}</div>
                       <div class="date">{{item.position}}</div>
                     </div>
-                    <div class="mt5">
+                    <div class="pro-desc mt5">
                       <div>项目描述：{{item.description}}</div>
                     </div>
-                    <div class="mt5">
+                    <div class="pro-task mt5">
                       <div></div>
                       项目职责：{{item.task}}
                     </div>
@@ -75,54 +165,6 @@
                   :data="chartData"
                 ></ve-pie>
               </InfoItem>
-            </div>
-          </div>
-          <div class="right">
-            <div class="title">
-              <div class="icon-wrap bg-eed2ee-bfefff">
-                <i class="icon-skill"></i>
-              </div>专业技能
-              <i class="el-icon-edit" v-if="!isEditSkills" @click="isEditSkills = true"></i>
-              <i v-if="isEditSkills" class="el-icon-close" @click="onCancelEditSkills"></i>
-            </div>
-            <transition name="el-zoom-in-center">
-              <ul v-show="!isEditSkills">
-                <li v-for="item in data.skills" :key="item._id">
-                  <div class="name">{{item.name}}</div>
-                  <div class="line-wrap bg-eed2ee-bfefff">
-                    <div class="line">
-                      <div class="cover bg-eed2ee-bfefff" :style="{width:`${item.degree + 2}%`}"></div>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </transition>
-            <transition name="el-zoom-in-center">
-              <ul v-show="isEditSkills">
-                <li v-for="(item, index) in skills" :key="index">
-                  <div class="name">
-                    <span>{{item.name}}</span>
-                    <i class="el-icon-delete" @click="onRemoveSkills($event, 'skills', index)"/>
-                  </div>
-                  <el-slider :min="1" v-model="item.degree"></el-slider>
-                </li>
-                <li v-for="(item, index) in newSkills" :key="index">
-                  <div class="name">
-                    <el-input
-                      v-model="item.name"
-                      maxlength="20"
-                      placeholder="技能名称(1-20字)"
-                      size="mini"
-                    />
-                    <i class="el-icon-delete" @click="onRemoveSkills($event, 'newSkills', index)"/>
-                  </div>
-                  <el-slider :min="1" v-model="item.degree"></el-slider>
-                </li>
-              </ul>
-            </transition>
-            <div v-if="isEditSkills" class="btn-group">
-              <el-button size="mini" type="primary" @click="onUpdateSkills">保存</el-button>
-              <el-button size="mini" @click="onAddSkills">添加</el-button>
             </div>
           </div>
         </div>
@@ -246,10 +288,10 @@ export default {
       return flag;
     },
     onSavePdf() {
-      if(this.isEditSkills) {
+      if (this.isEditSkills) {
         this.$message({
-          type: 'warning',
-          message: '请先完成技能编辑'
+          type: "warning",
+          message: "请先完成技能编辑"
         });
         return;
       }
@@ -284,9 +326,7 @@ export default {
             }
           }
         }
-        pdf.save("我的简历.pdf").then(() => {
-          console.log('nice');
-        });
+        pdf.save("我的简历.pdf");
       });
     }
   }
@@ -313,7 +353,7 @@ export default {
     -webkit-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
-  .left {
+  .right {
     padding: 2px;
     .content {
       padding: 12px 30px;
@@ -340,77 +380,159 @@ export default {
         .ve-pie {
           margin-top: 12px;
         }
+        .pro-desc,
+        .pro-task {
+          line-height: 20px;
+        }
       }
     }
   }
-  .right {
+  .left {
     padding: 20px 30px;
     background: rgba(37, 70, 101, 0.95);
     color: white;
     width: 260px;
-    .title {
-      display: flex;
-      align-items: center;
-      font-size: 16px;
-      font-weight: bold;
-      position: relative;
-      .el-icon-edit,
-      .el-icon-close {
-        position: absolute;
-        right: 0;
-        cursor: pointer;
-      }
-      .el-icon-edit {
-        opacity: 0;
-        transition: opacity 0.7s;
+
+    .left-top,
+    .left-bottom {
+      .title {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        font-weight: bold;
+        position: relative;
+        .el-icon-edit,
+        .el-icon-close {
+          position: absolute;
+          right: 0;
+          cursor: pointer;
+        }
+        .el-icon-edit {
+          opacity: 0;
+          transition: opacity 0.7s;
+        }
       }
     }
-    ul {
-      li {
-        margin-top: 12px;
-        .name {
-          color: white;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-left: 2px;
-          .el-input {
-            width: 150px;
-          }
-          .el-icon-delete {
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.7s;
+
+    .detail-info,
+    .left-bottom {
+      &:hover {
+        .title {
+          .el-icon-edit {
+            opacity: 1;
           }
         }
-        .line-wrap {
-          margin-top: 6px;
-          height: 12px;
-          padding: 1px;
-          overflow: hidden;
-          .line {
+      }
+    }
+
+    .left-top {
+      text-align: center;
+      .avatar {
+        padding: 5px;
+        margin: 0 auto;
+        cursor: pointer;
+        border: 1px dashed white;
+        width: 118px;
+        height: 148px;
+        .img-bg {
+          position: relative;
+          height: 100%;
+          .img-wrap,
+          .img-upload {
+            position: absolute;
+            width: 100%;
             height: 100%;
-            background: rgba(37, 70, 101, 0.95);
-            z-index: 1;
-            .cover {
-              height: 100%;
-              width: 60%;
-              border-top-right-radius: 6px;
-              border-bottom-right-radius: 6px;
-            }
+            top: 0;
+            left: 0;
+            opacity: 1;
           }
-        }
-        &:hover {
-          .name {
-            .el-icon-delete {
+
+          .img-upload {
+            flex-direction: column;
+            background: rgba(0, 192, 145, 0.5);
+            opacity: 0;
+            z-index: 20;
+          }
+
+          &:hover {
+            .img-wrap {
+              opacity: 0;
+            }
+
+            .img-upload {
               opacity: 1;
             }
           }
         }
+      }
 
-        .el-slider {
-          .el-slider__bar {
-            background-color: linear-gradient(45deg, #eed2ee 0%, #bfefff 100%);
+      .detail-info {
+        margin-top: 30px;
+        text-align: left;
+        .item {
+          i {
+            margin-right: 8px;
+          }
+          display: flex;
+          align-items: center;
+          margin-top: 14px;
+        }
+      }
+    }
+
+    .left-bottom {
+      margin-top: 30px;
+      ul {
+        li {
+          margin-top: 12px;
+          .name {
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-left: 2px;
+            .el-input {
+              width: 150px;
+            }
+            .el-icon-delete {
+              cursor: pointer;
+              opacity: 0;
+              transition: opacity 0.7s;
+            }
+          }
+          .line-wrap {
+            margin-top: 6px;
+            height: 12px;
+            padding: 1px;
+            overflow: hidden;
+            .line {
+              height: 100%;
+              background: rgba(37, 70, 101, 0.95);
+              z-index: 1;
+              .cover {
+                height: 100%;
+                width: 60%;
+                border-top-right-radius: 6px;
+                border-bottom-right-radius: 6px;
+              }
+            }
+          }
+          &:hover {
+            .name {
+              .el-icon-delete {
+                opacity: 1;
+              }
+            }
+          }
+
+          .el-slider {
+            .el-slider__bar {
+              background-color: linear-gradient(
+                45deg,
+                #eed2ee 0%,
+                #bfefff 100%
+              );
+            }
           }
         }
       }
@@ -418,13 +540,6 @@ export default {
     .btn-group {
       margin-top: 12px;
       text-align: center;
-    }
-    &:hover {
-      .title {
-        .el-icon-edit {
-          opacity: 1;
-        }
-      }
     }
   }
   .icon-wrap {

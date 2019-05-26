@@ -80,7 +80,13 @@ ul {
 .icon-project-exp,
 .icon-award,
 .icon-skill,
-.icon-error {
+.icon-error,
+.icon-age,
+.icon-area,
+.icon-email,
+.icon-exp,
+.icon-phone,
+.icon-profile {
   display: inline-block;
   vertical-align: middle;
   font-style: normal;
@@ -121,9 +127,43 @@ ul {
 .icon-education,
 .icon-project-exp,
 .icon-award,
-.icon-skill {
+.icon-skill,
+.icon-profile {
   height: 22px;
   width: 22px;
+}
+
+.icon-age,
+.icon-area,
+.icon-email,
+.icon-exp,
+.icon-phone {
+  height: 20px;
+  width: 20px;
+}
+
+.icon-age {
+  background: url('../imgs/icon/icon-age.png') no-repeat center center / cover;
+}
+
+.icon-area {
+  background: url('../imgs/icon/icon-area.png') no-repeat center center / cover;
+}
+
+.icon-email {
+  background: url('../imgs/icon/icon-email.png') no-repeat center center / cover;
+}
+
+.icon-exp {
+  background: url('../imgs/icon/icon-exp.png') no-repeat center center / cover;
+}
+
+.icon-phone {
+  background: url('../imgs/icon/icon-phone.png') no-repeat center center / cover;
+}
+
+.icon-profile {
+  background: url('../imgs/icon/icon-profile.png') no-repeat center center / cover;
 }
 
 .icon-education {

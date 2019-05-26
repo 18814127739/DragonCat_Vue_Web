@@ -9,7 +9,15 @@
         <div class="project-item" v-for="(item,index) in projects" :key="index">
           <div class="item-bar">
             <span>{{`项目${index + 1}`}}</span>
-            <i class="el-icon-delete" @click="onRemove($event, index)"></i>
+            <div>
+              <i v-if="index !== 0" class="el-icon-arrow-up" @click="onUp($event, index)"></i>
+              <i
+                v-if="index !== projects.length - 1"
+                class="el-icon-arrow-down"
+                @click="onDown($event, index2)"
+              ></i>
+              <i class="el-icon-delete" @click="onRemove($event, index2)"></i>
+            </div>
           </div>
           <el-form :model="item" label-width="80px">
             <div class="row">
@@ -86,6 +94,16 @@ export default {
     },
     onAdd() {
       this.projects.push({});
+    },
+    onUp(e, index) {
+      const newArr = [...this.projects];
+      [newArr[index - 1], newArr[index]] = [newArr[index], newArr[index - 1]];
+      this.projects = newArr;
+    },
+    onDown(e, index) {
+      const newArr = [...this.projects];
+      [newArr[index + 1], newArr[index]] = [newArr[index], newArr[index + 1]];
+      this.projects = newArr;
     },
     onRemove(e, index) {
       this.projects.splice(index, 1);
@@ -164,15 +182,22 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        display: flex;
         span {
           font-size: 14px;
           font-weight: bold;
           line-height: 24px;
         }
+        .el-icon-arrow-up,
+        .el-icon-arrow-down,
         .el-icon-delete {
           cursor: pointer;
           opacity: 0;
           transition: opacity 0.7s;
+        }
+        .el-icon-arrow-up,
+        .el-icon-arrow-down {
+          margin-right: 5px;
         }
       }
       .row {
@@ -183,6 +208,8 @@ export default {
       }
       &:hover {
         .item-bar {
+          .el-icon-arrow-up,
+          .el-icon-arrow-down,
           .el-icon-delete {
             opacity: 1;
           }
