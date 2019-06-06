@@ -52,7 +52,7 @@ export default {
             withCredentials: false,
             files: compressFiles,
             filename: "avatar",
-            action: "http://localhost:8081/api/avatarUpload",
+            action: `http://${window.location.hostname}:8081/api/avatarUpload`,
             onSuccess: res => {
               if (res.code === 0) {
                 this.loading = false;

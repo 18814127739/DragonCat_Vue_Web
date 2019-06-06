@@ -95,7 +95,7 @@ export default {
         method: "post",
         body: formData
       };
-      fetch("http://localhost:8081/api/photoUpload", options)
+      fetch(`http://${window.location.hostname}:8081/api/photoUpload`, options)
         .then(res => {
           if (res.ok) {
             return res.json();

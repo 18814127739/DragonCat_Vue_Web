@@ -107,7 +107,7 @@
         <el-col :span="9">
           <el-upload
             class="upload-demo"
-            action="http://localhost:8081/api/poemImgUpload"
+            :action="`http://${window.location.hostname}:8081/api/poemImgUpload`"
             :file-list="fileList"
             :before-upload="onBeforeUpload"
             :on-success="onSuccess"
