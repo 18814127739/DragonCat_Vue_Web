@@ -192,7 +192,6 @@
 import api from "@services";
 import moment from "moment";
 import html2canvas from "html2canvas";
-// import jsPDF from "@assets/libs/jsPDF/main";
 import InfoItem from "./components/InfoItem";
 import EditEducation from "./components/EditEducation";
 import EditInterests from "./components/EditInterests";

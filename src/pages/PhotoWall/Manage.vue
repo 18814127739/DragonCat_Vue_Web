@@ -68,7 +68,14 @@ export default {
     onChange(e) {
       const files = e.target.files;
       if (!files) return;
-      if (files.length + this.fileList.length > 144) {
+      if(files.length.length > 20) {
+         this.$message({
+          type: "warning",
+          message: "一次上传不能超过20张照片"
+        });
+        return;
+      }
+        if (files.length + this.fileList.length > 144) {
         this.$message({
           type: "warning",
           message: "最多上传144张照片"
@@ -144,7 +151,7 @@ export default {
         return;
       }
       const photos = this.fileList.map(item => ({
-        name: item.name, // 原文件名
+        name: item.originalname, // 原文件名
         fileName: item.fileName, // 在服务器上的文件名
         url: item.url
       }));
