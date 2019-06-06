@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       fileList: [],
-      loading: false
+      loading: false,
     };
   },
   methods: {
