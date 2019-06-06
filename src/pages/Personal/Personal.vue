@@ -234,8 +234,8 @@ export default {
       this.data.skills.sort((a, b) => b.degree - a.degree);
       this.skills = this.data.skills.map(item => ({ ...item }));
     },
-    dateToString(date, format) {
-      return moment(date).format(format || "YYYY.MM.DD");
+    dateToString(date, format = 'YYYY.MM.DD') {
+      return moment(date).format(format);
     },
     onEdit(infoType, pathName) {
       if (["projectExp", "awards"].includes(infoType)) {

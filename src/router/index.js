@@ -72,7 +72,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (['login'].includes(to.name)) {
     next();
-  } else if (Cookies.get('token')) {
+  } else if (Cookies.get('dc_token')) {
     next();
   } else {
     redirectLogin();
