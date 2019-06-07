@@ -79,7 +79,7 @@
             accept="image/*"
             name="poem-image"
           >
-            <p>意境配图</p>
+            <p>配图</p>
             <el-button
               class="upload-btn"
               size="small"
@@ -293,6 +293,8 @@ export default {
   }
   .upload-demo {
     p {
+      text-align: left;
+      margin-left: 12px;
       margin-top: 0px;
       line-height: 40px;
     }
