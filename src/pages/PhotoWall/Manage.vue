@@ -68,7 +68,7 @@ export default {
     onChange(e) {
       const files = e.target.files;
       if (!files) return;
-      if(files.length.length > 20) {
+      if(files.length > 20) {
          this.$message({
           type: "warning",
           message: "一次上传不能超过20张照片"

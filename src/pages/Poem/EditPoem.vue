@@ -3,36 +3,15 @@
     <div class="edit-poem">
       <el-row :gutter="20">
         <el-col :span="15">
-          <el-form
-            ref="form"
-            :model="form"
-            label-width="80px"
-            :rules="rules"
-          >
-            <el-form-item
-              label="标题"
-              prop="title"
-            >
-              <el-input
-                v-model="form.title"
-                size="small"
-                maxlength="20"
-                placeholder="1-20字"
-              ></el-input>
+          <el-form ref="form" :model="form" label-width="80px" :rules="rules">
+            <el-form-item label="标题" prop="title">
+              <el-input v-model="form.title" size="small" maxlength="20" placeholder="1-20字"></el-input>
             </el-form-item>
             <div class="row">
               <el-form-item label="作者">
-                <el-input
-                  v-model="form.author"
-                  size="small"
-                  maxlength="10"
-                  placeholder="1-10字"
-                ></el-input>
+                <el-input v-model="form.author" size="small" maxlength="10" placeholder="1-10字"></el-input>
               </el-form-item>
-              <el-form-item
-                label="创作时间"
-                prop="date"
-              >
+              <el-form-item label="创作时间" prop="date">
                 <el-col :span="11">
                   <el-date-picker
                     type="date"
@@ -53,10 +32,7 @@
                 >{{item.name}}</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item
-              label="主题"
-              prop="theme"
-            >
+            <el-form-item label="主题" prop="theme">
               <el-checkbox-group v-model="form.theme">
                 <el-checkbox
                   v-for="item in themeList"
@@ -66,11 +42,7 @@
               </el-checkbox-group>
             </el-form-item>
             <el-form-item label="内容">
-              <el-button
-                size="small"
-                type="primary"
-                @click="onAddRow"
-              >添加</el-button>
+              <el-button size="small" type="primary" @click="onAddRow">添加</el-button>
               <span class="tips">（不少于3句）</span>
             </el-form-item>
             <el-form-item
@@ -85,29 +57,18 @@
                 size="small"
                 maxlength="100"
               ></el-input>
-              <i
-                v-if="index > 2"
-                class="el-icon-delete"
-                @click="onDelRow(index)"
-              ></i>
+              <i v-if="index > 2" class="el-icon-delete" @click="onDelRow(index)"></i>
             </el-form-item>
             <el-form-item>
-              <el-button
-                type="primary"
-                @click="onSubmit"
-                size="small"
-              >提交</el-button>
-              <el-button
-                size="small"
-                @click="goBack"
-              >返回</el-button>
+              <el-button type="primary" @click="onSubmit" size="small">提交</el-button>
+              <el-button size="small" @click="goBack">返回</el-button>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="9">
           <el-upload
             class="upload-demo"
-            :action="`http://${window.location.hostname}:8081/api/poemImgUpload`"
+            :action="`http://${hostname}:8081/api/poemImgUpload`"
             :file-list="fileList"
             :before-upload="onBeforeUpload"
             :on-success="onSuccess"
@@ -125,10 +86,7 @@
               type="primary"
               :disabled="fileList.length >= 5"
             >点击上传</el-button>
-            <span
-              slot="tip"
-              class="el-upload__tip"
-            >（只能上传jpg / jpeg / png文件，且不大于5M）</span>
+            <span slot="tip" class="el-upload__tip">（只能上传jpg / jpeg / png文件，且不大于5M）</span>
           </el-upload>
         </el-col>
       </el-row>
@@ -143,6 +101,7 @@ export default {
   name: "edit-poem",
   data() {
     return {
+      hostname: location.hostname,
       fileList: [],
       pickerOptions: {
         // 日期选择器禁用日期
