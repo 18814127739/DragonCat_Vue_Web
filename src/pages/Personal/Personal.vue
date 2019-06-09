@@ -23,25 +23,27 @@
                   </div>基本信息
                   <i class="el-icon-edit" @click="baseInfoDialog=true"></i>
                 </div>
-                <div class="item">
-                  <i class="icon-age"/>
-                  {{`${data.baseInfo.age}岁`}}
-                </div>
-                <div class="item">
-                  <i class="icon-area"/>
-                  {{data.baseInfo.region}}
-                </div>
-                <div class="item">
-                  <i class="icon-exp"/>
-                  {{`${workYearsMap[data.baseInfo.workYears]}工作经验`}}
-                </div>
-                <div class="item">
-                  <i class="icon-phone"/>
-                  {{data.baseInfo.phoneNo}}
-                </div>
-                <div class="item">
-                  <i class="icon-email"/>
-                  {{data.baseInfo.email}}
+                <div v-if="data.baseInfo">
+                  <div class="item">
+                    <i class="icon-age"/>
+                    {{`${data.baseInfo.age}岁`}}
+                  </div>
+                  <div class="item">
+                    <i class="icon-area"/>
+                    {{data.baseInfo.region}}
+                  </div>
+                  <div class="item">
+                    <i class="icon-exp"/>
+                    {{`${workYearsMap[data.baseInfo.workYears]}工作经验`}}
+                  </div>
+                  <div class="item">
+                    <i class="icon-phone"/>
+                    {{data.baseInfo.phoneNo}}
+                  </div>
+                  <div class="item">
+                    <i class="icon-email"/>
+                    {{data.baseInfo.email}}
+                  </div>
                 </div>
               </div>
             </div>
@@ -100,7 +102,7 @@
           <div class="right bg-eed2ee-bfefff">
             <div class="content">
               <div class="base-info">
-                <p>{{data.baseInfo.name || this.$store.state.userInfo.userName}}</p>
+                <p>{{data.baseInfo ? data.baseInfo.name : this.$store.state.userInfo.userName}}</p>
                 <div
                   v-if="data.baseInfo && data.baseInfo.signature"
                   class="motto"
