@@ -21,23 +21,27 @@
                   <div class="icon-wrap bg-eed2ee-bfefff">
                     <i class="icon-profile"></i>
                   </div>基本信息
-                  <i class="el-icon-edit"></i>
+                  <i class="el-icon-edit" @click="baseInfoDialog=true"></i>
                 </div>
                 <div class="item">
                   <i class="icon-age"/>
-                  25岁
+                  {{`${data.baseInfo.age}岁`}}
                 </div>
                 <div class="item">
-                  <i class="icon-area"/>广东广州
+                  <i class="icon-area"/>
+                  {{data.baseInfo.region}}
                 </div>
                 <div class="item">
-                  <i class="icon-exp"/>2年工作经验
+                  <i class="icon-exp"/>
+                  {{`${workYearsMap[data.baseInfo.workYears]}工作经验`}}
                 </div>
                 <div class="item">
-                  <i class="icon-phone"/>18814127739
+                  <i class="icon-phone"/>
+                  {{data.baseInfo.phoneNo}}
                 </div>
                 <div class="item">
-                  <i class="icon-email"/>326001106@qq.com
+                  <i class="icon-email"/>
+                  {{data.baseInfo.email}}
                 </div>
               </div>
             </div>
@@ -96,11 +100,14 @@
           <div class="right bg-eed2ee-bfefff">
             <div class="content">
               <div class="base-info">
-                <p>{{this.$store.state.userInfo.userName}}</p>
-                <div class="motto">座右铭：以积极的心态面对困难，用坚定的决心迎接挑战。</div>
+                <p>{{data.baseInfo.name || this.$store.state.userInfo.userName}}</p>
+                <div
+                  v-if="data.baseInfo && data.baseInfo.signature"
+                  class="motto"
+                >{{data.baseInfo.signature}}</div>
               </div>
               <InfoItem iconClass="icon-education" title="教育背景" @onEdit="onEdit('educationDialog')">
-                <div v-if="data.education && data.education.university">
+                <div v-if="data.education">
                   <div class="space-between">
                     <div
                       class="date"
@@ -185,6 +192,12 @@
       @refreshInfo="getHomePageInfo"
       @onClose="onClose('interestsDialog')"
     />
+    <EditBaseInfo
+      :visible="baseInfoDialog"
+      :baseInfo="data.baseInfo"
+      @refreshInfo="getHomePageInfo"
+      @onClose="onClose('baseInfoDialog')"
+    />
   </PageContainer>
 </template>
 
@@ -195,21 +208,40 @@ import html2canvas from "html2canvas";
 import InfoItem from "./components/InfoItem";
 import EditEducation from "./components/EditEducation";
 import EditInterests from "./components/EditInterests";
+import EditBaseInfo from "./components/EditBaseInfo";
 
 export default {
   components: {
     InfoItem,
     EditEducation,
-    EditInterests
+    EditInterests,
+    EditBaseInfo
   },
   data() {
     return {
-      data: {},
+      workYearsMap: {
+        1: "1年",
+        2: "2年",
+        3: "3年",
+        4: "4年",
+        5: "5年",
+        6: "6年",
+        7: "7年",
+        8: "8年",
+        9: "9年",
+        10: "10年",
+        99: "10年以上"
+      },
+      data: {
+        baseInfo: {},
+        education: {}
+      },
       skills: [], // 专业技能表单数据
       newSkills: [], // 编辑时新增的技能信息
       isEditSkills: false, // 技能编辑状态
       educationDialog: false,
-      interestsDialog: false
+      interestsDialog: false,
+      baseInfoDialog: false
     };
   },
   mounted() {
@@ -233,7 +265,7 @@ export default {
       this.data.skills.sort((a, b) => b.degree - a.degree);
       this.skills = this.data.skills.map(item => ({ ...item }));
     },
-    dateToString(date, format = 'YYYY.MM.DD') {
+    dateToString(date, format = "YYYY.MM.DD") {
       return moment(date).format(format);
     },
     onEdit(infoType, pathName) {
@@ -474,7 +506,7 @@ export default {
           }
           display: flex;
           align-items: center;
-          margin-top: 14px;
+          margin-top: 18px;
         }
       }
     }

@@ -2,69 +2,29 @@
   <el-dialog
     class="edit-education"
     title="教育背景"
+    :close-on-click-modal="false"
     :visible="visible"
     width="50%"
     @close="onClose"
   >
-    <el-form
-      :model="data"
-      :rules="rules"
-      label-width="80px"
-    >
-      <el-form-item
-        label="大学名称"
-        prop="university"
-      >
-        <el-input
-          size="mini"
-          maxlength="30"
-          placeholder="1-30字"
-          v-model="data.university"
-        ></el-input>
+    <el-form :model="data" :rules="rules" label-width="80px">
+      <el-form-item label="大学名称" prop="university">
+        <el-input size="mini" maxlength="30" placeholder="1-30字" v-model="data.university"></el-input>
       </el-form-item>
       <div class="row">
-        <el-form-item
-          label="就读专业"
-          prop="major"
-        >
-          <el-input
-            size="mini"
-            maxlength="30"
-            placeholder="1-30字"
-            v-model="data.major"
-          ></el-input>
+        <el-form-item label="就读专业" prop="major">
+          <el-input size="mini" maxlength="30" placeholder="1-30字" v-model="data.major"></el-input>
         </el-form-item>
         <el-form-item label="GPA">
-          <el-input
-            size="mini"
-            v-model="data.GPA"
-          ></el-input>
+          <el-input size="mini" v-model="data.GPA"></el-input>
         </el-form-item>
       </div>
       <div class="row">
-        <el-form-item
-          label="入学时间"
-          prop="beginDate"
-        >
-          <el-date-picker
-            v-model="data.beginDate"
-            size="mini"
-            type="date"
-            placeholder="选择日期"
-          >
-          </el-date-picker>
+        <el-form-item label="入学时间" prop="beginDate">
+          <el-date-picker v-model="data.beginDate" size="mini" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
-        <el-form-item
-          label="毕业时间"
-          prop="endDate"
-        >
-          <el-date-picker
-            v-model="data.endDate"
-            size="mini"
-            type="date"
-            placeholder="选择日期"
-          >
-          </el-date-picker>
+        <el-form-item label="毕业时间" prop="endDate">
+          <el-date-picker v-model="data.endDate" size="mini" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
       </div>
       <el-form-item label="主修课程">
@@ -86,19 +46,9 @@
         ></el-input>
       </el-form-item>
     </el-form>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        size="mini"
-        @click="onClose"
-      >取 消</el-button>
-      <el-button
-        type="primary"
-        size="mini"
-        @click="onConfirm"
-      >确 定</el-button>
+    <span slot="footer" class="dialog-footer">
+      <el-button size="mini" @click="onClose">取 消</el-button>
+      <el-button type="primary" size="mini" @click="onConfirm">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -205,6 +155,10 @@ export default {
     padding: 10px 20px;
     max-height: 430px;
     overflow: auto;
+
+    .el-date-editor {
+      width: 100%;
+    }
   }
   .row {
     display: flex;

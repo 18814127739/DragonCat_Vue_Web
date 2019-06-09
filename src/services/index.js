@@ -45,4 +45,7 @@ export default class {
 
   // 查看照片墙身份验证
   static checkPhotoVerify = params => api.post('/api/checkPhotoVerify', params);
+
+  // 获取工作年限下拉数据
+  static getWorkYearsData = params => api.get('/api/getWorkYearsData', params);
 }
