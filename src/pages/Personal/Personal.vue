@@ -26,7 +26,7 @@
                 <div v-if="data.baseInfo">
                   <div class="item">
                     <i class="icon-age"/>
-                    {{`${data.baseInfo.age}岁`}}
+                    {{data.baseInfo.age ? `${data.baseInfo.age}岁` : ''}}
                   </div>
                   <div class="item">
                     <i class="icon-area"/>
@@ -34,7 +34,7 @@
                   </div>
                   <div class="item">
                     <i class="icon-exp"/>
-                    {{`${workYearsMap[data.baseInfo.workYears]}工作经验`}}
+                    {{data.baseInfo.workYears ? `${workYearsMap[data.baseInfo.workYears]}工作经验` : ''}}
                   </div>
                   <div class="item">
                     <i class="icon-phone"/>

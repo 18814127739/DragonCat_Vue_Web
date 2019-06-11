@@ -67,6 +67,7 @@
             >
               <el-input
                 v-model="registerInfo.userName"
+                maxlength="20"
                 size="medium"
               ></el-input>
             </el-form-item>
@@ -76,6 +77,7 @@
             >
               <el-input
                 v-model="registerInfo.phone"
+                maxlength="11"
                 size="medium"
               ></el-input>
             </el-form-item>
@@ -86,6 +88,7 @@
               <el-input
                 type="eMail"
                 v-model="registerInfo.eMail"
+                maxlength="40"
                 size="medium"
               ></el-input>
             </el-form-item>
@@ -97,6 +100,7 @@
                 type="password"
                 v-model="registerInfo.password"
                 autocomplete="off"
+                maxlength="20"
                 size="medium"
               ></el-input>
             </el-form-item>
@@ -198,21 +202,17 @@ export default {
     },
     isValid(params) {
       let flag = true;
+      if (!/^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test(params.eMail)) {
+        this.$message({
+          type: "warning",
+          message: "邮箱地址不符合格式要求"
+        });
+        flag = false;
+      }
       if (!/^1[34578]\d{9}$/.test(params.phone)) {
         this.$message({
           type: "warning",
           message: "手机号码不符合格式要求"
-        });
-        flag = false;
-      }
-      if (
-        !/^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test(
-          params.eMail
-        )
-      ) {
-        this.$message({
-          type: "warning",
-          message: "邮箱地址不符合格式要求"
         });
         flag = false;
       }
