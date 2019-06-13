@@ -121,7 +121,7 @@ module.exports = {
       }
     },
     externals: {
-      'vue': 'vue' // 配置使用CDN
+      echarts: 'echarts',
     },
   },
   productionSourceMap: false, // 生产环境不生成source-map
