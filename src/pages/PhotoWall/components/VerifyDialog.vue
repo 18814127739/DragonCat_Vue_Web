@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import api from "@services";
 
 export default {

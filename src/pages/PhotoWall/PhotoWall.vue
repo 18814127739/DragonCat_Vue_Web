@@ -40,7 +40,6 @@ import TWEEN from "tween";
 import CSS3DRenderer from "@assets/libs/threejslibs/CSS3DRenderer";
 import TrackballControls from "@assets/libs/threejslibs/TrackballControls";
 import getPhotosWithXY from "@utils/getPhotosWithXY";
-import constants from "@constants";
 import api from "@services";
 import CheckPhotoDialog from "./components/CheckPhotoDialog";
 import VerifyDialog from "./components/VerifyDialog";

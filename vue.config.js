@@ -23,7 +23,6 @@ const matchServerImgsFunction = ({
 };
 
 module.exports = {
-  publicPath: '/',
   configureWebpack: {
     plugins: [
       new GenerateSW({
@@ -120,6 +119,9 @@ module.exports = {
         '@services': `${__dirname}/src/services`,
         '@utils': `${__dirname}/src/utils`,
       }
+    },
+    externals: {
+      'vue': 'vue' // 配置使用CDN
     },
   },
   productionSourceMap: false, // 生产环境不生成source-map

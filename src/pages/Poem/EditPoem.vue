@@ -189,7 +189,7 @@ export default {
       }
       return isLimit && isJpgOrPng;
     },
-    onSuccess(res, file, fileList) {
+    onSuccess(res, file) {
       if (Number(res.code) === 0 && res.data) {
         this.fileList.push({ ...file, url: res.data.path });
       } else {

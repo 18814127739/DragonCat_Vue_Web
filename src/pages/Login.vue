@@ -122,7 +122,6 @@
 </template>
 <script>
 import api from "@services";
-import Cookies from 'js-cookie';
 
 export default {
   data() {
@@ -186,7 +185,7 @@ export default {
         this.registerLoading = true;
         api
           .register(params)
-          .then(res => {
+          .then(() => {
             this.registerLoading = false;
             this.activeTab = "login";
             this.registerInfo = {};

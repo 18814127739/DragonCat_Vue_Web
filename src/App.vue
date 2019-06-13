@@ -2,9 +2,7 @@
   <router-view></router-view>
 </template>
 <script>
-import Cookies from "js-cookie";
 import api from "@services";
-
 export default {
   name: "app",
   mounted() {
@@ -31,7 +29,7 @@ export default {
           });
           this.$router.replace({
             path: "/login",
-            query: { redirect: window.location.pathname }
+            query: { redirect }
           });
         });
     }
@@ -41,5 +39,3 @@ export default {
 
 <style lang="less" scoped>
 </style>
-
-
