@@ -3,7 +3,7 @@
     <div class="footer-main">
       <span>您好！现在是{{ momentStr }}</span>
       <div>
-        <span>开发者：dragon_cat</span>
+        <span>dragon_cat</span>
         <a
           href="https://github.com/18814127739/DragonCat_Vue_Web.git"
           target="_blank"
