@@ -171,7 +171,7 @@ export default {
       this.form.content.splice(index, 1);
     },
     onBeforeUpload(file) {
-      const isLimit = file.size <= 5242880; // 5M
+      const isLimit = file.size <= 512000; // 500K
       if (!isLimit) {
         this.$message({
           type: "warning",

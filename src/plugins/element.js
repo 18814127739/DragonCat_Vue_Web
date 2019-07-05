@@ -24,6 +24,7 @@ import {
   Loading,
   MessageBox,
   Message,
+  Tree,
 } from 'element-ui'
 
 Vue.use(Pagination);
@@ -47,6 +48,7 @@ Vue.use(Icon);
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Upload);
+Vue.use(Tree);
 
 Vue.use(Loading.directive);
 
