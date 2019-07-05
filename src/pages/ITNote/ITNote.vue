@@ -1,7 +1,7 @@
 <template>
   <PageContainer>
     <div class="IT-note">
-      <!-- <el-button size="small" type="primary" @click="onClick">上传头像</el-button>
+      <el-button size="small" type="primary" @click="onClick">上传头像</el-button>
       <input class="upload" type="file" ref="input" accept="image/*" multiple @change="onChange">
       <div class="photo-list" v-loading="loading">
         <div class="photo-wrap bg-eed2ee-bfefff" v-for="(item,index) in fileList" :key="index">
@@ -10,7 +10,7 @@
           </div>
           <img :src="item.url" alt>
         </div>
-      </div> -->
+      </div>
     </div>
   </PageContainer>
 </template>

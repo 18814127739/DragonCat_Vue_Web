@@ -5,15 +5,24 @@
         <div id="pdf-content">
           <div class="left">
             <div class="left-top">
-              <div class="avatar">
+              <div class="avatar" v-loading="loading" @click="uploadAvatar">
+                <input
+                  class="upload"
+                  type="file"
+                  ref="input"
+                  accept="image/*"
+                  multiple
+                  @change="onUploadAvatar"
+                />
                 <div class="img-bg">
-                  <div class="img-wrap flex-center">
-                    <img src="../../assets/imgs/pics/avatar.png" alt>
+                  <div v-if="!data.avatar" class="img-wrap flex-center">
+                    <img src="../../assets/imgs/pics/avatar.png" alt />
                   </div>
                   <div class="img-upload flex-center">
-                    <img src="../../assets/imgs/pics/header-camera.png" alt>
-                    <div>上传照片</div>
+                    <img src="../../assets/imgs/pics/header-camera.png" alt />
+                    <div v-if="!data.avatar">上传照片</div>
                   </div>
+                  <img class="avatar-img" v-if="data.avatar" :src="data.avatar" />
                 </div>
               </div>
               <div class="detail-info">
@@ -25,23 +34,23 @@
                 </div>
                 <div v-if="data.baseInfo">
                   <div class="item">
-                    <i class="icon-age"/>
+                    <i class="icon-age" />
                     {{data.baseInfo.age ? `${data.baseInfo.age}岁` : ''}}
                   </div>
                   <div class="item">
-                    <i class="icon-area"/>
+                    <i class="icon-area" />
                     {{data.baseInfo.region}}
                   </div>
                   <div class="item">
-                    <i class="icon-exp"/>
+                    <i class="icon-exp" />
                     {{data.baseInfo.workYears ? `${workYearsMap[data.baseInfo.workYears]}工作经验` : ''}}
                   </div>
                   <div class="item">
-                    <i class="icon-phone"/>
+                    <i class="icon-phone" />
                     {{data.baseInfo.phoneNo}}
                   </div>
                   <div class="item">
-                    <i class="icon-email"/>
+                    <i class="icon-email" />
                     {{data.baseInfo.email}}
                   </div>
                 </div>
@@ -72,7 +81,7 @@
                   <li v-for="(item, index) in skills" :key="index">
                     <div class="name">
                       <span>{{item.name}}</span>
-                      <i class="el-icon-delete" @click="onRemoveSkills($event, 'skills', index)"/>
+                      <i class="el-icon-delete" @click="onRemoveSkills($event, 'skills', index)" />
                     </div>
                     <el-slider :min="1" v-model="item.degree"></el-slider>
                   </li>
@@ -207,6 +216,7 @@
 import api from "@services";
 import moment from "moment";
 import html2canvas from "html2canvas";
+import { compressImgs } from "compress-imgs";
 import InfoItem from "./components/InfoItem";
 import EditEducation from "./components/EditEducation";
 import EditInterests from "./components/EditInterests";
@@ -235,9 +245,11 @@ export default {
         99: "10年以上"
       },
       data: {
+        avatar: '',
         baseInfo: {},
         education: {}
       },
+      loading: false,
       skills: [], // 专业技能表单数据
       newSkills: [], // 编辑时新增的技能信息
       isEditSkills: false, // 技能编辑状态
@@ -361,7 +373,151 @@ export default {
         }
         pdf.save("我的简历.pdf");
       });
-    }
+    },
+    uploadAvatar() {
+      // 点击时value重置为null，为了避免选择同样的照片时不触发onChange事件
+      this.$refs.input.value = null;
+      this.$refs.input.click();
+    },
+    onUploadAvatar(ev) {
+      const files = ev.target.files;
+      if (!files) return;
+      this.loading = true;
+      const postFiles = Array.prototype.slice.call(files);
+      // 图片压缩后再上传, 第二个参数为size大于多少时需要压缩，单位KB
+      compressImgs(postFiles)
+        .then(compressFiles => {
+          // fetch处理
+          this.fetchUpload(compressFiles);
+          // ajax处理
+          // const option = {
+          //   headers: {},
+          //   withCredentials: false,
+          //   files: compressFiles,
+          //   filename: "avatar",
+          //   action: `http://${window.location.hostname}:8081/api/avatarUpload`,
+          //   onSuccess: res => {
+          //     if (res.code === 0) {
+          //       this.loading = false;
+          //     } else {
+          //       this.loading = false;
+          //       this.$message.error(res.message);
+          //     }
+          //   },
+          //   onError: err => {
+          //     this.$message.error(err);
+          //   }
+          // };
+          // this.ajaxUpload(option);
+        })
+        .catch(err => {
+          this.$message.error(err);
+        });
+    },
+    // fetch实现
+    fetchUpload(files) {
+      const formData = new FormData();
+      files.forEach(file => {
+        formData.append("avatar", file);
+      });
+      const options = {
+        method: "post",
+        body: formData
+      };
+      fetch(`http://${window.location.hostname}:8081/api/avatarUpload`, options)
+        .then(res => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            return Promise.reject(`${res.status}(${res.statusText})`);
+          }
+        })
+        .then(res => {
+          if (res.code === 0) {
+            this.loading = false;
+            const params = {
+              type: "avatar",
+              data: res.data[0].path,
+            };
+            api.updateHomePageInfo(params).then(() => {
+              this.$message({
+                type: 'success',
+                message: '上传头像成功'
+              });
+              this.data.avatar = res.data[0].path;
+            });
+          } else {
+            this.loading = false;
+            this.$message.error(res.message);
+          }
+        })
+        .catch(err => {
+          this.loading = false;
+          this.$message.err(err);
+        });
+    },
+    // ajax实现
+    // ajaxUpload(option) {
+    //   if (typeof XMLHttpRequest === "undefined") {
+    //     return;
+    //   }
+    //   const { action } = option;
+    //   const xhr = new XMLHttpRequest();
+    //   const formData = new FormData();
+    //   option.files.forEach(file => {
+    //     formData.append(option.filename, file);
+    //   });
+    //   xhr.onerror = function error(e) {
+    //     option.onError(e);
+    //   };
+    //   xhr.onload = onload = () => {
+    //     if (xhr.status < 200 || xhr.status >= 300) {
+    //       return option.onError(getError(action, option, xhr));
+    //     }
+    //     option.onSuccess(getBody(xhr));
+    //   };
+    //   xhr.open("post", action, true);
+
+    //   if (option.withCredentials && "withCredentials" in xhr) {
+    //     xhr.withCredentials = true;
+    //   }
+
+    //   const headers = option.headers || {};
+    //   for (let item in headers) {
+    //     if (headers.hasOwnProperty(item) && headers[item] !== null) {
+    //       xhr.setRequestHeader(item, headers[item]);
+    //     }
+    //   }
+    //   xhr.send(formData);
+    //   return xhr;
+
+    //   function getBody(xhr) {
+    //     const text = xhr.responseText || xhr.response;
+    //     if (!text) {
+    //       return text;
+    //     }
+    //     try {
+    //       return JSON.parse(text);
+    //     } catch (e) {
+    //       return text;
+    //     }
+    //   }
+    //   function getError(action, option, xhr) {
+    //     let msg;
+    //     if (xhr.response) {
+    //       msg = `${xhr.response.error || xhr.response}`;
+    //     } else if (xhr.responseText) {
+    //       msg = `${xhr.responseText}`;
+    //     } else {
+    //       msg = `fail to post ${action} ${xhr.status}`;
+    //     }
+    //     const err = new Error(msg);
+    //     err.status = xhr.status;
+    //     err.method = "post";
+    //     err.url = action;
+    //     return err;
+    //   }
+    // },
   }
 };
 </script>
@@ -461,6 +617,9 @@ export default {
     .left-top {
       text-align: center;
       .avatar {
+        .upload {
+          display: none;
+        }
         padding: 5px;
         margin: 0 auto;
         cursor: pointer;
@@ -496,6 +655,11 @@ export default {
               opacity: 1;
             }
           }
+        }
+
+        .avatar-img {
+          width: 100%;
+          height: 100%;
         }
       }
 

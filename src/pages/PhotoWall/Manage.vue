@@ -130,15 +130,6 @@ export default {
           this.$message.err(err);
         });
     },
-    isLimit(files) {
-      let flag = true;
-      files.forEach(file => {
-        if (file.size > 512000) {
-          flag = false;
-        }
-      });
-      return flag;
-    },
     onRemove(e, index) {
       this.fileList.splice(index, 1);
     },
@@ -173,6 +164,7 @@ export default {
   }
 };
 </script>
+
 <style lang="less" scoped>
 .photo-wall-manage {
   padding: 16px 32px 46px;
