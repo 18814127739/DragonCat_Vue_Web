@@ -127,7 +127,7 @@ export default {
         })
         .catch(err => {
           this.loading = false;
-          this.$message.err(err);
+          this.$message.error(err);
         });
     },
     onRemove(e, index) {
