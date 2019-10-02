@@ -61,6 +61,14 @@ export default class {
   // 删除笔记分类
   static deleteNoteType = params => api.post('/api/deleteNoteType', params);
 
+  // 查询笔记
+  static getNotes = params => api.get('/api/getNotes', params);
+
   // 新增笔记
   static addNote = params => api.post('/api/addNote', params);
+
+  static updateNote = params => api.post('/api/updateNote', params);
+
+  // 删除笔记
+  static deleteNote = params => api.post('/api/deleteNote', params);
 }

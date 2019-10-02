@@ -3,7 +3,7 @@
     <div class="IT-note">
       <div class="body">
         <div class="left">
-          <div class="edit-type" @click="editVisible = true; noteTypeAction = 'add'">
+          <div class="add-type" @click="editVisible = true; noteTypeAction = 'add'">
             新增分类
             <span>+</span>
           </div>
@@ -13,10 +13,15 @@
             :data="noteTypes"
             node-key="_id"
             :render-content="renderNodeItem"
-            @node-click="onClickNode"
+            :load="onLoadNode"
+            @node-click="onNodeClick"
           ></el-tree>
         </div>
         <div class="right">
+          <div class="add-note">
+            新增笔记
+            <span>+</span>
+          </div>
           <el-upload
             class="uploader"
             :action="`http://${hostname}:8081/api/noteImgUpload`"
@@ -27,19 +32,34 @@
             :on-error="uploadError"
             :before-upload="beforeUpload"
           ></el-upload>
-          <quill-editor
-            v-loading="quillUploading"
-            v-model="content"
-            ref="myQuillEditor"
-            :options="editorOption"
-            @focus="onEditorFocus($event)"
-            @change="onEditorChange($event)"
-          ></quill-editor>
-          <div class="preview-btn">
-            <el-button type="primary" size="medium" @click="onTogglePreView">预览</el-button>
+          <div v-if="!isShowEditor && curNote.content" class="ql-container note-content">
+            <div class="ql-editor" v-html="curNote.content"></div>
           </div>
-          <div class="ql-container preview-div" v-if="isPreView">
-            <div class="ql-editor" v-html="content"></div>
+          <div v-if="isShowEditor">
+            <div class="note-desc space-between">
+              <div class="flex-center">
+                <div class="note-action">新增笔记</div>
+                <div class="input-label">标题：</div>
+                <el-input class="input-title" v-model="noteTitle" :maxlength="30" size="medium" />
+              </div>
+              <div>{{`所属分类：${curNote.typeName}`}}</div>
+            </div>
+            <quill-editor
+              v-loading="quillUploading"
+              v-model="content"
+              ref="myQuillEditor"
+              :options="editorOption"
+              @focus="onEditorFocus($event)"
+              @change="onEditorChange($event)"
+            ></quill-editor>
+            <div class="preview-btn">
+              <el-button type="primary" size="medium" @click="onSubmit">提交</el-button>
+              <el-button size="medium" @click="isPreView = !isPreView">预览</el-button>
+              <el-button size="medium" @click="onCancel">取消</el-button>
+            </div>
+            <div class="ql-container preview-div" v-if="isPreView">
+              <div class="ql-editor" v-html="content"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -52,7 +72,7 @@
     >
       <div class="dialog-content">
         <label>分类名称：</label>
-        <el-input v-model="noteTypeName" :maxlength="20"></el-input>
+        <el-input v-model="noteTypeName" :maxlength="20" size="medium"></el-input>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="onAddNoteType">确 定</el-button>
@@ -68,7 +88,7 @@ import api from "@services";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-import toolbarOptions from "./const";
+import { toolbarOptions, deleteConfirmProps } from "./const";
 
 export default {
   components: {
@@ -79,7 +99,10 @@ export default {
       noteTypes: [],
       noteTypeAction: "add", // 笔记分类操作类型
       hostname: location.hostname,
+      isShowEditor: false,
       content: "", // 文本编辑器内容
+      noteTitle: "", // 笔记标题
+      noteAction: "add", // 笔记操作类型
       editorOption: {
         placeholder: "请输入内容",
         modules: {
@@ -101,7 +124,8 @@ export default {
       quillUploading: false, // 上传图片加载中
       editVisible: false, // 添加分类弹窗
       noteTypeName: "",
-      edittingNoteType: {} // 正在编辑的分类
+      edittingNoteType: {}, // 正在编辑的分类
+      curNote: {} // 正在编辑的笔记
     };
   },
   mounted() {
@@ -124,24 +148,64 @@ export default {
         <div class="custom-tree-node">
           <span>{data.label}</span>
           <div>
-            <i
-              class="el-icon-plus plus-btn"
-              on-click={() => this.onAddNote(data)}
-            />
+            {!data.isLeaf && (
+              <i
+                class="el-icon-plus plus-btn"
+                on-click={e => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  this.onAddNote(data);
+                }}
+              />
+            )}
             <i
               class="el-icon-edit edit-btn"
-              on-click={() => this.onEditNoteType(data)}
+              on-click={e => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (data.isLeaf) {
+                  this.onEditNote(data);
+                } else {
+                  this.onEditNoteType(data);
+                }
+              }}
             />
             <i
               class="el-icon-delete delete-btn"
-              on-click={() => this.onDeleteNoteType(data)}
+              on-click={e => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (data.isLeaf) {
+                  this.onDeleteNote(data);
+                } else {
+                  this.onDeleteNoteType(data);
+                }
+              }}
             />
           </div>
         </div>
       );
     },
-    onClickNode(e) {
-      console.log(e);
+    // 根据分类查询笔记
+    async onLoadNode(node, resolve) {
+      const params = {
+        typeId: node.data._id
+      };
+      const res = await api.getNotes(params);
+      if (res) {
+        res.forEach(item => {
+          item.label = item.title;
+          item.isLeaf = true;
+        });
+        resolve(res);
+      } else {
+        resolve([]);
+      }
+    },
+    onNodeClick(data) {
+      if (data.isLeaf) {
+        this.curNote = data;
+      }
     },
     onEditorFocus(editor) {
       editor.enable(true); // 实现达到上限字符可删除
@@ -161,9 +225,6 @@ export default {
       }
       // console.log("editor change!", quill, html, text);
       this.content = html;
-    },
-    onTogglePreView() {
-      this.isPreView = !this.isPreView;
     },
     beforeUpload() {
       this.quillUploading = true;
@@ -192,9 +253,6 @@ export default {
     uploadError(e) {
       this.quillUploading = false;
       this.$message.error("图片插入失败");
-    },
-    onToggleVisible() {
-      this.editVisible = !this.editVisible;
     },
     async onAddNoteType() {
       if (this.noteTypes.some(item => item.typeName === this.noteTypeName)) {
@@ -225,16 +283,68 @@ export default {
       this.editVisible = true;
     },
     async onDeleteNoteType(data) {
-      await this.$confirm(`确认删除分类 ${data.label} 吗`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      });
+      await this.$confirm(
+        `确认删除分类 ${data.label} 吗`,
+        "提示",
+        deleteConfirmProps
+      );
       await api.deleteNoteType({ noteTypeId: data._id });
       this.getNoteTypes();
       this.$message.success("删除分类成功!");
     },
-    onAddNote() {}
+    // 新增笔记
+    onAddNote(noteType) {
+      this.isShowEditor = true;
+      this.noteAction = "add";
+      this.noteTitle = "";
+      this.content = "";
+      const obj = { ...this.curNote };
+      obj.typeId = noteType._id;
+      obj.typeName = noteType.typeName;
+      this.curNote = obj;
+    },
+    async onCancel() {
+      await this.$confirm("确认取消本次编辑吗？", "提示", deleteConfirmProps);
+      this.content = "";
+      this.curNote = {};
+      this.isPreView = false;
+      this.isShowEditor = false;
+    },
+    onEditNote(data) {
+      this.noteAction = "edit";
+      this.isShowEditor = true;
+      this.content = data.content;
+      this.noteTitle = data.title;
+    },
+    // 提交笔记
+    async onSubmit() {
+      const params = {
+        typeId: this.curNote.typeId,
+        typeName: this.curNote.typeName,
+        content: this.content,
+        title: this.noteTitle
+      };
+      if (this.noteAction === "add") {
+        await api.addNote(params);
+      } else {
+        params.noteId = this.curNote._id;
+        await api.updateNote(params);
+      }
+      this.$message.success(
+        `${this.noteAction === "add" ? "新增" : "修改"}笔记成功`
+      );
+      this.isShowEditor = false;
+    },
+    async onDeleteNote(data) {
+      await this.$confirm(
+        `确认删除笔记 ${data.title} 吗`,
+        "提示",
+        deleteConfirmProps
+      );
+      await api.deleteNote({ noteId: data._id });
+      this.getNoteTypes();
+      this.$message.success("删除笔记成功!");
+    }
   }
 };
 </script>
@@ -248,30 +358,32 @@ export default {
   .body {
     display: flex;
 
+    .add-type,
+    .add-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 8px;
+      text-align: center;
+      border: 1px dashed #ccc;
+
+      span {
+        margin-left: 5px;
+      }
+    }
+
+    .add-type:hover,
+    .add-note:hover {
+      color: #9b30ff;
+      border: 1px dashed #9b30ff;
+    }
+
     .left {
       width: 260px;
 
-      .edit-type {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        padding: 8px;
-        text-align: center;
-        border: 1px dashed #ddd;
-
-        span {
-          margin-left: 5px;
-        }
-      }
-
-      .edit-type:hover {
-        color: #9b30ff;
-        border: 1px dashed #9b30ff;
-      }
-
       .tree {
-        margin-top: 15px;
+        margin-top: 12px;
 
         :global(.custom-tree-node) {
           width: 100%;
@@ -313,6 +425,19 @@ export default {
       width: 800px;
       margin-left: 20px;
 
+      .note-desc {
+        margin-bottom: 15px;
+        .note-action {
+          font-weight: 600;
+          font-size: 16px;
+          margin-right: 15px;
+          width: 140px;
+        }
+        .input-label {
+          width: 100px;
+        }
+      }
+
       .uploader {
         display: none;
       }
@@ -331,6 +456,7 @@ export default {
 
       .preview-div {
         height: auto;
+        border: 1px solid #ccc;
 
         :global(img) {
           max-width: 100%;
