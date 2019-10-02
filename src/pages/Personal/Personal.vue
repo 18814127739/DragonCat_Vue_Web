@@ -524,7 +524,7 @@ export default {
 
 <style lang="less" scoped>
 .personal-page {
-  padding: 16px 32px 60px;
+  padding: 24px 32px 60px;
   background: white;
   .top {
     display: flex;

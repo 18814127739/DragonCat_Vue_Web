@@ -167,7 +167,7 @@ export default {
 
 <style lang="less" scoped>
 .photo-wall-manage {
-  padding: 16px 32px 46px;
+  padding: 24px 32px 46px;
   text-align: center;
   .left {
     .upload-input {

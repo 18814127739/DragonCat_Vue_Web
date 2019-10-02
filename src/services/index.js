@@ -48,4 +48,19 @@ export default class {
 
   // 获取工作年限下拉数据
   static getWorkYearsData = params => api.get('/api/getWorkYearsData', params);
+
+  // 获取笔记分类列表
+  static getNoteTypes = params => api.get('/api/getNoteTypes', params);
+
+  // 新增笔记分类
+  static addNoteType = params => api.post('/api/addNoteType', params);
+
+  // 修改笔记分类
+  static updateNoteType = params => api.post('/api/updateNoteType', params);
+
+  // 删除笔记分类
+  static deleteNoteType = params => api.post('/api/deleteNoteType', params);
+
+  // 新增笔记
+  static addNote = params => api.post('/api/addNote', params);
 }

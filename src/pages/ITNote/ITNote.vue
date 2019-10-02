@@ -1,204 +1,350 @@
 <template>
   <PageContainer>
     <div class="IT-note">
-      <el-button size="small" type="primary" @click="onClick">上传头像</el-button>
-      <input class="upload" type="file" ref="input" accept="image/*" multiple @change="onChange">
-      <div class="photo-list" v-loading="loading">
-        <div class="photo-wrap bg-eed2ee-bfefff" v-for="(item,index) in fileList" :key="index">
-          <div class="btn-delete flex-center" @click="onRemove($event, index)">
-            <i class="icon-error"/>
+      <div class="body">
+        <div class="left">
+          <div class="edit-type" @click="editVisible = true; noteTypeAction = 'add'">
+            新增分类
+            <span>+</span>
           </div>
-          <img :src="item.url" alt>
+          <el-tree
+            lazy
+            class="tree"
+            :data="noteTypes"
+            node-key="_id"
+            :render-content="renderNodeItem"
+            @node-click="onClickNode"
+          ></el-tree>
+        </div>
+        <div class="right">
+          <el-upload
+            class="uploader"
+            :action="`http://${hostname}:8081/api/noteImgUpload`"
+            name="note-image"
+            accept="image/*"
+            :show-file-list="false"
+            :on-success="uploadSuccess"
+            :on-error="uploadError"
+            :before-upload="beforeUpload"
+          ></el-upload>
+          <quill-editor
+            v-loading="quillUploading"
+            v-model="content"
+            ref="myQuillEditor"
+            :options="editorOption"
+            @focus="onEditorFocus($event)"
+            @change="onEditorChange($event)"
+          ></quill-editor>
+          <div class="preview-btn">
+            <el-button type="primary" size="medium" @click="onTogglePreView">预览</el-button>
+          </div>
+          <div class="ql-container preview-div" v-if="isPreView">
+            <div class="ql-editor" v-html="content"></div>
+          </div>
         </div>
       </div>
     </div>
+    <el-dialog
+      :title="noteTypeAction === 'add' ? '添加笔记分类' : '编辑笔记分类'"
+      :visible="editVisible"
+      width="30%"
+      @close="editVisible = false"
+    >
+      <div class="dialog-content">
+        <label>分类名称：</label>
+        <el-input v-model="noteTypeName" :maxlength="20"></el-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="onAddNoteType">确 定</el-button>
+      </span>
+    </el-dialog>
   </PageContainer>
 </template>
 
 <script>
-import api from "@services";
+import { quillEditor } from "vue-quill-editor";
 import { compressImgs } from "compress-imgs";
+import api from "@services";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import toolbarOptions from "./const";
 
 export default {
+  components: {
+    quillEditor
+  },
   data() {
     return {
-      fileList: [],
-      loading: false,
+      noteTypes: [],
+      noteTypeAction: "add", // 笔记分类操作类型
+      hostname: location.hostname,
+      content: "", // 文本编辑器内容
+      editorOption: {
+        placeholder: "请输入内容",
+        modules: {
+          toolbar: {
+            container: toolbarOptions, // 工具栏
+            handlers: {
+              image: function(value) {
+                if (value) {
+                  // 触发input框选择图片文件
+                  document.querySelector(".uploader input").click();
+                }
+              }
+            }
+          }
+        }
+      },
+      maxLen: 2000, // 字符上限
+      isPreView: false,
+      quillUploading: false, // 上传图片加载中
+      editVisible: false, // 添加分类弹窗
+      noteTypeName: "",
+      edittingNoteType: {} // 正在编辑的分类
     };
   },
+  mounted() {
+    this.getNoteTypes();
+  },
   methods: {
-    onClick() {
-      // 点击时value重置为null，为了避免选择同样的照片时不触发onChange事件
-      this.$refs.input.value = null;
-      this.$refs.input.click();
+    async getNoteTypes() {
+      const res = await api.getNoteTypes();
+      if (res) {
+        this.noteTypes = res.map(item => ({
+          ...item,
+          label: item.typeName,
+          children: [],
+          isLeaf: false
+        }));
+      }
     },
-    onChange(ev) {
-      const files = ev.target.files;
-      if (!files) return;
-      if (files.length + this.fileList.length > 144) {
-        this.$message({
-          type: "warning",
-          message: `最多上传144张照片，当前已上传${this.fileList.length}张`
-        });
-        return;
-      }
-      this.loading = true;
-      const postFiles = Array.prototype.slice.call(files);
-      // 图片压缩后再上传, 第二个参数为size大于多少时需要压缩，单位KB
-      compressImgs(postFiles)
-        .then(compressFiles => {
-          const option = {
-            headers: {},
-            withCredentials: false,
-            files: compressFiles,
-            filename: "avatar",
-            action: `http://${window.location.hostname}:8081/api/avatarUpload`,
-            onSuccess: res => {
-              if (res.code === 0) {
-                this.loading = false;
-                res.data.forEach(item => {
-                  this.fileList.push({
-                    ...item,
-                    url: item.path,
-                    fileName: item.filename
-                  });
-                });
-              } else {
-                this.loading = false;
-                this.$message.error(res.message);
-              }
-            },
-            onError: err => {
-              this.$message.error(err);
-            }
-          };
-          this.upload(option);
-        })
-        .catch(err => {
-          this.$message.error(err);
-        });
+    renderNodeItem(h, { node, data, store }) {
+      return (
+        <div class="custom-tree-node">
+          <span>{data.label}</span>
+          <div>
+            <i
+              class="el-icon-plus plus-btn"
+              on-click={() => this.onAddNote(data)}
+            />
+            <i
+              class="el-icon-edit edit-btn"
+              on-click={() => this.onEditNoteType(data)}
+            />
+            <i
+              class="el-icon-delete delete-btn"
+              on-click={() => this.onDeleteNoteType(data)}
+            />
+          </div>
+        </div>
+      );
     },
-    upload(option) {
-      if (typeof XMLHttpRequest === "undefined") {
-        return;
+    onClickNode(e) {
+      console.log(e);
+    },
+    onEditorFocus(editor) {
+      editor.enable(true); // 实现达到上限字符可删除
+    },
+    onEditorChange({ quill, html, text }) {
+      let textLength = 0;
+      if (text && text.trim() !== "") {
+        textLength = text.length;
       }
-      const { action } = option;
-      const xhr = new XMLHttpRequest();
-      const formData = new FormData();
-      option.files.forEach(file => {
-        formData.append(option.filename, file);
-      });
-      xhr.onerror = function error(e) {
-        option.onError(e);
-      };
-      xhr.onload = onload = () => {
-        if (xhr.status < 200 || xhr.status >= 300) {
-          return option.onError(getError(action, option, xhr));
-        }
-        option.onSuccess(getBody(xhr));
-      };
-      xhr.open("post", action, true);
-
-      if (option.withCredentials && "withCredentials" in xhr) {
-        xhr.withCredentials = true;
+      this.contentLen = textLength;
+      if (textLength > this.maxLen) {
+        this.surPlusLen = 0;
+        this.$message.error("最多输入" + this.maxLen + "个字符");
+        this.$refs.myQuillEditor.quill.enable(false);
+      } else {
+        this.surPlusLen = this.maxLen - Number(textLength);
       }
-
-      const headers = option.headers || {};
-      for (let item in headers) {
-        if (headers.hasOwnProperty(item) && headers[item] !== null) {
-          xhr.setRequestHeader(item, headers[item]);
-        }
-      }
-      xhr.send(formData);
-      return xhr;
-
-      function getBody(xhr) {
-        const text = xhr.responseText || xhr.response;
-        if (!text) {
-          return text;
-        }
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          return text;
-        }
-      }
-      function getError(action, option, xhr) {
-        let msg;
-        if (xhr.response) {
-          msg = `${xhr.response.error || xhr.response}`;
-        } else if (xhr.responseText) {
-          msg = `${xhr.responseText}`;
+      // console.log("editor change!", quill, html, text);
+      this.content = html;
+    },
+    onTogglePreView() {
+      this.isPreView = !this.isPreView;
+    },
+    beforeUpload() {
+      this.quillUploading = true;
+    },
+    uploadSuccess(res, file) {
+      try {
+        // 获取富文本组件实例
+        const quill = this.$refs.myQuillEditor.quill;
+        if (res.code === 0) {
+          // 获取光标所在位置
+          const length = quill.getSelection().index;
+          // 插入图片  res.data.path为服务器返回的图片地址
+          quill.insertEmbed(length, "image", res.data.path);
+          // 调整光标到最后
+          quill.setSelection(length + 1);
         } else {
-          msg = `fail to post ${action} ${xhr.status}`;
+          this.$message.error(res.message);
         }
-        const err = new Error(msg);
-        err.status = xhr.status;
-        err.method = "post";
-        err.url = action;
-        return err;
+      } catch (e) {
+        this.$message.error("图片插入失败");
+      } finally {
+        this.quillUploading = false;
       }
     },
-    isLimit(files) {
-      let flag = true;
-      files.forEach(file => {
-        if (file.size > 512000) {
-          flag = false;
-        }
-      });
-      return flag;
+    // 富文本图片上传失败
+    uploadError(e) {
+      this.quillUploading = false;
+      this.$message.error("图片插入失败");
     },
-    onRemove(e, index) {
-      this.fileList.splice(index, 1);
-    }
+    onToggleVisible() {
+      this.editVisible = !this.editVisible;
+    },
+    async onAddNoteType() {
+      if (this.noteTypes.some(item => item.typeName === this.noteTypeName)) {
+        this.$message.warning("该分类已存在，请勿重复添加");
+        return;
+      }
+      const params = {
+        typeName: this.noteTypeName,
+        level: 1
+      };
+      if (this.noteTypeAction === "edit") {
+        params.noteTypeId = this.edittingNoteType._id;
+        await api.updateNoteType(params);
+      } else {
+        await api.addNoteType(params);
+      }
+      this.getNoteTypes();
+      this.$message.success(
+        `${this.noteTypeAction === "add" ? "新增" : "编辑"}分类成功`
+      );
+      this.noteTypeName = "";
+      this.editVisible = false;
+    },
+    onEditNoteType(data) {
+      this.noteTypeAction = "edit";
+      this.edittingNoteType = data;
+      this.noteTypeName = data.label;
+      this.editVisible = true;
+    },
+    async onDeleteNoteType(data) {
+      await this.$confirm(`确认删除分类 ${data.label} 吗`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      });
+      await api.deleteNoteType({ noteTypeId: data._id });
+      this.getNoteTypes();
+      this.$message.success("删除分类成功!");
+    },
+    onAddNote() {}
   }
 };
 </script>
 
 <style lang="less" scoped>
 .IT-note {
-  padding: 16px 32px 46px;
-  text-align: center;
-  .upload {
-    display: none;
-  }
-  .photo-list {
-    margin-top: 16px;
+  padding: 24px 32px 46px;
+  display: flex;
+  justify-content: center;
+
+  .body {
     display: flex;
-    flex-wrap: wrap;
-    height: 100%;
-    min-height: 70vh;
-    overflow-y: auto;
-    .photo-wrap {
-      width: 140px;
-      height: 160px;
-      display: flex;
-      overflow: hidden;
-      justify-content: center;
-      margin: 6px;
-      position: relative;
-      img {
-        width: auto;
-        height: 100%;
-      }
-      .btn-delete {
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        background: #ee6363;
-        height: 18px;
-        width: 18px;
-        border-radius: 9px;
-        opacity: 0;
-        transition: opacity 0.4s;
+
+    .left {
+      width: 260px;
+
+      .edit-type {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
+        padding: 8px;
+        text-align: center;
+        border: 1px dashed #ddd;
+
+        span {
+          margin-left: 5px;
+        }
       }
-      &:hover {
-        .btn-delete {
-          opacity: 1;
+
+      .edit-type:hover {
+        color: #9b30ff;
+        border: 1px dashed #9b30ff;
+      }
+
+      .tree {
+        margin-top: 15px;
+
+        :global(.custom-tree-node) {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          :global(.plus-btn),
+          :global(.edit-btn),
+          :global(.delete-btn) {
+            opacity: 0;
+            transition: opacity 0.7s;
+            margin-right: 10px;
+          }
+
+          :global(.plus-btn),
+          :global(.edit-btn) {
+            margin-right: 8px;
+          }
+
+          &:hover {
+            :global(.plus-btn),
+            :global(.edit-btn),
+            :global(.delete-btn) {
+              opacity: 1;
+            }
+
+            :global(.plus-btn:hover),
+            :global(.edit-btn:hover),
+            :global(.delete-btn:hover) {
+              color: #9b30ff;
+            }
+          }
         }
       }
     }
+
+    .right {
+      width: 800px;
+      margin-left: 20px;
+
+      .uploader {
+        display: none;
+      }
+
+      .quill-editor {
+        min-height: 300px;
+        :global(.ql-container) {
+          min-height: 300px;
+        }
+      }
+
+      .preview-btn {
+        margin: 15px;
+        text-align: center;
+      }
+
+      .preview-div {
+        height: auto;
+
+        :global(img) {
+          max-width: 100%;
+        }
+      }
+    }
+  }
+}
+.dialog-content {
+  display: flex;
+  align-items: center;
+
+  label {
+    width: 100px;
   }
 }
 </style>

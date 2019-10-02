@@ -162,7 +162,7 @@ export default {
 .poem-page {
   .query-bar {
     padding: 0 32px;
-    margin-top: 16px;
+    margin-top: 24px;
     .el-input,
     .el-select {
       width: 150px;
