@@ -10,6 +10,7 @@ const store = new Vuex.Store({
     userInfo: {},
     themeList: [], // 诗歌主题数据
     typeList: [], // 诗歌类型数据
+    noteTypeList: [], // 笔记分类数据
   },
   actions: {
     async getThemeList({ commit }) {
@@ -24,6 +25,15 @@ const store = new Vuex.Store({
         commit('setTypeList', list);
       }
     },
+    async getNoteTypeList({ commit }) {
+      const res = await api.getNoteTypes();
+      const list = res.map(item => ({
+        ...item,
+        label: item.typeName,
+        isLeaf: false
+      }));
+      commit('setNoteTypeList', list);
+    },
   },
   mutations: {
     userInfoSuccess(state, data) {
@@ -35,7 +45,10 @@ const store = new Vuex.Store({
     },
     setTypeList(state, data) {
       state.typeList = data;
-    }
+    },
+    setNoteTypeList(state, data) {
+      state.noteTypeList = data;
+    },
   }
 });
 

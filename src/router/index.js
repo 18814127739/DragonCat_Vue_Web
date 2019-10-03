@@ -4,16 +4,17 @@ import Cookies from 'js-cookie';
 
 Vue.use(VueRouter);
 
-const Login = () => import('@pages/Login')
-const Home = () => import('@pages/Home/Home')
-const Poem = () => import('@pages/Poem/Poem')
-const EditPoem = () => import('@pages/Poem/EditPoem')
-const Personal = () => import('@pages/Personal/Personal')
-const EditProjectExp = () => import('@pages/Personal/EditProjectExp')
-const EditAwards = () => import('@pages/Personal/EditAwards')
-const PhotoWall = () => import('@pages/PhotoWall/PhotoWall')
-const PhotoWallManage = () => import('@pages/PhotoWall/Manage')
-const ITNote = () => import('@pages/ITNote/ITNote')
+const Login = () => import('@pages/Login');
+const Home = () => import('@pages/Home/Home');
+const Poem = () => import('@pages/Poem/Poem');
+const EditPoem = () => import('@pages/Poem/EditPoem');
+const Personal = () => import('@pages/Personal/Personal');
+const EditProjectExp = () => import('@pages/Personal/EditProjectExp');
+const EditAwards = () => import('@pages/Personal/EditAwards');
+const PhotoWall = () => import('@pages/PhotoWall/PhotoWall');
+const PhotoWallManage = () => import('@pages/PhotoWall/Manage');
+const ITNote = () => import('@pages/ITNote/ITNote');
+const EditNote = () => import('@pages/ITNote/EditNote');
 
 const routes = [{
   name: 'login',
@@ -47,11 +48,14 @@ const routes = [{
   name: 'edit-awards',
   path: '/edit-awards',
   component: EditAwards,
-
 }, {
   name: 'IT-note',
   path: '/IT-note',
   component: ITNote,
+}, {
+  name: 'edit-note',
+  path: '/edit-note',
+  component: EditNote,
 }, {
   name: 'photo-wall',
   path: '/photo-wall',

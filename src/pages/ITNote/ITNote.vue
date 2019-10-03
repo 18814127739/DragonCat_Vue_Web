@@ -18,48 +18,12 @@
           ></el-tree>
         </div>
         <div class="right">
-          <div class="add-note">
+          <div class="add-note" @click="toPage('edit-note')">
             新增笔记
             <span>+</span>
           </div>
-          <el-upload
-            class="uploader"
-            :action="`http://${hostname}:8081/api/noteImgUpload`"
-            name="note-image"
-            accept="image/*"
-            :show-file-list="false"
-            :on-success="uploadSuccess"
-            :on-error="uploadError"
-            :before-upload="beforeUpload"
-          ></el-upload>
-          <div v-if="!isShowEditor && curNote.content" class="ql-container note-content">
+          <div class="ql-container note-content">
             <div class="ql-editor" v-html="curNote.content"></div>
-          </div>
-          <div v-if="isShowEditor">
-            <div class="note-desc space-between">
-              <div class="flex-center">
-                <div class="note-action">新增笔记</div>
-                <div class="input-label">标题：</div>
-                <el-input class="input-title" v-model="noteTitle" :maxlength="30" size="medium" />
-              </div>
-              <div>{{`所属分类：${curNote.typeName}`}}</div>
-            </div>
-            <quill-editor
-              v-loading="quillUploading"
-              v-model="content"
-              ref="myQuillEditor"
-              :options="editorOption"
-              @focus="onEditorFocus($event)"
-              @change="onEditorChange($event)"
-            ></quill-editor>
-            <div class="preview-btn">
-              <el-button type="primary" size="medium" @click="onSubmit">提交</el-button>
-              <el-button size="medium" @click="isPreView = !isPreView">预览</el-button>
-              <el-button size="medium" @click="onCancel">取消</el-button>
-            </div>
-            <div class="ql-container preview-div" v-if="isPreView">
-              <div class="ql-editor" v-html="content"></div>
-            </div>
           </div>
         </div>
       </div>
@@ -83,12 +47,11 @@
 
 <script>
 import { quillEditor } from "vue-quill-editor";
-import { compressImgs } from "compress-imgs";
 import api from "@services";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-import { toolbarOptions, deleteConfirmProps } from "./const";
+import { deleteConfirmProps } from "./const";
 
 export default {
   components: {
@@ -96,53 +59,22 @@ export default {
   },
   data() {
     return {
-      noteTypes: [],
       noteTypeAction: "add", // 笔记分类操作类型
-      hostname: location.hostname,
-      isShowEditor: false,
-      content: "", // 文本编辑器内容
-      noteTitle: "", // 笔记标题
-      noteAction: "add", // 笔记操作类型
-      editorOption: {
-        placeholder: "请输入内容",
-        modules: {
-          toolbar: {
-            container: toolbarOptions, // 工具栏
-            handlers: {
-              image: function(value) {
-                if (value) {
-                  // 触发input框选择图片文件
-                  document.querySelector(".uploader input").click();
-                }
-              }
-            }
-          }
-        }
-      },
-      maxLen: 2000, // 字符上限
-      isPreView: false,
-      quillUploading: false, // 上传图片加载中
       editVisible: false, // 添加分类弹窗
       noteTypeName: "",
       edittingNoteType: {}, // 正在编辑的分类
-      curNote: {} // 正在编辑的笔记
+      curNote: {} // 正在查看的笔记
     };
   },
   mounted() {
-    this.getNoteTypes();
+    this.$store.dispatch("getNoteTypeList");
+  },
+  computed: {
+    noteTypes() {
+      return this.$store.state.noteTypeList;
+    }
   },
   methods: {
-    async getNoteTypes() {
-      const res = await api.getNoteTypes();
-      if (res) {
-        this.noteTypes = res.map(item => ({
-          ...item,
-          label: item.typeName,
-          children: [],
-          isLeaf: false
-        }));
-      }
-    },
     renderNodeItem(h, { node, data, store }) {
       return (
         <div class="custom-tree-node">
@@ -154,7 +86,7 @@ export default {
                 on-click={e => {
                   e.stopPropagation();
                   e.preventDefault();
-                  this.onAddNote(data);
+                  this.toPage("edit-note", { typeId: data._id });
                 }}
               />
             )}
@@ -164,7 +96,7 @@ export default {
                 e.stopPropagation();
                 e.preventDefault();
                 if (data.isLeaf) {
-                  this.onEditNote(data);
+                  this.toPage("edit-note", data);
                 } else {
                   this.onEditNoteType(data);
                 }
@@ -207,54 +139,11 @@ export default {
         this.curNote = data;
       }
     },
-    onEditorFocus(editor) {
-      editor.enable(true); // 实现达到上限字符可删除
-    },
-    onEditorChange({ quill, html, text }) {
-      let textLength = 0;
-      if (text && text.trim() !== "") {
-        textLength = text.length;
-      }
-      this.contentLen = textLength;
-      if (textLength > this.maxLen) {
-        this.surPlusLen = 0;
-        this.$message.error("最多输入" + this.maxLen + "个字符");
-        this.$refs.myQuillEditor.quill.enable(false);
-      } else {
-        this.surPlusLen = this.maxLen - Number(textLength);
-      }
-      // console.log("editor change!", quill, html, text);
-      this.content = html;
-    },
-    beforeUpload() {
-      this.quillUploading = true;
-    },
-    uploadSuccess(res, file) {
-      try {
-        // 获取富文本组件实例
-        const quill = this.$refs.myQuillEditor.quill;
-        if (res.code === 0) {
-          // 获取光标所在位置
-          const length = quill.getSelection().index;
-          // 插入图片  res.data.path为服务器返回的图片地址
-          quill.insertEmbed(length, "image", res.data.path);
-          // 调整光标到最后
-          quill.setSelection(length + 1);
-        } else {
-          this.$message.error(res.message);
-        }
-      } catch (e) {
-        this.$message.error("图片插入失败");
-      } finally {
-        this.quillUploading = false;
-      }
-    },
-    // 富文本图片上传失败
-    uploadError(e) {
-      this.quillUploading = false;
-      this.$message.error("图片插入失败");
-    },
     async onAddNoteType() {
+      if (!this.noteTypeName) {
+        this.$message.warning("请填写分类名称");
+        return;
+      }
       if (this.noteTypes.some(item => item.typeName === this.noteTypeName)) {
         this.$message.warning("该分类已存在，请勿重复添加");
         return;
@@ -269,7 +158,7 @@ export default {
       } else {
         await api.addNoteType(params);
       }
-      this.getNoteTypes();
+      this.$store.dispatch("getNoteTypeList");
       this.$message.success(
         `${this.noteTypeAction === "add" ? "新增" : "编辑"}分类成功`
       );
@@ -289,51 +178,8 @@ export default {
         deleteConfirmProps
       );
       await api.deleteNoteType({ noteTypeId: data._id });
-      this.getNoteTypes();
+      this.$store.dispatch("getNoteTypeList");
       this.$message.success("删除分类成功!");
-    },
-    // 新增笔记
-    onAddNote(noteType) {
-      this.isShowEditor = true;
-      this.noteAction = "add";
-      this.noteTitle = "";
-      this.content = "";
-      const obj = { ...this.curNote };
-      obj.typeId = noteType._id;
-      obj.typeName = noteType.typeName;
-      this.curNote = obj;
-    },
-    async onCancel() {
-      await this.$confirm("确认取消本次编辑吗？", "提示", deleteConfirmProps);
-      this.content = "";
-      this.curNote = {};
-      this.isPreView = false;
-      this.isShowEditor = false;
-    },
-    onEditNote(data) {
-      this.noteAction = "edit";
-      this.isShowEditor = true;
-      this.content = data.content;
-      this.noteTitle = data.title;
-    },
-    // 提交笔记
-    async onSubmit() {
-      const params = {
-        typeId: this.curNote.typeId,
-        typeName: this.curNote.typeName,
-        content: this.content,
-        title: this.noteTitle
-      };
-      if (this.noteAction === "add") {
-        await api.addNote(params);
-      } else {
-        params.noteId = this.curNote._id;
-        await api.updateNote(params);
-      }
-      this.$message.success(
-        `${this.noteAction === "add" ? "新增" : "修改"}笔记成功`
-      );
-      this.isShowEditor = false;
     },
     async onDeleteNote(data) {
       await this.$confirm(
@@ -342,8 +188,14 @@ export default {
         deleteConfirmProps
       );
       await api.deleteNote({ noteId: data._id });
-      this.getNoteTypes();
+      if (data._id === this.curNote._id) {
+        this.curNote = {};
+      }
+      this.$store.dispatch("getNoteTypeList");
       this.$message.success("删除笔记成功!");
+    },
+    toPage(pathname, params) {
+      this.$router.push({ name: pathname, params });
     }
   }
 };
@@ -424,47 +276,10 @@ export default {
     .right {
       width: 800px;
       margin-left: 20px;
-
-      .note-desc {
-        margin-bottom: 15px;
-        .note-action {
-          font-weight: 600;
-          font-size: 16px;
-          margin-right: 15px;
-          width: 140px;
-        }
-        .input-label {
-          width: 100px;
-        }
-      }
-
-      .uploader {
-        display: none;
-      }
-
-      .quill-editor {
-        min-height: 300px;
-        :global(.ql-container) {
-          min-height: 300px;
-        }
-      }
-
-      .preview-btn {
-        margin: 15px;
-        text-align: center;
-      }
-
-      .preview-div {
-        height: auto;
-        border: 1px solid #ccc;
-
-        :global(img) {
-          max-width: 100%;
-        }
-      }
     }
   }
 }
+
 .dialog-content {
   display: flex;
   align-items: center;
@@ -474,4 +289,3 @@ export default {
   }
 }
 </style>
-
