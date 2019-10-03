@@ -28,6 +28,7 @@ const menuRouteMap = {
   "new-poem": 1,
   "edit-poem": 1,
   "IT-note": 2,
+  "edit-note": 2,
   "photo-wall": 3
 };
 
