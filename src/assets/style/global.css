@@ -35,6 +35,12 @@ ul {
   justify-content: space-between;
 }
 
+.space-around {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
 .mt8 {
   margin-top: 8px;
 }
